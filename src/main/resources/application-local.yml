@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: nuri-local
+  config:
+    import:
+      - optional:file:env/local.env[.properties]
+
+  datasource:
+    driver-class-name:
+      ${POSTGRES_DRIVER_NAME}
+    url:
+      ${POSTGRES_URL}
+    username:
+      ${POSTGRES_USERNAME}
+    password:
+      ${POSTGRES_ROOT_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+
+  graphql:
+    schema:
+      locations: classpath:graphql/**
+    graphiql:
+      enabled: true
+    cors:
+      allowed-origins: ${FRONTEND_URL}
