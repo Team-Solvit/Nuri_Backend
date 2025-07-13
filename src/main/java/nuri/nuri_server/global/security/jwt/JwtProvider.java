@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.properties.JwtProperties;
