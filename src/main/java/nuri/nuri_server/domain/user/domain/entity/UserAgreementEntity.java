@@ -2,6 +2,7 @@ package nuri.nuri_server.domain.user.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,4 +36,25 @@ public class UserAgreementEntity {
 
     @Column(name = "agreed_identity_provider_terms")
     private Boolean agreedIdentityProviderTerms;
+
+    @Builder(builderMethodName = "userAgreeBuilder")
+    public UserAgreementEntity(
+            UserEntity user,
+            Boolean agreedTermsOfService,
+            Boolean agreedPrivacyCollection,
+            Boolean agreedPrivacyThirdParty,
+            Boolean agreedIdentityAgencyTerms,
+            Boolean agreedIdentityPrivacyDelegate,
+            Boolean agreedIdentityUniqueInfo,
+            Boolean agreedIdentityProviderTerms
+    ) {
+        this.user = user;
+        this.agreedTermsOfService = agreedTermsOfService;
+        this.agreedPrivacyCollection = agreedPrivacyCollection;
+        this.agreedPrivacyThirdParty = agreedPrivacyThirdParty;
+        this.agreedIdentityAgencyTerms = agreedIdentityAgencyTerms;
+        this.agreedIdentityPrivacyDelegate = agreedIdentityPrivacyDelegate;
+        this.agreedIdentityUniqueInfo = agreedIdentityUniqueInfo;
+        this.agreedIdentityProviderTerms = agreedIdentityProviderTerms;
+    }
 }

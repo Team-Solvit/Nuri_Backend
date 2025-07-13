@@ -2,6 +2,7 @@ package nuri.nuri_server.domain.user.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
@@ -34,4 +35,16 @@ public class UserEntity {
 
     @Column(nullable = false)
     private Role role;
+
+    @Builder(builderMethodName = "signupBuilder")
+    public UserEntity(String id, CountryEntity country, String name, String password, String email, String introduce, String profile, Role role) {
+        this.id = id;
+        this.country = country;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.introduce = introduce;
+        this.profile = profile;
+        this.role = role;
+    }
 }
