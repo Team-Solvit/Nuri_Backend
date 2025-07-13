@@ -6,8 +6,10 @@ import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.exception.DuplicateIdException;
+import nuri.nuri_server.domain.user.domain.exception.IdNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.UserAgreementRepository;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
+import nuri.nuri_server.domain.user.domain.role.Role;
 import org.springframework.stereotype.Service;
 
 @Service
