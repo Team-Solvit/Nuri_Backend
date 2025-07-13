@@ -2,6 +2,7 @@ package nuri.nuri_server.domain.auth.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.auth.application.service.AuthService;
+import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +16,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupReqeust signupReqeust) {
-        authService.signup(signupReqeust);
+    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
+        authService.signup(signupRequest);
         return ResponseEntity.ok("회원가입에 성공하였습니다.");
     }
 }

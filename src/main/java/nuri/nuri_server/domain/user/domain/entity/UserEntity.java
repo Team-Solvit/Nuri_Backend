@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.user.domain.role.Role;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "user")
