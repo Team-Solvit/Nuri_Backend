@@ -10,7 +10,7 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${front-url}")
+    @Value("${front-url[0]}")
     private List<String> frontUrls;
 
     @Override

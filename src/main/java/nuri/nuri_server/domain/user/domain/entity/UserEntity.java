@@ -9,7 +9,7 @@ import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.user.domain.role.Role;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity {
