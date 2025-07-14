@@ -1,6 +1,0 @@
-package nuri.nuri_server.domain.auth.presentation.dto.res;
-
-public record TokenResponse(
-        String accessToken,
-        String refreshTokenCookie
-) {}
