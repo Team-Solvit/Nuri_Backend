@@ -8,6 +8,8 @@ import nuri.nuri_server.domain.country.domain.repository.CountryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -16,8 +18,8 @@ public class CountryService {
     private final CountryRepository countryRepository;
 
     @Transactional
-    public CountryEntity getCountryEntity(String countryId) {
+    public CountryEntity getCountryEntity(UUID countryId) {
         return countryRepository.findById(countryId)
-                .orElseThrow(() -> new CountryNotFoundException(countryId));
+                .orElseThrow(() -> new CountryNotFoundException(countryId.toString()));
     }
 }

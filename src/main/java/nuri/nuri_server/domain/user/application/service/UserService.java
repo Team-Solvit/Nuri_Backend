@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
-import nuri.nuri_server.domain.user.domain.exception.DuplicateIdException;
+import nuri.nuri_server.domain.user.domain.exception.DuplicateUserException;
 import nuri.nuri_server.domain.user.domain.repository.UserAgreementRepository;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -17,25 +18,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserAgreementRepository userAgreementRepository;
 
+    // exsitsById로 하셈 쿼리 성능 개 후짐
     public void validateDuplicateUserId(String userId) {
         userRepository.findById(userId)
                 .ifPresent(user -> {
-                    throw new DuplicateIdException(userId);
+                    throw new DuplicateUserException(userId);
                 });
-    }
-
-    public void userAgree(UserEntity user, SignupRequest signupRequest) {
-        UserAgreementEntity userAgreementEntity = UserAgreementEntity.userAgreeBuilder()
-                .user(user)
-                .agreedTermsOfService(signupRequest.agreedTermsOfService())
-                .agreedPrivacyCollection(signupRequest.agreedPrivacyCollection())
-                .agreedPrivacyThirdParty(signupRequest.agreedPrivacyThirdParty())
-                .agreedIdentityAgencyTerms(signupRequest.agreedIdentityProviderTerms())
-                .agreedIdentityPrivacyDelegate(signupRequest.agreedIdentityPrivacyDelegate())
-                .agreedIdentityUniqueInfo(signupRequest.agreedIdentityUniqueInfo())
-                .agreedIdentityProviderTerms(signupRequest.agreedIdentityProviderTerms())
-                .build();
-
-        userAgreementRepository.save(userAgreementEntity);
     }
 }

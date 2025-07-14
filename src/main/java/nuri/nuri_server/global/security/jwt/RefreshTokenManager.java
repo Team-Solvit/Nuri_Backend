@@ -3,8 +3,8 @@ package nuri.nuri_server.global.security.jwt;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.domain.refreshToken.entity.RefreshToken;
-import nuri.nuri_server.domain.refreshToken.repository.RefreshTokenRepository;
+import nuri.nuri_server.domain.refresh_token.entity.RefreshToken;
+import nuri.nuri_server.domain.refresh_token.repository.RefreshTokenRepository;
 import nuri.nuri_server.global.properties.JwtProperties;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
 import org.springframework.http.ResponseCookie;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+// RefreshToken에 대한 고민 후 김동욱에게 알리고, 피드백 받은 내용을 반영해주세요
 @Component
 @RequiredArgsConstructor
 public class RefreshTokenManager {

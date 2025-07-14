@@ -38,5 +38,4 @@ redis:
   port: ${REDIS_PORT}
 
 front-url:
-  - ${FRONTEND_URL_LOCAL}
-  - ${FRONTEND_URL_PROD}
+  ${FRONTEND_URL}

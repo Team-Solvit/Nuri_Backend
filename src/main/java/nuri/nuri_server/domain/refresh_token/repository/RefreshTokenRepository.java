@@ -1,6 +1,6 @@
-package nuri.nuri_server.domain.refreshToken.repository;
+package nuri.nuri_server.domain.refresh_token.repository;
 
-import nuri.nuri_server.domain.refreshToken.entity.RefreshToken;
+import nuri.nuri_server.domain.refresh_token.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

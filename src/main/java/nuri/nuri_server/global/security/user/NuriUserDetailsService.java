@@ -2,7 +2,7 @@ package nuri.nuri_server.global.security.user;
 
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
-import nuri.nuri_server.domain.user.domain.exception.IdNotFoundException;
+import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +16,7 @@ public class NuriUserDetailsService implements UserDetailsService {
 
     @Override
     public NuriUserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return new NuriUserDetails(userEntity);
     }
 }

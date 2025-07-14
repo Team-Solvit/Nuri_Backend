@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.refreshToken.entity;
+package nuri.nuri_server.domain.refresh_token.entity;
 
 import jakarta.persistence.Column;
 import lombok.Builder;

@@ -6,6 +6,7 @@ import nuri.nuri_server.global.exception.NuriBusinessException;
 import nuri.nuri_server.global.exception.NuriSystemError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.naming.AuthenticationException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Slf4j
 @RestControllerAdvice
@@ -38,11 +40,31 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException httpRequestMethodNotSupportedException) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
+                .message(httpRequestMethodNotSupportedException.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(methodArgumentNotValidException.getMessage())
+                .message(Objects.requireNonNull(methodArgumentNotValidException.getBindingResult().getFieldError()).getDefaultMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(illegalArgumentException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -50,15 +72,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NuriBusinessException.class)
     public ResponseEntity<ErrorResponse> handleNuriBusinessException(NuriBusinessException nuriBusinessException) {
-        loggingWarning(nuriBusinessException);
-        ErrorResponse errorResponse = ErrorResponse.of(nuriBusinessException);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(nuriBusinessException.getStatus().getReasonPhrase())
+                .message(nuriBusinessException.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
         return new ResponseEntity<>(errorResponse, nuriBusinessException.getStatus());
     }
 
     @ExceptionHandler(NuriSystemError.class)
     public ResponseEntity<ErrorResponse> handleNuriSystemError(NuriSystemError nuriSystemError) {
         loggingError(nuriSystemError);
-        ErrorResponse errorResponse = ErrorResponse.of(nuriSystemError);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(nuriSystemError.getStatus().getReasonPhrase())
+                .message(nuriSystemError.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
         return new ResponseEntity<>(errorResponse, nuriSystemError.getStatus());
     }
 
@@ -75,9 +104,5 @@ public class GlobalExceptionHandler {
 
     private void loggingError(Exception exception) {
         log.error("Exception occurred: [{}] - Message: [{}]", exception.getClass().getName(), exception.getMessage());
-    }
-
-    private void loggingWarning(Exception exception) {
-        log.warn("Exception occurred: [{}] - Message: [{}]", exception.getClass().getName(), exception.getMessage());
     }
 }

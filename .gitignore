@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 
 env/**
+src/main/java/nuri/nuri_server/domain
 
 ### STS ###
 .apt_generated

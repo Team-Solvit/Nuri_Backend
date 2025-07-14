@@ -3,6 +3,9 @@ package nuri.nuri_server.domain.auth.presentation.dto.req;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.UUID;
 
 public record SignupRequest(
     @NotBlank(message = "유저명(name)은 필수 항목입니다.")
@@ -17,8 +20,8 @@ public record SignupRequest(
     @NotBlank(message = "유저 비밀번호(password)는 필수 항목입니다.")
     String password,
 
-    @NotBlank(message = "유저 국적(country)은 필수 항목입니다.")
-    String country,
+    @NotNull(message = "유저 국적(country)은 필수 항목입니다.")
+    UUID country,
 
     @AssertTrue(message = "서비스 이용약관에 동의해야 합니다.")
     @JsonProperty("agreed_terms_of_service")
