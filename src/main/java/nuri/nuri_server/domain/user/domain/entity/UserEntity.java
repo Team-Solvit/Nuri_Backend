@@ -20,7 +20,7 @@ public class UserEntity extends BaseEntity {
     private CountryEntity country;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String userId;
 
     @Column(nullable = false)
     private String name;
@@ -39,8 +39,8 @@ public class UserEntity extends BaseEntity {
     private Role role;
 
     @Builder(builderMethodName = "signupBuilder")
-    public UserEntity(String username, CountryEntity country, String name, String password, String email, String introduce, String profile, Role role) {
-        this.username = username;
+    public UserEntity(String userId, CountryEntity country, String name, String password, String email, String introduce, String profile, Role role) {
+        this.userId = userId;
         this.country = country;
         this.name = name;
         this.password = password;

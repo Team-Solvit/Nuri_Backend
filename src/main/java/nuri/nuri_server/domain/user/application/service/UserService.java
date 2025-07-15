@@ -11,7 +11,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     private void validateDuplicateUsername(String username) {
-        if(userRepository.existsByUsername(username)) {
+        if(userRepository.existsByUserId(username)) {
             throw new DuplicateUserException(username);
         }
     }

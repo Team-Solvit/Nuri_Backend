@@ -15,8 +15,8 @@ public class NuriUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public NuriUserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    public NuriUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(userId));
         return new NuriUserDetails(userEntity);
     }
 }
