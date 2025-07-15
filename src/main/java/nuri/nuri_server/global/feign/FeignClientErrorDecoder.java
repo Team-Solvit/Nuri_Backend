@@ -15,7 +15,7 @@ public class FeignClientErrorDecoder implements ErrorDecoder {
     @Override
     public Exception decode(String methodKey, Response response) {
         int status = response.status();
-        String reason = response.reason() != null ? response.reason() : "";
+        String reason = response.reason() != null ? response.reason() : "없음";
 
 
         String baseMessage = String.format(
