@@ -43,15 +43,15 @@ public class CookieManager {
 
     public String deleteRefreshToken(String userId, String refreshToken) {
         refreshTokenRepository.deleteById(userId);
-        return String.valueOf(createRefreshCookie(refreshToken, 0L));
+        return createRefreshCookie(refreshToken, 0L).toString();
     }
 
-    public void checkRefreshToken(String username, HttpServletRequest request) {
+    public void checkRefreshToken(String userId, HttpServletRequest request) {
         if (request.getCookies() == null) {
             throw new InvalidJsonWebTokenException();
         }
 
-        RefreshToken refreshTokenObject = refreshTokenRepository.findById(username).orElseThrow(InvalidJsonWebTokenException::new);
+        RefreshToken refreshTokenObject = refreshTokenRepository.findById(userId).orElseThrow(InvalidJsonWebTokenException::new);
 
         String refreshToken = Arrays.stream(request.getCookies())
                 .filter(cookie -> "refresh".equals(cookie.getName()))
