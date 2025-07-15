@@ -12,10 +12,10 @@ import org.springframework.data.redis.core.TimeToLive;
 @Builder
 public class RefreshToken {
     @Id
-    private String refreshToken;
+    private String userId;
 
     @Column(unique = true, nullable = false)
-    private String id;
+    private String refreshToken;
 
     @TimeToLive
     private Long timeToLive;

@@ -5,8 +5,7 @@ build/
 !**/src/test/**/build/
 
 env/**
-src/main/java/nuri/nuri_server/domain/**
-
+nuri_infra.sh
 ### STS ###
 .apt_generated
 .classpath

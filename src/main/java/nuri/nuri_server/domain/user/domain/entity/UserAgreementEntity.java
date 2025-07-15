@@ -5,17 +5,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
-@Table(name = "user_agreementEntity")
+@Table(name = "tbl_user_agreement")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserAgreementEntity {
-    @Id
-    private String userId;
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
+public class UserAgreementEntity extends BaseEntity {
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

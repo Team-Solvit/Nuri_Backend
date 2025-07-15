@@ -7,18 +7,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.user.domain.role.Role;
+import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
-@Table(name = "users")
+@Table(name = "tbl_user")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity {
-    @Id
-    private String id;
+public class UserEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private CountryEntity country;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
     private String name;
@@ -37,8 +39,8 @@ public class UserEntity {
     private Role role;
 
     @Builder(builderMethodName = "signupBuilder")
-    public UserEntity(String id, CountryEntity country, String name, String password, String email, String introduce, String profile, Role role) {
-        this.id = id;
+    public UserEntity(String username, CountryEntity country, String name, String password, String email, String introduce, String profile, Role role) {
+        this.username = username;
         this.country = country;
         this.name = name;
         this.password = password;
