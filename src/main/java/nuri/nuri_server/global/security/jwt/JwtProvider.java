@@ -2,17 +2,17 @@ package nuri.nuri_server.global.security.jwt;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
-import nuri.nuri_server.domain.user.domain.entity.UserEntity;
+import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.properties.JwtProperties;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -23,54 +23,57 @@ public class JwtProvider {
 
     @Autowired
     public JwtProvider(JwtProperties jwtProperties) {
-        this.secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
+        this.secretKey = new SecretKeySpec(
+                jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8),
+                Jwts.SIG.HS256.key().build().getAlgorithm()
+        );
         this.accessExpiration = jwtProperties.getAccessExpiration();
         this.refreshExpiration = jwtProperties.getRefreshExpiration();
     }
 
-    public String createAccessToken(UserEntity userEntity) {
+    public String createAccessToken(String userId, Role role) {
         return Jwts.builder()
-                .setSubject(userEntity.getId())
-                .claim("role", userEntity.getRole())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .subject(userId)
+                .claim("role", role)
+                .claim("madeBy", "nuri")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + accessExpiration))
+                .signWith(secretKey)
                 .compact();
     }
 
-    public String createRefreshToken(String id) {
+    public String createRefreshToken(String userId) {
         return Jwts.builder()
-                .setSubject(id)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .subject(userId)
+                .claim("madeBy", "nuri")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(secretKey)
                 .compact();
     }
 
     public String getUserIdFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+        return Jwts.parser()
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 
     public String getAccessToken(@NonNull HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if(!authorizationHeader.startsWith("Bearer ")) {
+        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new InvalidJsonWebTokenException();
         }
         return jwtVerifyAccessToken(authorizationHeader.substring(7));
     }
 
-    private String jwtVerifyAccessToken(String accessToken) {
+    private String jwtVerifyAccessToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(accessToken);
-            return accessToken;
+            String madeBy = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("madeBy", String.class);
+            if(!madeBy.equals("nuri")) throw new InvalidJsonWebTokenException();
+            return token;
         } catch (JwtException e) {
             throw new InvalidJsonWebTokenException();
         }

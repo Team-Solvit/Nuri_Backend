@@ -4,21 +4,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-
-import java.util.UUID;
+import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
-@Table(name = "country")
+@Table(name = "tbl_country")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CountryEntity {
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
-    private UUID id;
-
+public class CountryEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
 }

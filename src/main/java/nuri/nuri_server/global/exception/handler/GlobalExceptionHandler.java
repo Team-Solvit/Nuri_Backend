@@ -103,6 +103,6 @@ public class GlobalExceptionHandler {
     }
 
     private void loggingError(Exception exception) {
-        log.error("Exception occurred: [{}] - Message: [{}]", exception.getClass().getName(), exception.getMessage());
+        log.error("예외 발생 : [{}] - 메세지 : [{}]", exception.getClass().getName(), exception.getMessage());
     }
 }
