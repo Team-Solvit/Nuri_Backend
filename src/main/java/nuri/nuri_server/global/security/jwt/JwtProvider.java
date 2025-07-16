@@ -32,26 +32,33 @@ public class JwtProvider {
     }
 
     public String createAccessToken(String userId, Role role) {
-        return createJwt(userId, role, accessExpiration);
-    }
-
-    public String createRefreshToken(String userId, Role role) {
-        return createJwt(userId, role, refreshExpiration);
-    }
-
-    private String createJwt(String userId, Role role, Long expiration) {
         return Jwts.builder()
-                .claim("userId", userId)
+                .subject(userId)
                 .claim("role", role)
                 .claim("madeBy", "nuri")
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + accessExpiration))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String createRefreshToken(String userId) {
+        return Jwts.builder()
+                .subject(userId)
+                .claim("madeBy", "nuri")
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
                 .signWith(secretKey)
                 .compact();
     }
 
     public String getUserIdFromToken(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", String.class);
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 
     public String getAccessToken(@NonNull HttpServletRequest request) {
