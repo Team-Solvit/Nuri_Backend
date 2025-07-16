@@ -27,10 +27,10 @@ public class CookieManager {
                         .timeToLive(jwtProperties.getRefreshExpiration())
                         .build()
         );
-        return createRefreshCookie(refreshToken, jwtProperties.getRefreshExpiration()).toString();
+        return createRefreshTokenCookie(refreshToken, jwtProperties.getRefreshExpiration()).toString();
     }
 
-    private ResponseCookie createRefreshCookie(String value, Long maxAge) {
+    private ResponseCookie createRefreshTokenCookie(String value, Long maxAge) {
         return ResponseCookie.from("refresh", value)
                 .maxAge(maxAge)
                 .path("/")
@@ -40,24 +40,24 @@ public class CookieManager {
                 .build();
     }
 
-    public String deleteRefreshToken(String userId, String refreshToken) {
-        refreshTokenRepository.deleteById(userId);
-        return createRefreshCookie("", 0L).toString();
-    }
+    public String getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) throw new InvalidJsonWebTokenException();
 
-    public void checkRefreshToken(String userId, HttpServletRequest request) {
-        if (request.getCookies() == null) {
-            throw new InvalidJsonWebTokenException();
-        }
-
-        RefreshToken refreshTokenObject = refreshTokenRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-
-        String refreshToken = Arrays.stream(request.getCookies())
-                .filter(cookie -> "refresh".equals(cookie.getName()))
+        return Arrays.stream(cookies)
+                .filter(c -> "refresh".equals(c.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow(InvalidJsonWebTokenException::new);
+    }
 
+    public String deleteRefreshToken(String userId) {
+        refreshTokenRepository.deleteById(userId);
+        return createRefreshTokenCookie("", 0L).toString();
+    }
+
+    public void validateRefreshToken(String userId, String refreshToken) {
+        RefreshToken refreshTokenObject = refreshTokenRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         if(!refreshTokenObject.getRefreshToken().equals(refreshToken)) throw new InvalidJsonWebTokenException();
     }
 }
