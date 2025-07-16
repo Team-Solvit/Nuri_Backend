@@ -39,3 +39,7 @@ redis:
 
 front-url:
   ${FRONTEND_URL}
+
+mongodb:
+  client: ${MONGODB_CLIENT}
+  name: ${MONGODB_NAME}
