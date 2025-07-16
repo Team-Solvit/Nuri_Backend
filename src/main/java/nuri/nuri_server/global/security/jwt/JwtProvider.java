@@ -36,7 +36,7 @@ public class JwtProvider {
                 .subject(userId)
                 .claim("role", role)
                 .claim("madeBy", "nuri")
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + accessExpiration))
                 .signWith(secretKey)
                 .compact();
@@ -46,7 +46,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .subject(userId)
                 .claim("madeBy", "nuri")
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
                 .signWith(secretKey)
                 .compact();
