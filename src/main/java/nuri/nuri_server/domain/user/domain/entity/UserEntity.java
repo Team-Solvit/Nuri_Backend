@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
+import nuri.nuri_server.domain.user.domain.language.Language;
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.entity.BaseEntity;
 
@@ -18,6 +19,10 @@ public class UserEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private CountryEntity country;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
     @Column(nullable = false, unique = true)
     private String userId;
@@ -36,12 +41,14 @@ public class UserEntity extends BaseEntity {
     private String profile;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Builder(builderMethodName = "signupBuilder")
-    public UserEntity(String userId, CountryEntity country, String name, String password, String email, String introduce, String profile, Role role) {
+    public UserEntity(String userId, CountryEntity country, Language language, String name, String password, String email, String introduce, String profile, Role role) {
         this.userId = userId;
         this.country = country;
+        this.language = language;
         this.name = name;
         this.password = password;
         this.email = email;

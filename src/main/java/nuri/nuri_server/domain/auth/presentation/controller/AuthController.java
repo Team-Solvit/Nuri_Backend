@@ -7,8 +7,10 @@ import nuri.nuri_server.domain.auth.application.service.AuthService;
 import nuri.nuri_server.domain.auth.presentation.dto.req.LoginRequest;
 import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.auth.presentation.dto.res.TokenResponse;
+import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,17 +37,16 @@ public class AuthController {
 
     @PostMapping("/reissue")
     public ResponseEntity<String> reissue(HttpServletRequest request) {
-        TokenResponse tokenResponse = authService.reissue(request);
+        String newAccessToken = authService.reissue(request);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponse.accessToken())
-                .header(HttpHeaders.SET_COOKIE, tokenResponse.refreshTokenCookie())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken)
                 .body("토큰 재발급에 성공하였습니다.");
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        String refreshTokenCookie = authService.logout(request);
+    public ResponseEntity<String> logout(@AuthenticationPrincipal NuriUserDetails nuriUserDetails) {
+        String refreshTokenCookie = authService.logout(nuriUserDetails);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer ")
