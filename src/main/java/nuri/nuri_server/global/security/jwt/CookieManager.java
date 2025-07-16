@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.refresh_token.entity.RefreshToken;
 import nuri.nuri_server.domain.refresh_token.repository.RefreshTokenRepository;
+import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
 import nuri.nuri_server.global.properties.JwtProperties;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
 import org.springframework.http.ResponseCookie;
@@ -49,7 +50,7 @@ public class CookieManager {
             throw new InvalidJsonWebTokenException();
         }
 
-        RefreshToken refreshTokenObject = refreshTokenRepository.findById(userId).orElseThrow(InvalidJsonWebTokenException::new);
+        RefreshToken refreshTokenObject = refreshTokenRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         String refreshToken = Arrays.stream(request.getCookies())
                 .filter(cookie -> "refresh".equals(cookie.getName()))
