@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
-import nuri.nuri_server.domain.user.domain.language.Language;
+
+import java.util.List;
 
 public record SignupRequest(
     @NotBlank(message = "유저명(name)은 필수 항목입니다.")
@@ -23,7 +24,7 @@ public record SignupRequest(
     String country,
 
     @NotNull(message = "유저 언어(language)는 필수 항목입니다.")
-    Language language,
+    List<String> language,
 
     @AssertTrue(message = "서비스 이용약관에 동의해야 합니다.")
     @JsonProperty("agreed_terms_of_service")
