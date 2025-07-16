@@ -28,6 +28,11 @@ spring:
     cors:
       allowed-origins: ${FRONTEND_URL}
 
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: ${MONGODB_DATABASE}
+
 jwt:
   secret: ${JWT_SECRET}
   access-expiration: ${JWT_ACCESS_EXPIRATION}
