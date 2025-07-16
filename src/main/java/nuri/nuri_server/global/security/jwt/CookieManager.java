@@ -11,7 +11,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +19,6 @@ public class CookieManager {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public String createRefreshTokenCookie(String userId, String refreshToken) {
-        refreshTokenRepository.deleteAllById(Collections.singleton(userId));
         refreshTokenRepository.save(
                 RefreshToken.builder()
                         .userId(userId)
