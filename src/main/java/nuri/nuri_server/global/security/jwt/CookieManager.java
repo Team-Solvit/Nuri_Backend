@@ -41,7 +41,7 @@ public class CookieManager {
 
     public String deleteRefreshToken(String userId, String refreshToken) {
         refreshTokenRepository.deleteById(userId);
-        return createRefreshCookie(refreshToken, 0L).toString();
+        return createRefreshCookie("", 0L).toString();
     }
 
     public void checkRefreshToken(String userId, HttpServletRequest request) {
