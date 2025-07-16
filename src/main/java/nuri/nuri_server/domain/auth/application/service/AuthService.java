@@ -20,7 +20,6 @@ import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.security.jwt.CookieManager;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
