@@ -13,28 +13,28 @@ import nuri.nuri_server.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserAgreementEntity extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
 
-    @Column(name = "agreed_terms_of_service")
+    @Column(name = "agreed_terms_of_service", nullable = false)
     private Boolean agreedTermsOfService;
 
-    @Column(name = "agreed_privacy_collection")
+    @Column(name = "agreed_privacy_collection", nullable = false)
     private Boolean agreedPrivacyCollection;
 
-    @Column(name = "agreed_privacy_third_party")
+    @Column(name = "agreed_privacy_third_party", nullable = false)
     private Boolean agreedPrivacyThirdParty;
 
-    @Column(name = "agreed_identity_agency_terms")
+    @Column(name = "agreed_identity_agency_terms", nullable = false)
     private Boolean agreedIdentityAgencyTerms;
 
-    @Column(name = "agreed_identity_privacy_delegate")
+    @Column(name = "agreed_identity_privacy_delegate", nullable = false)
     private Boolean agreedIdentityPrivacyDelegate;
 
-    @Column(name = "agreed_identity_unique_info")
+    @Column(name = "agreed_identity_unique_info", nullable = false)
     private Boolean agreedIdentityUniqueInfo;
 
-    @Column(name = "agreed_identity_provider_terms")
+    @Column(name = "agreed_identity_provider_terms", nullable = false)
     private Boolean agreedIdentityProviderTerms;
 
     @Builder(builderMethodName = "userAgreeBuilder")

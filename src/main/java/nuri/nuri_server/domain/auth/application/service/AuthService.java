@@ -10,6 +10,9 @@ import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.auth.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.country.domain.service.CountryService;
+import nuri.nuri_server.domain.user.domain.entity.UserLanguageAdapter;
+import nuri.nuri_server.domain.user.domain.repository.UserLanguageAdapterRepository;
+import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
 import nuri.nuri_server.domain.user.domain.service.UserDomainService;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
@@ -24,6 +27,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +41,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final CookieManager cookieManager;
     private final UserAgreementRepository userAgreementRepository;
+    private final LanguageDomainService languageDomainService;
+    private final UserLanguageAdapterRepository userLanguageAdapterRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -47,15 +54,16 @@ public class AuthService {
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(userId)
                 .country(country)
-                .language(signupRequest.language())
                 .name(signupRequest.name())
                 .password(password)
                 .email(signupRequest.email())
                 .role(Role.USER)
                 .build();
 
-        userAgree(userEntity, signupRequest);
         userRepository.save(userEntity);
+
+        userLanguage(userEntity, signupRequest.language());
+        userAgree(userEntity, signupRequest);
     }
 
     @Transactional
@@ -93,12 +101,24 @@ public class AuthService {
                 .agreedTermsOfService(signupRequest.agreedTermsOfService())
                 .agreedPrivacyCollection(signupRequest.agreedPrivacyCollection())
                 .agreedPrivacyThirdParty(signupRequest.agreedPrivacyThirdParty())
-                .agreedIdentityAgencyTerms(signupRequest.agreedIdentityProviderTerms())
+                .agreedIdentityAgencyTerms(signupRequest.agreedIdentityAgencyTerms())
                 .agreedIdentityPrivacyDelegate(signupRequest.agreedIdentityPrivacyDelegate())
                 .agreedIdentityUniqueInfo(signupRequest.agreedIdentityUniqueInfo())
                 .agreedIdentityProviderTerms(signupRequest.agreedIdentityProviderTerms())
                 .build();
 
         userAgreementRepository.save(userAgreementEntity);
+    }
+
+    private void userLanguage(UserEntity userEntity, List<String> languages) {
+        languageDomainService.findAllByLanguage(languages)
+                .forEach(language ->
+                        userLanguageAdapterRepository.save(
+                                UserLanguageAdapter.builder()
+                                        .language(language)
+                                        .user(userEntity)
+                                        .build()
+                        )
+                );
     }
 }
