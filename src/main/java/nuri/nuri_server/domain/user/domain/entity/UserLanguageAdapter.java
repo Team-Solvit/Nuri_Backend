@@ -9,16 +9,19 @@ import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
 @Getter
-@Table(name = "tbl_user_language_adapter")
+@Table(
+        name = "tbl_user_language_adapter",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "language_id"})
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserLanguageAdapter extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "language_id", nullable = false, unique = true)
+    @JoinColumn(name = "language_id", nullable = false)
     private Language language;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @Builder

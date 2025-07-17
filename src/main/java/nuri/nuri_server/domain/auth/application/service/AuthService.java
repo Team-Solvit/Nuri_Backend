@@ -10,6 +10,7 @@ import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.auth.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.country.domain.service.CountryService;
+import nuri.nuri_server.domain.user.domain.entity.Language;
 import nuri.nuri_server.domain.user.domain.entity.UserLanguageAdapter;
 import nuri.nuri_server.domain.user.domain.repository.UserLanguageAdapterRepository;
 import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
@@ -76,6 +77,8 @@ public class AuthService {
         String accessToken = jwtProvider.createAccessToken(userEntity.getUserId(), userEntity.getRole());
         String refreshToken = jwtProvider.createRefreshToken(userEntity.getUserId());
 
+        log.info("사용자 {}님이 로그인 하셨습니다.", userEntity.getUserId());
+
         String refreshTokenCookie = cookieManager.createRefreshTokenCookie(userEntity.getUserId(), refreshToken);
 
         return new TokenResponse(accessToken, refreshTokenCookie);
@@ -110,15 +113,15 @@ public class AuthService {
         userAgreementRepository.save(userAgreementEntity);
     }
 
+
     private void userLanguage(UserEntity userEntity, List<String> languages) {
-        languageDomainService.findAllByLanguage(languages)
-                .forEach(language ->
-                        userLanguageAdapterRepository.save(
-                                UserLanguageAdapter.builder()
-                                        .language(language)
-                                        .user(userEntity)
-                                        .build()
-                        )
-                );
+        for (Language language : languageDomainService.findAllByLanguage(languages)) {
+            userLanguageAdapterRepository.save(
+                    UserLanguageAdapter.builder()
+                            .language(language)
+                            .user(userEntity)
+                            .build()
+            );
+        }
     }
 }
