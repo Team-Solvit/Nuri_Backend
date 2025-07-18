@@ -1,0 +1,29 @@
+scalar LocalDateTime
+scalar UUID
+
+type Query {
+    getMessages(room_id: UUID!): [ChatRecord!]!
+}
+
+type Sender {
+    name: String!
+    profile: String!
+}
+
+type ReplyChat {
+    chatId: String!
+    contents: String!
+    name: String!
+}
+
+type ChatRecord {
+    id: UUID!
+
+    roomId: UUID!
+    sender: Sender!
+
+    createdAt: LocalDateTime!
+
+    contents: String!
+    replyChat: ReplyChat!
+}

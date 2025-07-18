@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'com.graphql-java:graphql-java-extended-scalars:22.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'

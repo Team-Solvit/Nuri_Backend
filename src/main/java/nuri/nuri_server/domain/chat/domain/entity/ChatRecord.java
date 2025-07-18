@@ -5,13 +5,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Document(collection = "chat-record")
 public class ChatRecord {
     @Id
-    private String Id;
+    private UUID id;
 
-    private Long roomId;
+    private UUID roomId;
     private Sender sender;
 
     @CreatedDate
