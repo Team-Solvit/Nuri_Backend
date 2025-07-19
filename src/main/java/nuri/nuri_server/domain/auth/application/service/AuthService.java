@@ -9,7 +9,6 @@ import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.auth.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.country.domain.service.CountryService;
-import nuri.nuri_server.domain.user.domain.entity.Language;
 import nuri.nuri_server.domain.user.domain.entity.UserLanguageAdapter;
 import nuri.nuri_server.domain.user.domain.repository.UserLanguageAdapterRepository;
 import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
@@ -115,13 +114,13 @@ public class AuthService {
 
 
     private void userLanguage(UserEntity userEntity, List<String> languages) {
-        for (Language language : languageDomainService.findAllByLanguage(languages)) {
-            userLanguageAdapterRepository.save(
-                    UserLanguageAdapter.builder()
-                            .language(language)
-                            .user(userEntity)
-                            .build()
-            );
-        }
+        List<UserLanguageAdapter> adapters = languageDomainService.findAllByLanguage(languages)
+                .stream()
+                .map(language -> UserLanguageAdapter.builder()
+                        .language(language)
+                        .user(userEntity)
+                        .build())
+                .toList();
+        userLanguageAdapterRepository.saveAll(adapters);
     }
 }
