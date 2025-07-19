@@ -9,9 +9,9 @@ import nuri.nuri_server.domain.auth.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.auth.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.country.domain.service.CountryService;
-import nuri.nuri_server.domain.user.domain.entity.UserLanguageAdapter;
-import nuri.nuri_server.domain.user.domain.repository.UserLanguageAdapterRepository;
-import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
+import nuri.nuri_server.domain.user.domain.entity.Language;
+import nuri.nuri_server.domain.user.domain.exception.LanguageNotFoundException;
+import nuri.nuri_server.domain.user.domain.repository.LanguageRepository;
 import nuri.nuri_server.domain.user.domain.service.UserDomainService;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
@@ -26,8 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -40,8 +38,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final CookieManager cookieManager;
     private final UserAgreementRepository userAgreementRepository;
-    private final LanguageDomainService languageDomainService;
-    private final UserLanguageAdapterRepository userLanguageAdapterRepository;
+    private final LanguageRepository languageRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -50,9 +47,12 @@ public class AuthService {
         String password = passwordEncoder.encode(signupRequest.password());
         CountryEntity country = countryService.getCountryEntity(signupRequest.country());
 
+        Language language = languageRepository.findByName(signupRequest.language()).orElseThrow(() -> new LanguageNotFoundException(signupRequest.language()));
+
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(userId)
                 .country(country)
+                .language(language)
                 .name(signupRequest.name())
                 .password(password)
                 .email(signupRequest.email())
@@ -61,7 +61,6 @@ public class AuthService {
 
         userRepository.save(userEntity);
 
-        userLanguage(userEntity, signupRequest.language());
         userAgree(userEntity, signupRequest);
     }
 
@@ -110,17 +109,5 @@ public class AuthService {
                 .build();
 
         userAgreementRepository.save(userAgreementEntity);
-    }
-
-
-    private void userLanguage(UserEntity userEntity, List<String> languages) {
-        List<UserLanguageAdapter> adapters = languageDomainService.findAllByLanguage(languages)
-                .stream()
-                .map(language -> UserLanguageAdapter.builder()
-                        .language(language)
-                        .user(userEntity)
-                        .build())
-                .toList();
-        userLanguageAdapterRepository.saveAll(adapters);
     }
 }
