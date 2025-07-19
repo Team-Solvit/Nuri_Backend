@@ -8,7 +8,6 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,7 +15,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @QueryMapping
-    public List<ChatRecord> getMessages(@Argument("room_id") UUID roomId) {
+    public List<ChatRecord> getMessages(@Argument("room_id") String roomId) {
         return chatService.getMessages(roomId);
     }
 }

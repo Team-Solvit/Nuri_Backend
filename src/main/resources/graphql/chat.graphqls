@@ -1,4 +1,4 @@
-scalar LocalDateTime
+scalar DateTime
 scalar UUID
 
 type Query {
@@ -22,7 +22,7 @@ type ChatRecord {
     roomId: UUID!
     sender: Sender!
 
-    createdAt: LocalDateTime!
+    createdAt: DateTime!
 
     contents: String!
     replyChat: ReplyChat!

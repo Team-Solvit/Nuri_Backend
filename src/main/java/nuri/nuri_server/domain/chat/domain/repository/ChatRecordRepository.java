@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ChatRecordRepository extends MongoRepository<ChatRecord, String> {
-    List<ChatRecord> findAllByRoomId(UUID roomId);
+    List<ChatRecord> findAllByRoomId(String roomId);
 }

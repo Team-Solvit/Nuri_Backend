@@ -22,7 +22,7 @@ spring:
 
   graphql:
     schema:
-      locations: classpath:graphql/**
+      locations: classpath*:graphql/**/
     graphiql:
       enabled: true
     cors:

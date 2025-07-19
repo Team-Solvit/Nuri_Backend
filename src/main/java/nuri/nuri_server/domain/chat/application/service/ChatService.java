@@ -13,7 +13,8 @@ import java.util.UUID;
 public class ChatService {
     private final ChatRecordRepository chatRecordRepository;
 
-    public List<ChatRecord> getMessages(UUID roomId) {
+    public List<ChatRecord> getMessages(String roomId) {
+
         return chatRecordRepository.findAllByRoomId(roomId);
     }
 }

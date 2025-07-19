@@ -10,6 +10,7 @@ public class GraphQLConfig {
     @Bean
     public RuntimeWiringConfigurer runtimeWiringConfigurer() {
         return builder -> builder
+                .scalar(ExtendedScalars.UUID)
                 .scalar(ExtendedScalars.DateTime);
     }
 }
