@@ -1,7 +1,6 @@
 package nuri.nuri_server.domain.auth.application.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.auth.application.service.exception.PasswordMismatchException;
@@ -68,7 +67,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse login(@Valid LoginRequest loginRequest) {
+    public TokenResponse login(LoginRequest loginRequest) {
         UserEntity userEntity = userRepository.findByUserId(loginRequest.id()).orElseThrow(() -> new UserNotFoundException(loginRequest.id()));
         if(!passwordEncoder.matches(loginRequest.password(), userEntity.getPassword())) {
             throw new PasswordMismatchException();
@@ -91,9 +90,10 @@ public class AuthService {
     public String reissue(HttpServletRequest request) {
         String refreshToken = cookieManager.getRefreshToken(request);
         String userId = jwtProvider.getUserIdFromToken(refreshToken);
-        Role role = userDomainService.getRole(userId);
 
         cookieManager.validateRefreshToken(userId, refreshToken);
+
+        Role role = userDomainService.getRole(userId);
 
         return jwtProvider.createAccessToken(userId, role);
     }
