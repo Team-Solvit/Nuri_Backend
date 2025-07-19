@@ -19,6 +19,10 @@ public class UserEntity extends BaseEntity {
     @JoinColumn(nullable = false)
     private CountryEntity country;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Language language;
+
     @Column(nullable = false, unique = true)
     private String userId;
 
@@ -36,12 +40,14 @@ public class UserEntity extends BaseEntity {
     private String profile;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Builder(builderMethodName = "signupBuilder")
-    public UserEntity(String userId, CountryEntity country, String name, String password, String email, String introduce, String profile, Role role) {
+    public UserEntity(String userId, CountryEntity country, Language language, String name, String password, String email, String introduce, String profile, Role role) {
         this.userId = userId;
         this.country = country;
+        this.language = language;
         this.name = name;
         this.password = password;
         this.email = email;
