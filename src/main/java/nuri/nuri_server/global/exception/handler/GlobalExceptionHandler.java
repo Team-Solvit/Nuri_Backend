@@ -6,6 +6,7 @@ import nuri.nuri_server.global.exception.NuriBusinessException;
 import nuri.nuri_server.global.exception.NuriSystemError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.naming.AuthenticationException;
 import java.nio.file.AccessDeniedException;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Slf4j
@@ -25,7 +25,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.UNAUTHORIZED.getReasonPhrase())
                 .message(authenticationException.getMessage())
-                .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
@@ -35,7 +34,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .message(accessDeniedException.getMessage())
-                .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
@@ -45,7 +43,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
                 .message(httpRequestMethodNotSupportedException.getMessage())
-                .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
@@ -55,7 +52,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(Objects.requireNonNull(methodArgumentNotValidException.getBindingResult().getFieldError()).getDefaultMessage())
-                .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -65,7 +61,15 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(illegalArgumentException.getMessage())
-                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException httpMessageNotReadableException) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(httpMessageNotReadableException.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -75,7 +79,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(nuriBusinessException.getStatus().getReasonPhrase())
                 .message(nuriBusinessException.getMessage())
-                .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(errorResponse, nuriBusinessException.getStatus());
     }
@@ -85,8 +88,7 @@ public class GlobalExceptionHandler {
         loggingError(nuriSystemError);
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(nuriSystemError.getStatus().getReasonPhrase())
-                .message(nuriSystemError.getMessage())
-                .timestamp(LocalDateTime.now())
+                .message("서버 에러가 발생했습니다.")
                 .build();
         return new ResponseEntity<>(errorResponse, nuriSystemError.getStatus());
     }
@@ -96,8 +98,7 @@ public class GlobalExceptionHandler {
         loggingError(exception);
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message(exception.getMessage())
-                .timestamp(LocalDateTime.now())
+                .message("서버에서 예상치 못한 오류가 발생했습니다.")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
