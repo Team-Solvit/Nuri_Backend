@@ -21,19 +21,19 @@ import java.util.Objects;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException authenticationException) {
+    public ResponseEntity<ErrorResponse> handleAuthenticationException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                .message(authenticationException.getMessage())
+                .message("인증 오류가 발생했습니다.")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException accessDeniedException) {
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.FORBIDDEN.getReasonPhrase())
-                .message(accessDeniedException.getMessage())
+                .message("권한으로 인한 인증 오류가 발생했습니다.")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
@@ -57,19 +57,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(illegalArgumentException.getMessage())
+                .message("잘못된 인자 값 입니다.")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException httpMessageNotReadableException) {
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(httpMessageNotReadableException.getMessage())
+                .message("요청 본문을 읽을 수 없습니다.")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
         loggingError(nuriSystemError);
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(nuriSystemError.getStatus().getReasonPhrase())
-                .message("서버 에러가 발생했습니다.")
+                .message(nuriSystemError.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, nuriSystemError.getStatus());
     }
