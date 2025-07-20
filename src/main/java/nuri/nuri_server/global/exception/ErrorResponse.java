@@ -17,10 +17,10 @@ public class ErrorResponse {
         this.timestamp = OffsetDateTime.now();
     }
 
-    public Map<String, Object> getMap(ErrorResponse errorResponse) {
+    public Map<String, Object> getMap() {
         return Map.of(
-                "code", errorResponse.getCode(),
-                "timestamp", errorResponse.getTimestamp().toString()
+                "code", this.getCode(),
+                "timestamp", this.getTimestamp().toString()
         );
     }
 }

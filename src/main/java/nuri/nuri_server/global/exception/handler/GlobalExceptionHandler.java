@@ -15,7 +15,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Objects;
 
 @Slf4j
 @ControllerAdvice
@@ -30,7 +29,7 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message("인증 오류가 발생했습니다.")
                 .errorType(ErrorType.UNAUTHENTICATED)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
@@ -43,7 +42,7 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message("권한으로 인한 인증 오류가 발생했습니다.")
                 .errorType(ErrorType.FORBIDDEN)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
@@ -54,9 +53,11 @@ public class GlobalExceptionHandler {
                 .build();
 
         return GraphqlErrorBuilder.newError()
-                .message(Objects.requireNonNull(methodArgumentNotValidException.getBindingResult().getFieldError()).getDefaultMessage())
+                .message(methodArgumentNotValidException.getBindingResult().getFieldError() != null
+                                                ? methodArgumentNotValidException.getBindingResult().getFieldError().getDefaultMessage()
+                                                : "Validation error occurred")
                 .errorType(ErrorType.VALIDATION_ERROR)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
@@ -69,7 +70,7 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message("잘못된 인자 값 입니다.")
                 .errorType(ErrorType.VALIDATION_ERROR)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
@@ -82,7 +83,7 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message("요청 본문을 읽을 수 없습니다.")
                 .errorType(ErrorType.DATA_FETCHING_EXCEPTION)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
@@ -95,7 +96,7 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message(nuriBusinessException.getMessage())
                 .errorType(nuriBusinessException.getErrorType())
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
@@ -109,7 +110,7 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message(nuriSystemError.getMessage())
                 .errorType(ErrorType.INTERNAL_SERVER_ERROR)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
@@ -123,7 +124,7 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message("서버에서 예상치 못한 오류가 발생했습니다.")
                 .errorType(ErrorType.INTERNAL_SERVER_ERROR)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
     }
 
