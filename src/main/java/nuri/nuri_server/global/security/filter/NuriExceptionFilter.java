@@ -44,7 +44,7 @@ public class NuriExceptionFilter extends OncePerRequestFilter {
         GraphQLError graphQLError = GraphqlErrorBuilder.newError()
                 .message(message)
                 .errorType(ErrorType.UNAUTHENTICATED)
-                .extensions(errorResponse.getMap(errorResponse))
+                .extensions(errorResponse.getMap())
                 .build();
 
         Map<String, Object> responseBody = new HashMap<>();
