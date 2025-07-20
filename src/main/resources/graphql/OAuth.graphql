@@ -1,3 +1,32 @@
 type Query {
     getOAuth2Link(provider: String!): String
 }
+
+type Mutation {
+    loginByOAuthCode(code: String!, provider: String!) : OAuthLoginResponse!
+    saveOAuthUserInfo(input : OAuthSignUpRequest) : String
+}
+
+type OAuthLoginResponse {
+    redirectUrl : String
+    isNewUser : Boolean
+}
+
+input OAuthSignUpRequest {
+    oAuthId : String
+    id : String
+    email : String
+    country : String
+    language : String
+    userAgreement : UserAgreement
+}
+
+input UserAgreement {
+    agreedTermsOfService : Boolean
+    agreedPrivacyCollection : Boolean
+    agreedPrivacyThirdParty : Boolean
+    agreedIdentityAgencyTerms : Boolean
+    agreedIdentityPrivacyDelegate : Boolean
+    agreedIdentityUniqueInfo : Boolean
+    agreedIdentityProviderTerms : Boolean
+}

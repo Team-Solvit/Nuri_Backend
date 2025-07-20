@@ -5,23 +5,23 @@ import nuri.nuri_server.global.properties.OAuth2Properties;
 import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
-@Component("google")
-public class GoogleOAuthLinkBuilder implements OAuthLinkBuilder {
+@Component("facebook")
+public class FacebookOAuthLinkBuilder implements OAuthLinkBuilder {
     private final String clientId;
     private final String redirectUri;
 
-    public GoogleOAuthLinkBuilder(OAuth2Properties oAuth2Properties) {
-        OAuth2ProviderProperties googleProps = oAuth2Properties.getProviders().get("google");
-        this.clientId = googleProps.getClientId();
-        this.redirectUri = googleProps.getRedirectUrl();
+    public FacebookOAuthLinkBuilder(OAuth2Properties oAuth2Properties) {
+        OAuth2ProviderProperties facebookProps = oAuth2Properties.getProviders().get("facebook");
+        this.clientId = facebookProps.getClientId();
+        this.redirectUri = facebookProps.getRedirectUrl();
     }
 
     @Override
     public String buildUrl() {
-        return "https://accounts.google.com/o/oauth2/v2/auth" +
+        return "https://www.facebook.com/v23.0/dialog/oauth" +
                 "?client_id=" + clientId +
                 "&redirect_uri=" + redirectUri +
                 "&response_type=code" +
-                "&scope=openid%20email%20profile";
+                "&scope=public_profile,email";
     }
 }
