@@ -7,10 +7,10 @@ import nuri.nuri_server.global.feign.oauth2.req.GoogleTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.GoogleInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.GoogleTokenResponse;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
-@Component("google")
+@Component("google_client")
 public class GoogleOAuthClient implements OAuthClient {
 
     private final GoogleOAuth2Client googleOAuth2Client;
@@ -23,7 +23,7 @@ public class GoogleOAuthClient implements OAuthClient {
     public GoogleOAuthClient(OAuth2Properties oAuth2Properties, GoogleOAuth2Client googleOAuth2Client) {
         this.googleOAuth2Client = googleOAuth2Client;
 
-        OAuth2ProviderProperties googleProps = oAuth2Properties.getProviders().get("google");
+        OAuth2ProviderProperties googleProps = oAuth2Properties.getGoogle();
         this.clientId = googleProps.getClientId();
         this.redirectUri = googleProps.getRedirectUrl();
         this.clientSecret = googleProps.getClientSecret();

@@ -7,10 +7,10 @@ import nuri.nuri_server.global.feign.oauth2.req.KakaoTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.KakaoInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.KakaoTokenResponse;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
-@Component("kakao")
+@Component("kakao_client")
 public class KakaoOAuthClient implements OAuthClient {
 
     private final KakaoOAuth2Client kakaoOAuth2Client;
@@ -23,7 +23,7 @@ public class KakaoOAuthClient implements OAuthClient {
     public KakaoOAuthClient(OAuth2Properties oAuth2Properties, KakaoOAuth2Client kakaoOAuth2Client) {
         this.kakaoOAuth2Client = kakaoOAuth2Client;
 
-        OAuth2ProviderProperties kakaoProps = oAuth2Properties.getProviders().get("kakao");
+        OAuth2ProviderProperties kakaoProps = oAuth2Properties.getTiktok();
         this.clientId = kakaoProps.getClientId();
         this.redirectUri = kakaoProps.getRedirectUrl();
         this.clientSecret = kakaoProps.getClientSecret();

@@ -2,7 +2,6 @@ package nuri.nuri_server.domain.auth.oauth2.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nuri.nuri_server.domain.auth.local.application.service.AuthService;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.auth.oauth2.client.OAuthClient;
 import nuri.nuri_server.domain.auth.oauth2.client.dto.OAuth2InformationResponse;
@@ -34,7 +33,7 @@ public class OAuth2LoginService {
 
     @Value("${oauth2.new-user.caching-time}")
     private Long cachingTime;
-    @Value("${oauth2.new-user.front-redirect-url-time}")
+    @Value("${oauth2.new-user.front-redirect-url}")
     private String redirectUri;
 
     public String getAccessToken(String code, String provider) {
@@ -86,7 +85,7 @@ public class OAuth2LoginService {
     }
 
     private OAuthClient selectOAuth2Client(String provider) {
-        OAuthClient client = oAuth2ClientMap.get(provider.toLowerCase());
+        OAuthClient client = oAuth2ClientMap.get(provider.toLowerCase() + "_client");
         if (client == null) {
             throw new OAuthProviderNotFoundException(provider);
         }

@@ -1,13 +1,25 @@
 package nuri.nuri_server.global.properties;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Getter
+@Setter
 @ConfigurationProperties(prefix = "oauth2.provider")
 public class OAuth2Properties {
-    private final Map<String, OAuth2ProviderProperties> providers = new HashMap<>();
+    private OAuth2ProviderProperties google;
+    private OAuth2ProviderProperties facebook;
+    private OAuth2ProviderProperties tiktok;
+    private OAuth2ProviderProperties kakao;
+
+    @Getter
+    @Setter
+    public static class OAuth2ProviderProperties {
+        private String baseUrl;
+        private String clientId;
+        private String redirectUrl;
+        private String clientSecret;
+        private String grantType;
+    }
 }

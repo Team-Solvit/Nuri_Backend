@@ -2,16 +2,16 @@ package nuri.nuri_server.domain.auth.oauth2.builder.impl;
 
 import nuri.nuri_server.domain.auth.oauth2.builder.OAuthLinkBuilder;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
-@Component("facebook")
+@Component("facebook_builder")
 public class FacebookOAuthLinkBuilder implements OAuthLinkBuilder {
     private final String clientId;
     private final String redirectUri;
 
     public FacebookOAuthLinkBuilder(OAuth2Properties oAuth2Properties) {
-        OAuth2ProviderProperties facebookProps = oAuth2Properties.getProviders().get("facebook");
+        OAuth2ProviderProperties facebookProps = oAuth2Properties.getFacebook();
         this.clientId = facebookProps.getClientId();
         this.redirectUri = facebookProps.getRedirectUrl();
     }

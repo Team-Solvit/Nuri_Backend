@@ -20,7 +20,7 @@ public class UserEntity extends BaseEntity {
     private CountryEntity country;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "language_id")
     private Language language;
 
     @Column(nullable = false, unique = true)

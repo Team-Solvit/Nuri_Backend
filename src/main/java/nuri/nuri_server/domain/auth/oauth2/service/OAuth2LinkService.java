@@ -13,7 +13,7 @@ public class OAuth2LinkService {
     private final Map<String, OAuthLinkBuilder> linkBuilders;
 
     public String execute(String provider) {
-        OAuthLinkBuilder linkBuilder = linkBuilders.get(provider);
+        OAuthLinkBuilder linkBuilder = linkBuilders.get(provider + "_builder");
         if (linkBuilder == null) {
             throw new OAuthProviderNotFoundException(provider);
         }

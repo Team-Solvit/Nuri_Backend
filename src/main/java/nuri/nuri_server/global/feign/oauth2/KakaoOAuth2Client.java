@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "kakaoOAuth", url = "\thttps://kapi.kakao.com")
+@FeignClient(name = "kakaoOAuth", url = "https://kapi.kakao.com")
 public interface KakaoOAuth2Client {
     @PostMapping(value = "/oauth/token", consumes = "application/x-www-form-urlencoded")
     KakaoTokenResponse getAccessToken(@RequestBody MultiValueMap<String, String> body);

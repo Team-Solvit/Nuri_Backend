@@ -7,10 +7,10 @@ import nuri.nuri_server.global.feign.oauth2.req.TiktokTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.TiktokInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.TiktokTokenResponse;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
-@Component("tiktok")
+@Component("tiktok_client")
 public class TiktokOAuthClient implements OAuthClient {
 
     private final TiktokOAuth2Client tiktokOAuth2Client;
@@ -23,7 +23,7 @@ public class TiktokOAuthClient implements OAuthClient {
     public TiktokOAuthClient(OAuth2Properties oAuth2Properties, TiktokOAuth2Client tiktokOAuth2Client) {
         this.tiktokOAuth2Client = tiktokOAuth2Client;
 
-        OAuth2ProviderProperties tiktokProps = oAuth2Properties.getProviders().get("tiktok");
+        OAuth2ProviderProperties tiktokProps = oAuth2Properties.getTiktok();
         this.clientKey = tiktokProps.getClientId();
         this.redirectUri = tiktokProps.getRedirectUrl();
         this.clientSecret = tiktokProps.getClientSecret();

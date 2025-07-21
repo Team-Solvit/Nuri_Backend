@@ -1,0 +1,7 @@
+extend type Mutation {
+    loginWithToken(code: String!): SimpleMessageResponse!
+}
+
+type SimpleMessageResponse {
+    message: String!
+}

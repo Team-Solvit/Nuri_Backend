@@ -7,10 +7,10 @@ import nuri.nuri_server.global.feign.oauth2.req.FacebookTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.FacebookInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.FacebookTokenResponse;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
-@Component("facebook")
+@Component("facebook_client")
 public class FacebookOAuthClient implements OAuthClient {
 
     private final FacebookOAuth2Client facebookOAuth2Client;
@@ -22,7 +22,7 @@ public class FacebookOAuthClient implements OAuthClient {
     public FacebookOAuthClient(OAuth2Properties oAuth2Properties, FacebookOAuth2Client facebookOAuth2Client) {
         this.facebookOAuth2Client = facebookOAuth2Client;
 
-        OAuth2ProviderProperties facebookProps = oAuth2Properties.getProviders().get("facebook");
+        OAuth2ProviderProperties facebookProps = oAuth2Properties.getFacebook();
         this.clientId = facebookProps.getClientId();
         this.redirectUri = facebookProps.getRedirectUrl();
         this.clientSecret = facebookProps.getClientSecret();
