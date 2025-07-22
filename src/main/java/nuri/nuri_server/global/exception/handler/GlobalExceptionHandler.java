@@ -66,7 +66,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException() {
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException httpMessageNotReadableException) {
+        StackTraceElement[] stackTrace = httpMessageNotReadableException.getStackTrace();
+        if (stackTrace.length > 0) {
+            StackTraceElement element = stackTrace[0];
+            System.out.println("예외 발생 위치:");
+            System.out.println(" - 클래스: " + element.getClassName());
+            System.out.println(" - 메서드: " + element.getMethodName());
+            System.out.println(" - 파일: " + element.getFileName());
+            System.out.println(" - 라인: " + element.getLineNumber());
+        }
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message("요청 본문을 읽을 수 없습니다.")

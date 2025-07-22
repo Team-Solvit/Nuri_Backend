@@ -1,16 +1,18 @@
 package nuri.nuri_server.domain.auth.oauth2.presentation;
 
-import nuri.nuri_server.domain.auth.oauth2.presentation.dto.res.SimpleMessageResponse;
-import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequestMapping("/api/oauth")
 public class OAuthTestController {
 
-    @MutationMapping
-    public SimpleMessageResponse loginWithToken(@Argument String code) {
+    @GetMapping("/callback") // 또는 "/kakao/callback" 같이 provider별로도 가능
+    public ResponseEntity<String> receiveCode(@RequestParam String code) {
         System.out.println("🔐 받은 인가 코드: " + code);
-        return new SimpleMessageResponse("코드 잘 받았습니다: " + code);
+        return ResponseEntity.ok("코드 잘 받았습니다: " + code);
     }
 }
