@@ -15,7 +15,7 @@ public class FeignClientErrorDecoder implements ErrorDecoder {
     @Override
     public Exception decode(String methodKey, Response response) {
         int status = response.status();
-        String reason = response.reason() != null ? response.reason() : "없음";
+        String reason = response.reason() == null ? "없음" : response.reason();
 
 
         String baseMessage = String.format(
@@ -30,7 +30,7 @@ public class FeignClientErrorDecoder implements ErrorDecoder {
                     HttpStatus.UNAUTHORIZED
             );
         }
-        else if(response.status() >= 400 && response.status() < 500) {
+        else if(isClientError(status)) {
             log.error("{} → 잘못된 요청", baseMessage);
             return new FeignClientInvalidRequestException(
                     "잘못된 요청이 들어왔습니다",
@@ -44,5 +44,9 @@ public class FeignClientErrorDecoder implements ErrorDecoder {
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
+    }
+
+    private boolean isClientError(int status) {
+        return status >= 400 && status < 500;
     }
 }

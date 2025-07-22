@@ -1,6 +1,7 @@
 package nuri.nuri_server.domain.user.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.exception.DuplicateUserException;
 import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
@@ -20,5 +21,9 @@ public class UserDomainService {
 
     public Role getRole(String userId) {
         return userRepository.findRoleByUserId(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    public UserEntity getUser(String userId) {
+        return userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 }

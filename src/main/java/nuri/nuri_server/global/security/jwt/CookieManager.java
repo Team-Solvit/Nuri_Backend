@@ -10,6 +10,7 @@ import nuri.nuri_server.global.properties.JwtProperties;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+import org.springframework.boot.web.server.Cookie.SameSite;
 
 import java.util.Arrays;
 
@@ -36,7 +37,7 @@ public class CookieManager {
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("None")
+                .sameSite(SameSite.STRICT.toString())
                 .build();
     }
 

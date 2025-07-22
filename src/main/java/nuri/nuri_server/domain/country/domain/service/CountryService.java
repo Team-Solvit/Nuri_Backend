@@ -12,7 +12,7 @@ public class CountryService {
 
     private final CountryRepository countryRepository;
 
-    public CountryEntity getCountryEntity(String countryName) {
+    public CountryEntity getCountry(String countryName) {
         return countryRepository.findByName(countryName)
                 .orElseThrow(() -> new CountryNotFoundException(countryName));
     }
