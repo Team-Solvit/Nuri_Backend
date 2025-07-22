@@ -19,8 +19,4 @@ public class OAuth2LinkService {
         }
         return linkBuilder.buildUrl();
     }
-
-    public String addStateUrl(String url, String state) {
-        return url + "&state=" + state;
-    }
 }

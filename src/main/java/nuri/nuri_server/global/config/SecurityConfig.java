@@ -48,9 +48,9 @@ public class SecurityConfig {
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new CachedBodyFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider, objectMapper, excludedResolver), CachedBodyFilter.class)
-                .addFilterBefore(new NuriExceptionFilter(objectMapper), NuriAuthenticationFilter.class);
+                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider, objectMapper, excludedResolver), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new NuriExceptionFilter(objectMapper), NuriAuthenticationFilter.class)
+                .addFilterBefore(new CachedBodyFilter(), NuriExceptionFilter.class);
 
         return http.build();
     }
