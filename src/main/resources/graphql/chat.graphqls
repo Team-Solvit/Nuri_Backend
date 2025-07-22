@@ -2,7 +2,7 @@ scalar DateTime
 scalar UUID
 
 type Query {
-    getMessages(room_id: UUID!): [ChatRecord!]!
+    readMessages(room_id: UUID!): [ChatRecord]
 }
 
 type Sender {
@@ -25,5 +25,5 @@ type ChatRecord {
     createdAt: DateTime!
 
     contents: String!
-    replyChat: ReplyChat!
+    replyChat: ReplyChat
 }
