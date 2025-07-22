@@ -2,6 +2,7 @@ package nuri.nuri_server.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import nuri.nuri_server.global.security.filter.CachedBodyFilter;
 import nuri.nuri_server.global.security.filter.NuriAuthenticationFilter;
 import nuri.nuri_server.global.security.filter.NuriExceptionFilter;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
@@ -27,7 +28,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     private final NuriUserDetailsService nuriUserDetailsService;
-    private final List<String> excludedUrls = List.of("/static/**", "/resources/**", "/public/**", "/auth/signup", "/auth/login", "/auth/reissue");
+    private final List<String> excludedResolver = List.of("getOAuth2Link", "loginByOAuthCode", "OAuth2SignUp");
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,12 +43,13 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(excludedUrls.toArray(new String[0])).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/graphql").permitAll()
+                        .anyRequest().denyAll()
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider, excludedUrls), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CachedBodyFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider, objectMapper, excludedResolver), CachedBodyFilter.class)
                 .addFilterBefore(new NuriExceptionFilter(objectMapper), NuriAuthenticationFilter.class);
 
         return http.build();
