@@ -2,8 +2,6 @@ package nuri.nuri_server.global.security.jwt;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.NonNull;
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.properties.JwtProperties;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
