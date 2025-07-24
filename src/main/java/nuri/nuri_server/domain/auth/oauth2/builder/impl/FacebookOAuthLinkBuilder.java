@@ -2,7 +2,7 @@ package nuri.nuri_server.domain.auth.oauth2.builder.impl;
 
 import nuri.nuri_server.domain.auth.oauth2.builder.OAuthLinkBuilder;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
 @Component("facebook_builder")

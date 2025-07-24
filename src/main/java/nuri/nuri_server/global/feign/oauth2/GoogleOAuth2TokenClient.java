@@ -1,13 +1,12 @@
 package nuri.nuri_server.global.feign.oauth2;
 
-import nuri.nuri_server.global.config.FeignClientConfig;
 import nuri.nuri_server.global.feign.oauth2.req.GoogleTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.token.GoogleTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "googleOAuthToken", url = "https://oauth2.googleapis.com", configuration = FeignClientConfig.class)
+@FeignClient(name = "googleOAuthToken", url = "https://oauth2.googleapis.com")
 public interface GoogleOAuth2TokenClient {
     @PostMapping(
             value = "/token",

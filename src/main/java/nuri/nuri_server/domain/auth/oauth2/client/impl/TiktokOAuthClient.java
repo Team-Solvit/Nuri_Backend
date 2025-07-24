@@ -7,7 +7,7 @@ import nuri.nuri_server.global.feign.oauth2.req.TiktokTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.TiktokInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.TiktokTokenResponse;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
 @Component("tiktok_client")

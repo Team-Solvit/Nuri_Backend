@@ -7,7 +7,7 @@ import nuri.nuri_server.global.feign.oauth2.req.KakaoTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.KakaoInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.KakaoTokenResponse;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
 @Component("kakao_client")

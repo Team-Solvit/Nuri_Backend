@@ -7,7 +7,7 @@ import nuri.nuri_server.global.feign.oauth2.req.FacebookTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.FacebookInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.FacebookTokenResponse;
 import nuri.nuri_server.global.properties.OAuth2Properties;
-import nuri.nuri_server.global.properties.OAuth2Properties.OAuth2ProviderProperties;
+import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
 @Component("facebook_client")
