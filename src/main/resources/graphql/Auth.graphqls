@@ -6,6 +6,11 @@ type Query {
 type Mutation {
     loginByOAuthCode(OAuthLoginInput : loginOAuthRequest!) : OAuthLoginResponse!
     saveOAuthUserInfo(saveUserInput : OAuthSignUpRequest!) : String
+
+    localSignUp(localSignUpInput: localSignUpRequest!) : String
+    localLogin(localLoginInput: localLoginRequest!) : String
+    reissue : String
+    logout : String
 }
 
 input loginOAuthRequest {
@@ -35,4 +40,19 @@ input UserAgreement {
     agreedIdentityPrivacyDelegate : Boolean!
     agreedIdentityUniqueInfo : Boolean!
     agreedIdentityProviderTerms : Boolean!
+}
+
+input localLoginRequest {
+    id : String!
+    password : String!
+}
+
+input localSignUpRequest {
+    name : String!
+    id : String!
+    email : String!
+    password : String!
+    country : String!
+    language : String!
+    userAgreement : UserAgreement!
 }
