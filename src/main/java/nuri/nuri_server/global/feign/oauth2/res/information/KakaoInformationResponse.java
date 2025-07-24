@@ -5,16 +5,11 @@ import lombok.Getter;
 @Getter
 public class KakaoInformationResponse {
     private long id;
-    private KakaoAccount kakao_account;
+    private KakaoProperties properties;
 
     @Getter
-    public static class KakaoAccount {
-        private Profile profile;
-        private String name;
-
-        @Getter
-        public static class Profile {
-            private String profile_image_url;
-        }
+    public static class KakaoProperties {
+        private String profile_image;
+        private String nickname;
     }
 }

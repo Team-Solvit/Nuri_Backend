@@ -20,7 +20,7 @@ public class KakaoOAuthLinkBuilder implements OAuthLinkBuilder {
     public String buildUrl() {
         return "https://kauth.kakao.com/oauth/authorize" +
                 "?client_id=" + clientId +
-                "&scope=openid,profile_nickname,profile_image,account_email" +
+                "&scope=profile_nickname,profile_image" +
                 "&response_type=code" +
                 "&redirect_uri=" + redirectUri;
     }
