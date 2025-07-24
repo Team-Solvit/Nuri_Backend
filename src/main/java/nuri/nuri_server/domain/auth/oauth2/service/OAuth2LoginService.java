@@ -69,7 +69,7 @@ public class OAuth2LoginService {
     }
 
     private String cachingUserInfo(OAuth2InformationResponse userInfo, String provider) {
-        String oAuthId = provider + userInfo.id();
+        String oAuthId = provider + "_" + userInfo.id();
         OAuthTempUser oAuthTempUser = OAuthTempUser.builder()
                 .OAuthId(oAuthId)
                 .name(userInfo.name())

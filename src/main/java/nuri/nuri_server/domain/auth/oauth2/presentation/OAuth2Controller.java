@@ -26,6 +26,7 @@ public class OAuth2Controller {
     private final OAuth2LinkService oAuth2LinkService;
     private final OAuth2LoginService oAuth2LoginService;
     private final OAuth2SignUpService oAuth2SignUpService;
+    private final HttpServletResponse response;
 
     @QueryMapping
     public String getOAuth2Link(@Argument String provider) {
@@ -33,7 +34,7 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public OAuthLoginResponse loginByOAuthCode(@Argument @Valid OAuthLoginRequest loginRequest, HttpServletResponse response) {
+    public OAuthLoginResponse loginByOAuthCode(@Argument("input") @Valid OAuthLoginRequest loginRequest) {
         String code = loginRequest.code();
         String provider = loginRequest.provider();
 
@@ -47,7 +48,7 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public String OAuth2SignUp(@Argument @Valid OAuthSignUpRequest oAuthSignUpRequest, HttpServletResponse response) {
+    public String saveOAuthUserInfo(@Argument("input") @Valid OAuthSignUpRequest oAuthSignUpRequest) {
         TokenResponse tokenResponse = oAuth2SignUpService.signUp(oAuthSignUpRequest);
 
         response.setHeader(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());

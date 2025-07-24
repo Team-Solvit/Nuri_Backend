@@ -61,8 +61,7 @@ public class JwtProvider {
                 .getSubject();
     }
 
-    public String getAccessToken(@NonNull HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
+    public String getAccessToken(String authorizationHeader) {
         if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new InvalidJsonWebTokenException();
         }

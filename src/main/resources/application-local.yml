@@ -63,6 +63,13 @@ jwt:
   access-expiration: ${JWT_ACCESS_EXPIRATION}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION}
 
+
+logging:
+  level:
+    feign: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    nuri.nuri_server.global.feign: DEBUG
+
 redis:
   host: ${REDIS_HOST}
   port: ${REDIS_PORT}

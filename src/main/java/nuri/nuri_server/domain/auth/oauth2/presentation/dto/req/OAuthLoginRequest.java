@@ -7,8 +7,5 @@ public record OAuthLoginRequest(
         String code,
 
         @NotBlank(message = "provider는 필수 항목입니다.")
-        String provider,
-
-        @NotBlank(message = "state는 필수 항목입니다.")
-        String state
+        String provider
 ) {}

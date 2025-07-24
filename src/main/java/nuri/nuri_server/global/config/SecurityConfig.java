@@ -2,7 +2,6 @@ package nuri.nuri_server.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.global.security.filter.CachedBodyFilter;
 import nuri.nuri_server.global.security.filter.NuriAuthenticationFilter;
 import nuri.nuri_server.global.security.filter.NuriExceptionFilter;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
@@ -18,8 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,7 +25,6 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     private final NuriUserDetailsService nuriUserDetailsService;
-    private final List<String> excludedResolver = List.of("getOAuth2Link", "loginByOAuthCode", "OAuth2SignUp");
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,9 +44,8 @@ public class SecurityConfig {
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider, objectMapper, excludedResolver), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new NuriExceptionFilter(objectMapper), NuriAuthenticationFilter.class)
-                .addFilterBefore(new CachedBodyFilter(), NuriExceptionFilter.class);
+                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new NuriExceptionFilter(objectMapper), NuriAuthenticationFilter.class);
 
         return http.build();
     }

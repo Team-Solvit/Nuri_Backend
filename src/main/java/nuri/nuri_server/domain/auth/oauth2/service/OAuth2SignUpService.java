@@ -41,8 +41,8 @@ public class OAuth2SignUpService {
 
     @Transactional
     public TokenResponse signUp(OAuthSignUpRequest oAuthSignUpRequest) {
-        OAuthTempUser oAuthTempUser = oAuthTempUserRepository.findById(oAuthSignUpRequest.id())
-                .orElseThrow(() -> new OAuthUserNotFoundException(oAuthSignUpRequest.id()));
+        OAuthTempUser oAuthTempUser = oAuthTempUserRepository.findById(oAuthSignUpRequest.oAuthId())
+                .orElseThrow(() -> new OAuthUserNotFoundException(oAuthSignUpRequest.oAuthId()));
 
         UserEntity user = saveUserEntity(oAuthSignUpRequest, oAuthTempUser);
         userAgree(user, oAuthSignUpRequest.userAgreement());

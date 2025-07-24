@@ -3,8 +3,13 @@ type Query {
 }
 
 type Mutation {
-    loginByOAuthCode(code: String!, provider: String!) : OAuthLoginResponse!
+    loginByOAuthCode(input : loginOAuthRequest) : OAuthLoginResponse!
     saveOAuthUserInfo(input : OAuthSignUpRequest) : String
+}
+
+input loginOAuthRequest {
+    code : String!
+    provider : String!
 }
 
 type OAuthLoginResponse {
