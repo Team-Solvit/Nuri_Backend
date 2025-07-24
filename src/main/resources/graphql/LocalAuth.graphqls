@@ -1,0 +1,21 @@
+extend type Mutation {
+    localSignUp(localSignUpInput: localSignUpRequest!) : String
+    localLogin(localLoginInput: localLoginRequest!) : String
+    reissue : String
+    logout : String
+}
+
+input localLoginRequest {
+    id : String!
+    password : String!
+}
+
+input localSignUpRequest {
+    name : String!
+    id : String!
+    email : String!
+    password : String!
+    country : String!
+    language : String!
+    userAgreement : UserAgreement!
+}

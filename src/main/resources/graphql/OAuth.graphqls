@@ -1,10 +1,11 @@
+# 필수 입력요소 확인 후 ! 달아줘야함
 type Query {
     getOAuth2Link(provider: String!): String
 }
 
 type Mutation {
-    loginByOAuthCode(input : loginOAuthRequest) : OAuthLoginResponse!
-    saveOAuthUserInfo(input : OAuthSignUpRequest) : String
+    loginByOAuthCode(OAuthLoginInput : loginOAuthRequest!) : OAuthLoginResponse!
+    saveOAuthUserInfo(saveUserInput : OAuthSignUpRequest!) : String
 }
 
 input loginOAuthRequest {
@@ -13,25 +14,25 @@ input loginOAuthRequest {
 }
 
 type OAuthLoginResponse {
-    redirectUrl : String
-    isNewUser : Boolean
+    redirectUrl : String!
+    isNewUser : Boolean!
 }
 
 input OAuthSignUpRequest {
-    oAuthId : String
-    id : String
-    email : String
-    country : String
-    language : String
-    userAgreement : UserAgreement
+    oAuthId : String!
+    id : String!
+    email : String!
+    country : String!
+    language : String!
+    userAgreement : UserAgreement!
 }
 
 input UserAgreement {
-    agreedTermsOfService : Boolean
-    agreedPrivacyCollection : Boolean
-    agreedPrivacyThirdParty : Boolean
-    agreedIdentityAgencyTerms : Boolean
-    agreedIdentityPrivacyDelegate : Boolean
-    agreedIdentityUniqueInfo : Boolean
-    agreedIdentityProviderTerms : Boolean
+    agreedTermsOfService : Boolean!
+    agreedPrivacyCollection : Boolean!
+    agreedPrivacyThirdParty : Boolean!
+    agreedIdentityAgencyTerms : Boolean!
+    agreedIdentityPrivacyDelegate : Boolean!
+    agreedIdentityUniqueInfo : Boolean!
+    agreedIdentityProviderTerms : Boolean!
 }

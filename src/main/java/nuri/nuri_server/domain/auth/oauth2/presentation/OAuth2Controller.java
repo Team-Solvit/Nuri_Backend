@@ -20,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 
 @Controller
 @RequiredArgsConstructor
-@Validated
 public class OAuth2Controller {
 
     private final OAuth2LinkService oAuth2LinkService;
@@ -34,7 +33,7 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public OAuthLoginResponse loginByOAuthCode(@Argument("input") @Valid OAuthLoginRequest loginRequest) {
+    public OAuthLoginResponse loginByOAuthCode(@Argument("OAuthLoginInput") @Valid OAuthLoginRequest loginRequest) {
         String code = loginRequest.code();
         String provider = loginRequest.provider();
 
@@ -48,7 +47,7 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public String saveOAuthUserInfo(@Argument("input") @Valid OAuthSignUpRequest oAuthSignUpRequest) {
+    public String saveOAuthUserInfo(@Argument("saveUserInput") @Valid OAuthSignUpRequest oAuthSignUpRequest) {
         TokenResponse tokenResponse = oAuth2SignUpService.signUp(oAuthSignUpRequest);
 
         response.setHeader(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
