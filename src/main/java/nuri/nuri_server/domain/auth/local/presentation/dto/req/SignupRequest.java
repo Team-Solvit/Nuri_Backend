@@ -1,8 +1,7 @@
 package nuri.nuri_server.domain.auth.local.presentation.dto.req;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
 public record SignupRequest(
@@ -24,31 +23,6 @@ public record SignupRequest(
     @NotNull(message = "유저 언어(language)는 필수 항목입니다.")
     String language,
 
-    @AssertTrue(message = "서비스 이용약관에 동의해야 합니다.")
-    @JsonProperty("agreed_terms_of_service")
-    boolean agreedTermsOfService,
-
-    @AssertTrue(message = "개인정보 수집 이용 동의에 동의해야 합니다.")
-    @JsonProperty("agreed_privacy_collection")
-    boolean agreedPrivacyCollection,
-
-    @AssertTrue(message = "개인정보 제 3자 제공 동의에 동의해야 합니다.")
-    @JsonProperty("agreed_privacy_third_party")
-    boolean agreedPrivacyThirdParty,
-
-    @AssertTrue(message = "본인 확인 서비스 이용약관에 동의해야 합니다.")
-    @JsonProperty("agreed_identity_agency_terms")
-    boolean agreedIdentityAgencyTerms,
-
-    @AssertTrue(message = "개인정보 수집 이용 및 위탁 동의에 동의해야 합니다.")
-    @JsonProperty("agreed_identity_privacy_delegate")
-    boolean agreedIdentityPrivacyDelegate,
-
-    @AssertTrue(message = "고유식별정보 처리 동의 사항에 동의해야 합니다.")
-    @JsonProperty("agreed_identity_unique_info")
-    boolean agreedIdentityUniqueInfo,
-
-    @AssertTrue(message = "본인확인 서비스 이용약관에 동의해야 합니다.")
-    @JsonProperty("agreed_identity_provider_terms")
-    boolean agreedIdentityProviderTerms
+    @Valid
+    UserAgreement userAgreement
 ) {}

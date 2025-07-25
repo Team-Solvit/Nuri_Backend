@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.auth.local.application.service.exception.PasswordMismatchException;
 import nuri.nuri_server.domain.auth.local.presentation.dto.req.LoginRequest;
 import nuri.nuri_server.domain.auth.local.presentation.dto.req.SignupRequest;
+import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreement;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.country.domain.service.CountryService;
@@ -62,7 +63,7 @@ public class AuthService {
 
         userRepository.save(userEntity);
 
-        userAgree(userEntity, signupRequest);
+        userAgree(userEntity, signupRequest.userAgreement());
     }
 
     @Transactional
@@ -101,16 +102,16 @@ public class AuthService {
         return jwtProvider.createAccessToken(userId, role);
     }
 
-    private void userAgree(UserEntity user, SignupRequest signupRequest) {
+    private void userAgree(UserEntity user, UserAgreement userAgreement) {
         UserAgreementEntity userAgreementEntity = UserAgreementEntity.userAgreeBuilder()
                 .user(user)
-                .agreedTermsOfService(signupRequest.agreedTermsOfService())
-                .agreedPrivacyCollection(signupRequest.agreedPrivacyCollection())
-                .agreedPrivacyThirdParty(signupRequest.agreedPrivacyThirdParty())
-                .agreedIdentityAgencyTerms(signupRequest.agreedIdentityAgencyTerms())
-                .agreedIdentityPrivacyDelegate(signupRequest.agreedIdentityPrivacyDelegate())
-                .agreedIdentityUniqueInfo(signupRequest.agreedIdentityUniqueInfo())
-                .agreedIdentityProviderTerms(signupRequest.agreedIdentityProviderTerms())
+                .agreedTermsOfService(userAgreement.agreedTermsOfService())
+                .agreedPrivacyCollection(userAgreement.agreedPrivacyCollection())
+                .agreedPrivacyThirdParty(userAgreement.agreedPrivacyThirdParty())
+                .agreedIdentityAgencyTerms(userAgreement.agreedIdentityAgencyTerms())
+                .agreedIdentityPrivacyDelegate(userAgreement.agreedIdentityPrivacyDelegate())
+                .agreedIdentityUniqueInfo(userAgreement.agreedIdentityUniqueInfo())
+                .agreedIdentityProviderTerms(userAgreement.agreedIdentityProviderTerms())
                 .build();
 
         userAgreementRepository.save(userAgreementEntity);
