@@ -1,5 +1,6 @@
 package nuri.nuri_server.global.feign.oauth2.req;
 
+import feign.form.FormProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,8 +8,16 @@ import lombok.Getter;
 @Builder
 public class KakaoTokenRequest {
     private String code;
-    private String client_id;
-    private String client_secret;
-    private String redirect_uri;
-    private String grant_type;
+
+    @FormProperty("client_id")
+    private String clientId;
+
+    @FormProperty("client_secret")
+    private String clientSecret;
+
+    @FormProperty("redirect_uri")
+    private String redirectUri;
+
+    @FormProperty("grant_type")
+    private String grantType;
 }
