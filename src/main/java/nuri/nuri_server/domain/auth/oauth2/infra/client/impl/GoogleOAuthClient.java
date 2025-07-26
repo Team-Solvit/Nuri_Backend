@@ -1,7 +1,7 @@
-package nuri.nuri_server.domain.auth.oauth2.client.impl;
+package nuri.nuri_server.domain.auth.oauth2.infra.client.impl;
 
-import nuri.nuri_server.domain.auth.oauth2.client.OAuthClient;
-import nuri.nuri_server.domain.auth.oauth2.client.dto.OAuth2InformationResponse;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.OAuthClient;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.dto.OAuth2InformationResponse;
 import nuri.nuri_server.global.feign.oauth2.GoogleOAuth2TokenClient;
 import nuri.nuri_server.global.feign.oauth2.GoogleOAuth2UserInfoClient;
 import nuri.nuri_server.global.feign.oauth2.req.GoogleTokenRequest;
@@ -19,21 +19,12 @@ public class GoogleOAuthClient implements OAuthClient {
 
     private final GoogleOAuth2TokenClient googleOAuth2TokenClient;
     private final GoogleOAuth2UserInfoClient googleOAuth2UserInfoClient;
+    private final OAuth2ProviderProperties googleProps;
 
-    private final String clientId;
-    private final String clientSecret;
-    private final String redirectUri;
-    private final String grantType;
-
-    public GoogleOAuthClient(OAuth2Properties oAuth2Properties, GoogleOAuth2TokenClient googleOAuth2TokenClient, GoogleOAuth2UserInfoClient googleOAuth2UserInfoClient) {
+    public GoogleOAuthClient(OAuth2Properties oauth2Properties, GoogleOAuth2TokenClient googleOAuth2TokenClient, GoogleOAuth2UserInfoClient googleOAuth2UserInfoClient) {
         this.googleOAuth2TokenClient = googleOAuth2TokenClient;
         this.googleOAuth2UserInfoClient = googleOAuth2UserInfoClient;
-
-        OAuth2ProviderProperties googleProps = oAuth2Properties.getGoogle();
-        this.clientId = googleProps.getClientId();
-        this.redirectUri = googleProps.getRedirectUrl();
-        this.clientSecret = googleProps.getClientSecret();
-        this.grantType = googleProps.getGrantType();
+        googleProps = oauth2Properties.getGoogle();
     }
 
     @Override
@@ -42,15 +33,15 @@ public class GoogleOAuthClient implements OAuthClient {
 
         GoogleTokenRequest tokenRequest = GoogleTokenRequest.builder()
                 .code(rawCode)
-                .client_id(clientId)
-                .client_secret(clientSecret)
-                .redirect_uri(redirectUri)
-                .grant_type(grantType)
+                .clientId(googleProps.getClientId())
+                .clientSecret(googleProps.getClientSecret())
+                .redirectUri(googleProps.getRedirectUrl())
+                .grantType(googleProps.getGrantType())
                 .build();
 
         GoogleTokenResponse tokenResponse = googleOAuth2TokenClient.getAccessToken(tokenRequest);
 
-        return tokenResponse.access_token();
+        return tokenResponse.accessToken();
     }
 
     @Override

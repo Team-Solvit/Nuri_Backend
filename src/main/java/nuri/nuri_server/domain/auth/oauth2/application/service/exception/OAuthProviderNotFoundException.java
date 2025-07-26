@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.auth.oauth2.service.exception;
+package nuri.nuri_server.domain.auth.oauth2.application.service.exception;
 
 import nuri.nuri_server.global.entity.exception.EntityNotFoundException;
 

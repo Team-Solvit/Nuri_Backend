@@ -1,8 +1,8 @@
-package nuri.nuri_server.domain.auth.oauth2.service;
+package nuri.nuri_server.domain.auth.oauth2.application.service;
 
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.domain.auth.oauth2.builder.OAuthLinkBuilder;
-import nuri.nuri_server.domain.auth.oauth2.service.exception.OAuthProviderNotFoundException;
+import nuri.nuri_server.domain.auth.oauth2.infra.builder.OAuthLinkBuilder;
+import nuri.nuri_server.domain.auth.oauth2.application.service.exception.OAuthProviderNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

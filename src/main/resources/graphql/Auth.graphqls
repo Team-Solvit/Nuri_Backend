@@ -24,7 +24,7 @@ type OAuthLoginResponse {
 }
 
 input OAuthSignUpRequest {
-    oAuthId : String!
+    oauthId : String!
     id : String!
     email : String!
     country : String!

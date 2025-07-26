@@ -1,6 +1,6 @@
 package nuri.nuri_server.domain.auth.oauth2.presentation.dto.res;
 
-import nuri.nuri_server.domain.auth.oauth2.service.dto.OAuthLoginValue;
+import nuri.nuri_server.domain.auth.oauth2.application.service.dto.OAuthLoginValue;
 
 public record OAuthLoginResponse(
         String redirectUrl,

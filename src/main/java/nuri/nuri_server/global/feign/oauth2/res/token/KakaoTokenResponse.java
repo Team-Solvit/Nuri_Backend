@@ -1,9 +1,19 @@
 package nuri.nuri_server.global.feign.oauth2.res.token;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record KakaoTokenResponse(
-        String access_token,
-        Long expires_in,
-        String token_type,
+        @JsonProperty("access_token")
+        String accessToken,
+
+        @JsonProperty("expires_in")
+        Long expiresIn,
+
+        @JsonProperty("token_type")
+        String tokenType,
+
         String scope,
-        String refresh_token
+
+        @JsonProperty("refresh_token")
+        String refreshToken
 ) {}

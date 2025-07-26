@@ -1,7 +1,7 @@
-package nuri.nuri_server.domain.auth.oauth2.client.impl;
+package nuri.nuri_server.domain.auth.oauth2.infra.client.impl;
 
-import nuri.nuri_server.domain.auth.oauth2.client.OAuthClient;
-import nuri.nuri_server.domain.auth.oauth2.client.dto.OAuth2InformationResponse;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.OAuthClient;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.dto.OAuth2InformationResponse;
 import nuri.nuri_server.global.feign.oauth2.KakaoOAuth2TokenClient;
 import nuri.nuri_server.global.feign.oauth2.KakaoOAuth2UserInfoClient;
 import nuri.nuri_server.global.feign.oauth2.req.KakaoTokenRequest;
@@ -37,7 +37,7 @@ public class KakaoOAuthClient implements OAuthClient {
 
         KakaoTokenResponse tokenResponse = kakaoOAuth2TokenClient.getAccessToken(tokenRequest);
 
-        return tokenResponse.access_token();
+        return tokenResponse.accessToken();
     }
 
     @Override
