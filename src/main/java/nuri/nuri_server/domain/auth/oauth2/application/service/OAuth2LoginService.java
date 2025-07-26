@@ -11,7 +11,6 @@ import nuri.nuri_server.domain.auth.oauth2.application.service.dto.OAuthLoginVal
 import nuri.nuri_server.domain.auth.oauth2.application.service.exception.OAuthProviderNotFoundException;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
-import nuri.nuri_server.global.security.jwt.CookieManager;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
