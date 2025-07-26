@@ -27,7 +27,6 @@ public class OAuth2LoginService {
     private final UserRepository userRepository;
     private final OAuthSignUpTempUserRepository oauthSignUpTempUserRepository;
     private final JwtProvider jwtProvider;
-    private final CookieManager cookieManager;
 
     @Value("${oauth2.new-user.caching-time}")
     private Long cachingTime;

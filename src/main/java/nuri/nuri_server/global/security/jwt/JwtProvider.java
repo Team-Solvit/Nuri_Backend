@@ -7,7 +7,6 @@ import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.properties.JwtProperties;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
