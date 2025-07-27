@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @RedisHash(value = "refreshToken")
 @Getter
 @Builder
-public class OAuthSignUpTempUser {
+public class OAuthSignUpCacheUser {
     @Id
     private String OAuthId;
 

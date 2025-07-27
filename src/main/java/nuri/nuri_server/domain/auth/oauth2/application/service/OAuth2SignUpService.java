@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreement;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
-import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpTempUser;
-import nuri.nuri_server.domain.auth.oauth2.domain.service.OAuthSignUpTempUserDomainService;
+import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpCacheUser;
+import nuri.nuri_server.domain.auth.oauth2.domain.service.OAuthSignUpCacheUserDomainService;
 import nuri.nuri_server.domain.auth.oauth2.presentation.dto.req.OAuthSignUpRequest;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.country.domain.service.CountryService;
@@ -29,15 +29,15 @@ public class OAuth2SignUpService {
     private final CountryService countryService;
     private final UserDomainService userDomainService;
     private final LanguageDomainService languageDomainService;
-    private final OAuthSignUpTempUserDomainService oauthSignUpTempUserDomainService;
+    private final OAuthSignUpCacheUserDomainService oauthSignUpCacheUserDomainService;
     private final UserAgreementRepository userAgreementRepository;
     private final JwtProvider jwtProvider;
 
     @Transactional
     public TokenResponse signUp(OAuthSignUpRequest oauthSignUpRequest) {
-        OAuthSignUpTempUser oauthSignUpTempUser = oauthSignUpTempUserDomainService.getOAuthSignUpTempUserById(oauthSignUpRequest.oauthId());
+        OAuthSignUpCacheUser oauthSignUpCacheUser = oauthSignUpCacheUserDomainService.getOAuthSignUpTempUserById(oauthSignUpRequest.oauthId());
 
-        UserEntity user = saveUserEntity(oauthSignUpRequest, oauthSignUpTempUser);
+        UserEntity user = saveUserEntity(oauthSignUpRequest, oauthSignUpCacheUser);
         userAgree(user, oauthSignUpRequest.userAgreement());
 
         log.info("사용자 {}님이 로그인 하셨습니다.", user.getUserId());
@@ -45,7 +45,7 @@ public class OAuth2SignUpService {
         return jwtProvider.createTokenResponse(user);
     }
 
-    private UserEntity saveUserEntity(OAuthSignUpRequest oauthSignUpRequest, OAuthSignUpTempUser oauthSignUpTempUser) {
+    private UserEntity saveUserEntity(OAuthSignUpRequest oauthSignUpRequest, OAuthSignUpCacheUser oauthSignUpCacheUser) {
         userDomainService.validateDuplicateUserId(oauthSignUpRequest.id());
         CountryEntity country = countryService.getCountryEntity(oauthSignUpRequest.country());
         Language language = languageDomainService.getLanguageByName(oauthSignUpRequest.language());
@@ -54,12 +54,12 @@ public class OAuth2SignUpService {
                 .userId(oauthSignUpRequest.id())
                 .country(country)
                 .language(language)
-                .name(oauthSignUpTempUser.getName())
+                .name(oauthSignUpCacheUser.getName())
                 .email(oauthSignUpRequest.email())
                 .role(Role.USER)
-                .profile(oauthSignUpTempUser.getProfile())
-                .oauthId(oauthSignUpTempUser.getId())
-                .oauthProvider(oauthSignUpTempUser.getProvider())
+                .profile(oauthSignUpCacheUser.getProfile())
+                .oauthId(oauthSignUpCacheUser.getId())
+                .oauthProvider(oauthSignUpCacheUser.getProvider())
                 .build();
 
         return userRepository.save(userEntity);

@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.auth.oauth2.infra.client.OAuthClient;
 import nuri.nuri_server.domain.auth.oauth2.infra.client.dto.OAuth2InformationResponse;
-import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpTempUser;
-import nuri.nuri_server.domain.auth.oauth2.domain.repository.OAuthSignUpTempUserRepository;
+import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpCacheUser;
+import nuri.nuri_server.domain.auth.oauth2.domain.repository.OAuthSignUpCacheUserRepository;
 import nuri.nuri_server.domain.auth.oauth2.application.service.dto.OAuthLoginValue;
 import nuri.nuri_server.domain.auth.oauth2.application.service.exception.OAuthProviderNotFoundException;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
@@ -24,7 +24,7 @@ public class OAuth2LoginService {
 
     private final Map<String, OAuthClient> oauth2ClientMap;
     private final UserRepository userRepository;
-    private final OAuthSignUpTempUserRepository oauthSignUpTempUserRepository;
+    private final OAuthSignUpCacheUserRepository oauthSignUpCacheUserRepository;
     private final JwtProvider jwtProvider;
 
     @Value("${oauth2.new-user.caching-time}")
@@ -68,7 +68,7 @@ public class OAuth2LoginService {
 
     private String cachingUserInfo(OAuth2InformationResponse userInfo, String provider) {
         String oauthId = provider + "_" + userInfo.id();
-        OAuthSignUpTempUser oauthSignUpTempUser = OAuthSignUpTempUser.builder()
+        OAuthSignUpCacheUser oauthSignUpCacheUser = OAuthSignUpCacheUser.builder()
                 .OAuthId(oauthId)
                 .name(userInfo.name())
                 .profile(userInfo.profile())
@@ -77,7 +77,7 @@ public class OAuth2LoginService {
                 .timeToLive(cachingTime)
                 .build();
 
-        oauthSignUpTempUserRepository.save(oauthSignUpTempUser);
+        oauthSignUpCacheUserRepository.save(oauthSignUpCacheUser);
 
         return oauthId;
     }
