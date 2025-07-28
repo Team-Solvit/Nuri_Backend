@@ -29,8 +29,6 @@ public class OAuth2LoginService {
 
     @Value("${oauth2.new-user.caching-time}")
     private Long cachingTime;
-    @Value("${oauth2.new-user.front-redirect-url}")
-    private String redirectUri;
 
     public String getAccessToken(String code, String provider) {
         OAuthClient client = selectOAuth2Client(provider);
@@ -43,7 +41,7 @@ public class OAuth2LoginService {
 
         return userRepository.findByOauthProviderAndOauthId(provider, userInfo.id())
                 .map(this::createLoginResponse)
-                .orElseGet(() -> createRedirectUri(userInfo, provider));
+                .orElseGet(() -> cachingUserInfo(userInfo, provider));
     }
 
     private OAuthLoginValue createLoginResponse(UserEntity user) {
@@ -58,15 +56,7 @@ public class OAuth2LoginService {
                 .build();
     }
 
-    private OAuthLoginValue createRedirectUri(OAuth2InformationResponse userInfo, String provider) {
-        String oauthId = cachingUserInfo(userInfo, provider);
-        return OAuthLoginValue.builder()
-                .isNewUser(true)
-                .redirectUrl(redirectUri + "?oauth-id=" + oauthId)
-                .build();
-    }
-
-    private String cachingUserInfo(OAuth2InformationResponse userInfo, String provider) {
+    private OAuthLoginValue cachingUserInfo(OAuth2InformationResponse userInfo, String provider) {
         String oauthId = provider + "_" + userInfo.id();
         OAuthSignUpCacheUser oauthSignUpCacheUser = OAuthSignUpCacheUser.builder()
                 .oauthId(oauthId)
@@ -79,7 +69,10 @@ public class OAuth2LoginService {
 
         oauthSignUpCacheUserRepository.save(oauthSignUpCacheUser);
 
-        return oauthId;
+        return OAuthLoginValue.builder()
+                .isNewUser(true)
+                .oauthId(oauthId)
+                .build();
     }
 
     private OAuthClient selectOAuth2Client(String provider) {

@@ -8,6 +8,6 @@ import lombok.Getter;
 public class OAuthLoginValue {
     private String accessToken;
     private String refreshToken;
-    private String redirectUrl;
+    private String oauthId;
     private boolean isNewUser;
 }
