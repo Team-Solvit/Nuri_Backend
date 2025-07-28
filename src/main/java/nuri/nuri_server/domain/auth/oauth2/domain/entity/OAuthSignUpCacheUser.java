@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @Builder
 public class OAuthSignUpCacheUser {
     @Id
-    private String OAuthId;
+    private String oauthId;
 
     @Column(unique = true, nullable = false)
     private String name;
