@@ -2,7 +2,7 @@ package nuri.nuri_server.global.security.aop;
 
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.security.annotation.*;
-import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
+import nuri.nuri_server.global.security.exception.UnauthorizedAccessException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.security.access.AccessDeniedException;
@@ -63,7 +63,7 @@ public class SecurityAspect {
     private Collection<? extends GrantedAuthority> getCurrentRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getAuthorities().isEmpty()) {
-            throw new InvalidJsonWebTokenException();
+            throw new UnauthorizedAccessException();
         }
         return authentication.getAuthorities();
     }

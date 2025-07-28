@@ -60,9 +60,6 @@ public class JwtProvider {
     }
 
     public String getAccessToken(String authorizationHeader) {
-        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new InvalidJsonWebTokenException();
-        }
         return jwtVerifyAccessToken(authorizationHeader.substring(7));
     }
 
