@@ -56,7 +56,7 @@ public class SecurityAspect {
         
         Collection<? extends GrantedAuthority> authorities = getCurrentRole();
         if (authorities.stream().noneMatch(auth -> strRoles.contains(auth.getAuthority()))) {
-            throw new GraphQLAccessDeniedException("권한으로 인한 인증 오류가 발생했습니다.");
+            throw new GraphQLAccessDeniedException();
         }
     }
 

@@ -5,7 +5,7 @@ import nuri.nuri_server.global.exception.NuriBusinessException;
 import org.springframework.http.HttpStatus;
 
 public class GraphQLAccessDeniedException extends NuriBusinessException {
-    public GraphQLAccessDeniedException(String message) {
+    public GraphQLAccessDeniedException() {
       super("권한으로 인한 인증 오류가 발생했습니다.", HttpStatus.FORBIDDEN, ErrorType.FORBIDDEN);
     }
 }
