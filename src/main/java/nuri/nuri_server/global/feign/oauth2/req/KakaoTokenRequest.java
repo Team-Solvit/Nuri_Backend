@@ -1,26 +1,23 @@
 package nuri.nuri_server.global.feign.oauth2.req;
 
+import feign.form.FormProperty;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 @Getter
 @Builder
 public class KakaoTokenRequest {
-    private final String code;
-    private final String clientId;
-    private final String clientSecret;
-    private final String redirectUri;
-    private final String grantType;
+    private String code;
 
-    public MultiValueMap<String, String> toMultiValueMap() {
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("code", code);
-        map.add("client_id", clientId);
-        map.add("client_secret", clientSecret);
-        map.add("redirect_uri", redirectUri);
-        map.add("grant_type", grantType);
-        return map;
-    }
+    @FormProperty("client_id")
+    private String clientId;
+
+    @FormProperty("client_secret")
+    private String clientSecret;
+
+    @FormProperty("redirect_uri")
+    private String redirectUri;
+
+    @FormProperty("grant_type")
+    private String grantType;
 }
