@@ -10,7 +10,7 @@ import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreement;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.user.domain.service.CountryService;
-import nuri.nuri_server.domain.user.domain.entity.Language;
+import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
 import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
 import nuri.nuri_server.domain.user.domain.service.UserDomainService;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
@@ -47,7 +47,7 @@ public class AuthService {
         String password = passwordEncoder.encode(signupRequest.password());
         CountryEntity country = countryService.getCountryEntity(signupRequest.country());
 
-        Language language = languageDomainService.getLanguageByName(signupRequest.language());
+        LanguageEntity language = languageDomainService.getLanguageByName(signupRequest.language());
 
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(userId)

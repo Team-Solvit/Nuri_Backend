@@ -9,7 +9,7 @@ import nuri.nuri_server.domain.auth.oauth2.domain.service.OAuthSignUpCacheUserDo
 import nuri.nuri_server.domain.auth.oauth2.presentation.dto.req.OAuthSignUpRequest;
 import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.user.domain.service.CountryService;
-import nuri.nuri_server.domain.user.domain.entity.Language;
+import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.repository.UserAgreementRepository;
@@ -48,7 +48,7 @@ public class OAuth2SignUpService {
     private UserEntity saveUserEntity(OAuthSignUpRequest oauthSignUpRequest, OAuthSignUpCacheUser oauthSignUpCacheUser) {
         userDomainService.validateDuplicateUserId(oauthSignUpRequest.id());
         CountryEntity country = countryService.getCountryEntity(oauthSignUpRequest.country());
-        Language language = languageDomainService.getLanguageByName(oauthSignUpRequest.language());
+        LanguageEntity language = languageDomainService.getLanguageByName(oauthSignUpRequest.language());
 
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(oauthSignUpRequest.id())

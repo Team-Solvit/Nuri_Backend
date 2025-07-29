@@ -13,7 +13,7 @@ import nuri.nuri_server.global.entity.BaseEntity;
 @Table(name = "tbl_language")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Language extends BaseEntity {
+public class LanguageEntity extends BaseEntity {
     @Column(nullable = false, unique = true)
     @NotBlank
     private String name;

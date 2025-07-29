@@ -20,7 +20,7 @@ public class UserEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "language_id")
-    private Language language;
+    private LanguageEntity language;
 
     @Column(nullable = false, unique = true)
     private String userId;
@@ -49,7 +49,7 @@ public class UserEntity extends BaseEntity {
     private String oauthId;
 
     @Builder(builderMethodName = "signupBuilder")
-    public UserEntity(String userId, CountryEntity country, Language language, String name, String password, String email, String introduce, String profile, Role role, String oauthProvider, String oauthId) {
+    public UserEntity(String userId, CountryEntity country, LanguageEntity language, String name, String password, String email, String introduce, String profile, Role role, String oauthProvider, String oauthId) {
         this.userId = userId;
         this.country = country;
         this.language = language;
