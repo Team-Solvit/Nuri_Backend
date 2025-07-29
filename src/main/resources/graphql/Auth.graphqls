@@ -19,7 +19,7 @@ input loginOAuthRequest {
 }
 
 type OAuthLoginResponse {
-    oauthId : String!
+    oauthId : String
     isNewUser : Boolean!
 }
 
