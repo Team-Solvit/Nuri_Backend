@@ -1,6 +1,6 @@
-package nuri.nuri_server.domain.country.domain.repository;
+package nuri.nuri_server.domain.user.domain.repository;
 
-import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
+import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

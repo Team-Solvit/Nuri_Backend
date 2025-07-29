@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.country.domain.entity;
+package nuri.nuri_server.domain.user.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

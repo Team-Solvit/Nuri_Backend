@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.country.domain.exception;
+package nuri.nuri_server.domain.user.domain.exception;
 
 import nuri.nuri_server.global.entity.exception.EntityNotFoundException;
 
