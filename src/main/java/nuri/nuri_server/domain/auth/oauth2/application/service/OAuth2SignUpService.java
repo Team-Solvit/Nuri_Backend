@@ -8,7 +8,7 @@ import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpCacheUser;
 import nuri.nuri_server.domain.auth.oauth2.domain.service.OAuthSignUpCacheUserDomainService;
 import nuri.nuri_server.domain.auth.oauth2.presentation.dto.req.OAuthSignUpRequest;
 import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
-import nuri.nuri_server.domain.user.domain.service.CountryService;
+import nuri.nuri_server.domain.user.domain.service.CountryDomainService;
 import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OAuth2SignUpService {
     private final UserRepository userRepository;
-    private final CountryService countryService;
+    private final CountryDomainService countryDomainService;
     private final UserDomainService userDomainService;
     private final LanguageDomainService languageDomainService;
     private final OAuthSignUpCacheUserDomainService oauthSignUpCacheUserDomainService;
@@ -47,7 +47,7 @@ public class OAuth2SignUpService {
 
     private UserEntity saveUserEntity(OAuthSignUpRequest oauthSignUpRequest, OAuthSignUpCacheUser oauthSignUpCacheUser) {
         userDomainService.validateDuplicateUserId(oauthSignUpRequest.id());
-        CountryEntity country = countryService.getCountryEntity(oauthSignUpRequest.country());
+        CountryEntity country = countryDomainService.getCountryEntity(oauthSignUpRequest.country());
         LanguageEntity language = languageDomainService.getLanguageByName(oauthSignUpRequest.language());
 
         UserEntity userEntity = UserEntity.signupBuilder()

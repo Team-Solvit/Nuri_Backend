@@ -32,7 +32,7 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public OAuthLoginResponse loginByOAuthCode(@Argument("OAuthLoginInput") @Valid OAuthLoginRequest loginRequest) {
+    public OAuthLoginResponse loginByOAuthCode(@Argument("oauthLoginInput") @Valid OAuthLoginRequest loginRequest) {
         String code = loginRequest.code();
         String provider = loginRequest.provider();
 

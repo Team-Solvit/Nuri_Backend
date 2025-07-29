@@ -2,10 +2,10 @@ package nuri.nuri_server.global.security.aop;
 
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.security.annotation.*;
+import nuri.nuri_server.global.security.exception.GraphQLAccessDeniedException;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,7 +56,7 @@ public class SecurityAspect {
         
         Collection<? extends GrantedAuthority> authorities = getCurrentRole();
         if (authorities.stream().noneMatch(auth -> strRoles.contains(auth.getAuthority()))) {
-            throw new AccessDeniedException("권한으로 인한 인증 오류가 발생했습니다.");
+            throw new GraphQLAccessDeniedException("권한으로 인한 인증 오류가 발생했습니다.");
         }
     }
 

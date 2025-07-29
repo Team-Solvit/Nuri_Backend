@@ -9,7 +9,7 @@ import nuri.nuri_server.domain.auth.local.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreement;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
-import nuri.nuri_server.domain.user.domain.service.CountryService;
+import nuri.nuri_server.domain.user.domain.service.CountryDomainService;
 import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
 import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
 import nuri.nuri_server.domain.user.domain.service.UserDomainService;
@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserDomainService userDomainService;
-    private final CountryService countryService;
+    private final CountryDomainService countryDomainService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
@@ -45,7 +45,7 @@ public class AuthService {
         userDomainService.validateDuplicateUserId(signupRequest.id());
         String userId = signupRequest.id();
         String password = passwordEncoder.encode(signupRequest.password());
-        CountryEntity country = countryService.getCountryEntity(signupRequest.country());
+        CountryEntity country = countryDomainService.getCountryEntity(signupRequest.country());
 
         LanguageEntity language = languageDomainService.getLanguageByName(signupRequest.language());
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CountryService {
+public class CountryDomainService {
 
     private final CountryRepository countryRepository;
 

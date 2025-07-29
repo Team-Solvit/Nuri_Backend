@@ -1,0 +1,21 @@
+extend type Mutation {
+    createPost(createPostInput : CreatePostRequest!) : String
+}
+
+input CreatePostRequest {
+    postInfo : PostInfo!
+    files : [String!]!
+    hashTags : [String]!
+}
+
+input PostInfo {
+    title : String
+    contents : String
+    shareRange : ShareRange!
+    isGroup : Boolean
+}
+
+enum ShareRange {
+    ALL, BOARDING_HOUSE, GROUP
+}
+
