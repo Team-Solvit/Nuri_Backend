@@ -39,7 +39,7 @@ public class OAuth2Controller {
         String oauth2AccessToken = oauth2LoginService.getAccessToken(code, provider);
         OAuthLoginValue oauthLoginValue = oauth2LoginService.createTokenByOAuth2Token(oauth2AccessToken, provider);
 
-        response.setHeader(HttpHeaders.AUTHORIZATION, oauthLoginValue.getAccessToken());
+        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + oauthLoginValue.getAccessToken());
         response.setHeader(HttpHeaders.SET_COOKIE, oauthLoginValue.getRefreshToken());
 
         return OAuthLoginResponse.from(oauthLoginValue);
@@ -49,7 +49,7 @@ public class OAuth2Controller {
     public String saveOAuthUserInfo(@Argument("saveUserInput") @Valid OAuthSignUpRequest oauthSignUpRequest) {
         TokenResponse tokenResponse = oauth2SignUpService.signUp(oauthSignUpRequest);
 
-        response.setHeader(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
+        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponse.accessToken());
         response.setHeader(HttpHeaders.SET_COOKIE, tokenResponse.refreshTokenCookie());
 
         return "OAuth 로그인 유저 회원가입에 성공하였습니다.";
