@@ -1,40 +1,34 @@
-package nuri.nuri_server.domain.auth.oauth2.service;
+package nuri.nuri_server.domain.auth.oauth2.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
-import nuri.nuri_server.domain.auth.oauth2.client.OAuthClient;
-import nuri.nuri_server.domain.auth.oauth2.client.dto.OAuth2InformationResponse;
-import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthTempUser;
-import nuri.nuri_server.domain.auth.oauth2.domain.repository.OAuthTempUserRepository;
-import nuri.nuri_server.domain.auth.oauth2.service.dto.OAuthLoginValue;
-import nuri.nuri_server.domain.auth.oauth2.service.exception.OAuthProviderNotFoundException;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.OAuthClient;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.dto.OAuth2InformationResponse;
+import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpCacheUser;
+import nuri.nuri_server.domain.auth.oauth2.domain.repository.OAuthSignUpCacheUserRepository;
+import nuri.nuri_server.domain.auth.oauth2.application.service.dto.OAuthLoginValue;
+import nuri.nuri_server.domain.auth.oauth2.application.service.exception.OAuthProviderNotFoundException;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
-import nuri.nuri_server.global.security.jwt.CookieManager;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static nuri.nuri_server.domain.auth.local.application.service.AuthService.createTokenResponse;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class OAuth2LoginService {
 
-    private final Map<String, OAuthClient> oAuth2ClientMap;
+    private final Map<String, OAuthClient> oauth2ClientMap;
     private final UserRepository userRepository;
-    private final OAuthTempUserRepository oAuthTempUserRepository;
+    private final OAuthSignUpCacheUserRepository oauthSignUpCacheUserRepository;
     private final JwtProvider jwtProvider;
-    private final CookieManager cookieManager;
 
     @Value("${oauth2.new-user.caching-time}")
     private Long cachingTime;
-    @Value("${oauth2.new-user.front-redirect-url}")
-    private String redirectUri;
 
     public String getAccessToken(String code, String provider) {
         OAuthClient client = selectOAuth2Client(provider);
@@ -47,11 +41,13 @@ public class OAuth2LoginService {
 
         return userRepository.findByOauthProviderAndOauthId(provider, userInfo.id())
                 .map(this::createLoginResponse)
-                .orElseGet(() -> createRedirectUri(userInfo, provider));
+                .orElseGet(() -> cachingUserInfo(userInfo, provider));
     }
 
     private OAuthLoginValue createLoginResponse(UserEntity user) {
-        TokenResponse tokenResponse = createTokenResponse(user, jwtProvider, log, cookieManager);
+        TokenResponse tokenResponse = jwtProvider.createTokenResponse(user);
+
+        log.info("사용자 {}님이 로그인 하셨습니다.", user.getUserId());
 
         return OAuthLoginValue.builder()
                 .accessToken(tokenResponse.accessToken())
@@ -60,18 +56,10 @@ public class OAuth2LoginService {
                 .build();
     }
 
-    private OAuthLoginValue createRedirectUri(OAuth2InformationResponse userInfo, String provider) {
-        String oAuthId = cachingUserInfo(userInfo, provider);
-        return OAuthLoginValue.builder()
-                .isNewUser(true)
-                .redirectUrl(redirectUri + "?oauth-id=" + oAuthId)
-                .build();
-    }
-
-    private String cachingUserInfo(OAuth2InformationResponse userInfo, String provider) {
-        String oAuthId = provider + "_" + userInfo.id();
-        OAuthTempUser oAuthTempUser = OAuthTempUser.builder()
-                .OAuthId(oAuthId)
+    private OAuthLoginValue cachingUserInfo(OAuth2InformationResponse userInfo, String provider) {
+        String oauthId = provider + "_" + userInfo.id();
+        OAuthSignUpCacheUser oauthSignUpCacheUser = OAuthSignUpCacheUser.builder()
+                .oauthId(oauthId)
                 .name(userInfo.name())
                 .profile(userInfo.profile())
                 .id(userInfo.id())
@@ -79,13 +67,16 @@ public class OAuth2LoginService {
                 .timeToLive(cachingTime)
                 .build();
 
-        oAuthTempUserRepository.save(oAuthTempUser);
+        oauthSignUpCacheUserRepository.save(oauthSignUpCacheUser);
 
-        return oAuthId;
+        return OAuthLoginValue.builder()
+                .isNewUser(true)
+                .oauthId(oauthId)
+                .build();
     }
 
     private OAuthClient selectOAuth2Client(String provider) {
-        OAuthClient client = oAuth2ClientMap.get(provider.toLowerCase() + "_client");
+        OAuthClient client = oauth2ClientMap.get(provider.toLowerCase() + "_client");
         if (client == null) {
             throw new OAuthProviderNotFoundException(provider);
         }

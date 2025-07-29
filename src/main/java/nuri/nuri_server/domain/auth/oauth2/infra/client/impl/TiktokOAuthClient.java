@@ -1,7 +1,7 @@
-package nuri.nuri_server.domain.auth.oauth2.client.impl;
+package nuri.nuri_server.domain.auth.oauth2.infra.client.impl;
 
-import nuri.nuri_server.domain.auth.oauth2.client.OAuthClient;
-import nuri.nuri_server.domain.auth.oauth2.client.dto.OAuth2InformationResponse;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.OAuthClient;
+import nuri.nuri_server.domain.auth.oauth2.infra.client.dto.OAuth2InformationResponse;
 import nuri.nuri_server.global.feign.oauth2.TiktokOAuth2Client;
 import nuri.nuri_server.global.feign.oauth2.req.TiktokTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.TiktokInformationResponse;
@@ -20,10 +20,10 @@ public class TiktokOAuthClient implements OAuthClient {
     private final String redirectUri;
     private final String grantType;
 
-    public TiktokOAuthClient(OAuth2Properties oAuth2Properties, TiktokOAuth2Client tiktokOAuth2Client) {
+    public TiktokOAuthClient(OAuth2Properties oauth2Properties, TiktokOAuth2Client tiktokOAuth2Client) {
         this.tiktokOAuth2Client = tiktokOAuth2Client;
 
-        OAuth2ProviderProperties tiktokProps = oAuth2Properties.getTiktok();
+        OAuth2ProviderProperties tiktokProps = oauth2Properties.getTiktok();
         this.clientKey = tiktokProps.getClientId();
         this.redirectUri = tiktokProps.getRedirectUrl();
         this.clientSecret = tiktokProps.getClientSecret();

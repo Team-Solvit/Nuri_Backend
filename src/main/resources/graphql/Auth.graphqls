@@ -19,12 +19,12 @@ input loginOAuthRequest {
 }
 
 type OAuthLoginResponse {
-    redirectUrl : String!
+    oauthId : String!
     isNewUser : Boolean!
 }
 
 input OAuthSignUpRequest {
-    oAuthId : String!
+    oauthId : String!
     id : String!
     email : String!
     country : String!

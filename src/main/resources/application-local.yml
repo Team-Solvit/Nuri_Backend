@@ -55,7 +55,6 @@ oauth2:
       client-secret: ${FACEBOOK_CLIENT_SECRET}
       grant-type: ${FACEBOOK_GRANT_TYPE}
   new-user:
-    front-redirect-url: ${NEW_USER_FRONT_REDIRECT_URL}
     caching-time: ${USER_INFO_CACHING_TIME}
 
 jwt:

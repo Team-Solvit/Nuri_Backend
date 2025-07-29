@@ -11,8 +11,7 @@ import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.country.domain.service.CountryService;
 import nuri.nuri_server.domain.user.domain.entity.Language;
-import nuri.nuri_server.domain.user.domain.exception.LanguageNotFoundException;
-import nuri.nuri_server.domain.user.domain.repository.LanguageRepository;
+import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
 import nuri.nuri_server.domain.user.domain.service.UserDomainService;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
@@ -23,7 +22,6 @@ import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.security.jwt.CookieManager;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
-import org.slf4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +38,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final CookieManager cookieManager;
     private final UserAgreementRepository userAgreementRepository;
-    private final LanguageRepository languageRepository;
+    private final LanguageDomainService languageDomainService;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -49,7 +47,7 @@ public class AuthService {
         String password = passwordEncoder.encode(signupRequest.password());
         CountryEntity country = countryService.getCountryEntity(signupRequest.country());
 
-        Language language = languageRepository.findByName(signupRequest.language()).orElseThrow(() -> new LanguageNotFoundException(signupRequest.language()));
+        Language language = languageDomainService.getLanguageByName(signupRequest.language());
 
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(userId)
@@ -73,18 +71,9 @@ public class AuthService {
             throw new PasswordMismatchException();
         }
 
-        return createTokenResponse(userEntity, jwtProvider, log, cookieManager);
-    }
-
-    public static TokenResponse createTokenResponse(UserEntity userEntity, JwtProvider jwtProvider, Logger log, CookieManager cookieManager) {
-        String accessToken = jwtProvider.createAccessToken(userEntity.getUserId(), userEntity.getRole());
-        String refreshToken = jwtProvider.createRefreshToken(userEntity.getUserId());
-
         log.info("사용자 {}님이 로그인 하셨습니다.", userEntity.getUserId());
 
-        String refreshTokenCookie = cookieManager.createRefreshTokenCookie(userEntity.getUserId(), refreshToken);
-
-        return new TokenResponse(accessToken, refreshTokenCookie);
+        return jwtProvider.createTokenResponse(userEntity);
     }
 
     public String logout(NuriUserDetails nuriUserDetails) {

@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.auth.oauth2.client.dto;
+package nuri.nuri_server.domain.auth.oauth2.infra.client.dto;
 
 import lombok.Builder;
 

@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.auth.oauth2.service.dto;
+package nuri.nuri_server.domain.auth.oauth2.application.service.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +8,6 @@ import lombok.Getter;
 public class OAuthLoginValue {
     private String accessToken;
     private String refreshToken;
-    private String redirectUrl;
+    private String oauthId;
     private boolean isNewUser;
 }

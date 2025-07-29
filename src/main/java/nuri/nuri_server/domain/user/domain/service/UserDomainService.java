@@ -13,9 +13,7 @@ public class UserDomainService {
     private final UserRepository userRepository;
 
     public void validateDuplicateUserId(String userId) {
-        if(userRepository.existsByUserId(userId)) {
-            throw new DuplicateUserException(userId);
-        }
+        if(userRepository.existsByUserId(userId)) throw new DuplicateUserException(userId);
     }
 
     public Role getRole(String userId) {

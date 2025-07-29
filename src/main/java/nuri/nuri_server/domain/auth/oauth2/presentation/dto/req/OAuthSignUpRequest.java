@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreement;
 
 public record OAuthSignUpRequest(
-        @NotBlank(message = "OAuth 서비스 id(oAuthId)는 필수 항목입니다.")
-        String oAuthId,
+        @NotBlank(message = "OAuth 서비스 id(oauthId)는 필수 항목입니다.")
+        String oauthId,
 
         @NotBlank(message = "유저 아이디(id)는 필수 항목입니다.")
         String id,
