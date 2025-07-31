@@ -12,10 +12,15 @@ import nuri.nuri_server.domain.post.domain.entity.HashTagEntity;
 import nuri.nuri_server.domain.post.domain.entity.PostEntity;
 import nuri.nuri_server.domain.post.domain.entity.PostFileEntity;
 import nuri.nuri_server.domain.post.domain.repository.*;
+import nuri.nuri_server.domain.post.presentation.dto.AuthorInfo;
+import nuri.nuri_server.domain.post.presentation.dto.BoardingPost;
+import nuri.nuri_server.domain.post.presentation.dto.PostType;
+import nuri.nuri_server.domain.post.presentation.dto.SnsPost;
 import nuri.nuri_server.domain.post.presentation.dto.response.*;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
+import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +48,7 @@ public class BasicRecommendPostList implements RecommendPostList {
     private final Integer boardingSize = 5;
 
     @Override
-    public List<GetPostListResponse> getRecommendSnsPostList(Integer start, UserEntity userEntity) {
+    public List<GetPostListResponse> getRecommendSnsPostList(Integer start, NuriUserDetails nuriUserDetails) {
         Pageable pageable = PageRequest.of(start, snsSize, Sort.by("updatedAt").descending());
         Page<PostEntity> pagePostEntities = postRepository.findAll(pageable);
         return pagePostEntities.getContent().stream()
@@ -61,7 +66,7 @@ public class BasicRecommendPostList implements RecommendPostList {
 
         SnsPost snsPost = SnsPost.builder()
                 .type(PostType.SNS)
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .files(fileUrls)
                 .title(post.getTitle())
                 .contents(post.getContents())
@@ -72,7 +77,7 @@ public class BasicRecommendPostList implements RecommendPostList {
                 .build();
 
         AuthorInfo author = AuthorInfo.builder()
-                .authorId(user.getId().toString())
+                .authorId(user.getId())
                 .profile(user.getProfile())
                 .name(user.getName())
                 .build();
@@ -102,7 +107,7 @@ public class BasicRecommendPostList implements RecommendPostList {
     }
 
     @Override
-    public List<GetPostListResponse> getRecommendBoardingPostList(Integer start, UserEntity userEntity) {
+    public List<GetPostListResponse> getRecommendBoardingPostList(Integer start, NuriUserDetails nuriUserDetails) {
         Pageable pageable = PageRequest.of(start, boardingSize, Sort.by("updatedAt").descending());
         Page<BoardingRoomEntity> pageBoardingPostEntities = boardingRoomRepository.findAll(pageable);
         return pageBoardingPostEntities.getContent().stream()
@@ -119,7 +124,7 @@ public class BasicRecommendPostList implements RecommendPostList {
 
         BoardingPost boardingPost = BoardingPost.builder()
                 .type(PostType.BOARDING)
-                .postId(boardingRoom.getId().toString())
+                .postId(boardingRoom.getId())
                 .files(fileUrls)
                 .title(boardingRoom.getName())
                 .contents(boardingRoom.getDescription())
@@ -130,7 +135,7 @@ public class BasicRecommendPostList implements RecommendPostList {
                 .build();
 
         AuthorInfo author = AuthorInfo.builder()
-                .authorId(user.getId().toString())
+                .authorId(user.getId())
                 .profile(user.getProfile())
                 .name(user.getName())
                 .build();

@@ -19,10 +19,10 @@ public class GetPostService {
 
     @Transactional
     public List<GetPostListResponse> getPostList(Integer start, NuriUserDetails nuriUserDetails) {
-        log.info("게시물 리스트 요청: userId={}, start={}", nuriUserDetails.getUser().getId(), start);
+        log.info("게시물 리스트 요청: start={}", start);
 
-        List<GetPostListResponse> snsPosts = recommendPostList.getRecommendSnsPostList(start, nuriUserDetails.getUser());
-        List<GetPostListResponse> boardingPosts = recommendPostList.getRecommendBoardingPostList(start, nuriUserDetails.getUser());
+        List<GetPostListResponse> snsPosts = recommendPostList.getRecommendSnsPostList(start, nuriUserDetails);
+        List<GetPostListResponse> boardingPosts = recommendPostList.getRecommendBoardingPostList(start, nuriUserDetails);
 
         log.debug("게시물 추천 결과: snsPostCount={}, boardingPostCount={}",
                 snsPosts.size(), boardingPosts.size());
@@ -41,8 +41,7 @@ public class GetPostService {
             results.add(boardingPosts.get(boardingIndex++));
         }
 
-        log.info("게시물 리스트 응답: userId={}, total={}",
-                nuriUserDetails.getUser().getId(), results.size());
+        log.info("게시물 리스트 응답: total={}", results.size());
         return results;
     }
 }

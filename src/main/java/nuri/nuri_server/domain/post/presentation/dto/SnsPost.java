@@ -1,14 +1,15 @@
-package nuri.nuri_server.domain.post.presentation.dto.response;
+package nuri.nuri_server.domain.post.presentation.dto;
 
 import lombok.Builder;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 public record SnsPost(
         PostType type,
-        String postId,
+        UUID postId,
         List<String> files,
         String title,
         String contents,

@@ -63,7 +63,7 @@ public class PostEntity extends BaseEntity {
         this.isGroup = isGroup;
     }
 
-    public void validateUser(UserEntity requestUser) {
+    public void validateAuthor(UserEntity requestUser) {
         if(!this.user.getId().equals(requestUser.getId()))
             throw new PostAuthorMismatchException();
     }

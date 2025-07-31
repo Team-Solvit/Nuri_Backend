@@ -9,7 +9,7 @@ import nuri.nuri_server.domain.post.domain.repository.HashTagRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostFileRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostRepository;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostRequest;
-import nuri.nuri_server.domain.post.presentation.dto.request.PostInfo;
+import nuri.nuri_server.domain.post.presentation.dto.PostInfo;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;

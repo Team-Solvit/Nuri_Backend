@@ -3,6 +3,7 @@ package nuri.nuri_server.domain.post.presentation.dto.request;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import nuri.nuri_server.domain.post.presentation.dto.PostInfo;
 
 import java.util.List;
 import java.util.UUID;

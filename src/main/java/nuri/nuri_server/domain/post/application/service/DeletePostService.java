@@ -23,7 +23,7 @@ public class DeletePostService {
         PostEntity post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        post.validateUser(nuriUserDetails.getUser());
+        post.validateAuthor(nuriUserDetails.getUser());
 
         postRepository.deleteById(postId);
         log.info("게시물 삭제 완료: postId={}", postId);

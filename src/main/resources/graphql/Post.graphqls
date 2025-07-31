@@ -1,13 +1,50 @@
 extend type Query {
-    getPostList(start : Int!) : [getPostListResponse!]!
+    getPostList(start : Int!) : [getPostListResponse]!
+    getPostCommentList(getPostCommentListInput : GetCommentListRequest!) : [GetCommentResponse]!
 }
 
 extend type Mutation {
     createPost(createPostInput : CreatePostRequest!) : String
     updatePost(updatePostInput : UpdatePostRequest!) : String
     deletePost(postId : String!) : String
+
     likePost(postId : String!) : String
     unlikePost(postId : String!) : String
+
+    createPostComment(createPostCommentInput : CreatePostCommentRequest!) : String
+    updatePostComment(updatePostCommentInput : UpdatePostCommentRequest!) : String
+    deletePostComment(commentId : String!) : String
+}
+
+input GetCommentListRequest {
+    start : Int!
+    postId : String!
+}
+
+type GetCommentResponse {
+    comment : PostCommentInfo
+    commenter : CommenterInfo
+}
+
+type PostCommentInfo {
+    commentId : String!
+    content : String!
+}
+
+input UpdatePostCommentRequest {
+    commentId : String!
+    content : String!
+}
+
+input CreatePostCommentRequest {
+    postId : String!
+    contents : String!
+}
+
+type CommenterInfo {
+    authorId : String
+    profile : String
+    name : String
 }
 
 input UpdatePostRequest {
