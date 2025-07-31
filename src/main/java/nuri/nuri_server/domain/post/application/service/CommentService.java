@@ -1,6 +1,5 @@
 package nuri.nuri_server.domain.post.application.service;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.post.domain.entity.CommentEntity;
