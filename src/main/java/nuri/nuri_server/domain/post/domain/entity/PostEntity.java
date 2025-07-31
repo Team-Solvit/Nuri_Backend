@@ -38,13 +38,13 @@ public class PostEntity extends BaseEntity {
     private List<PostFileEntity> postFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HashTagEntity> postHashtags = new ArrayList<>();;
+    private List<HashTagEntity> postHashtags = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> postComments = new ArrayList<>();;
+    private List<CommentEntity> postComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostLikeEntity> postLikeEntities = new ArrayList<>();;
+    private List<PostLikeEntity> postLikeEntities = new ArrayList<>();
 
 
     @Builder

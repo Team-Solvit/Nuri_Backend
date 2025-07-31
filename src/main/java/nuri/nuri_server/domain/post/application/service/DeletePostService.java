@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.post.domain.entity.PostEntity;
 import nuri.nuri_server.domain.post.domain.exception.PostNotFoundException;
-import nuri.nuri_server.domain.post.domain.repository.HashTagRepository;
-import nuri.nuri_server.domain.post.domain.repository.PostFileRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostRepository;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;

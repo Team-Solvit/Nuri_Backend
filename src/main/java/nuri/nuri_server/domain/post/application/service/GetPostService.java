@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.post.application.service.recommend_post.RecommendPostList;
 import nuri.nuri_server.domain.post.presentation.dto.response.GetPostListResponse;
-import nuri.nuri_server.domain.post.presentation.dto.response.PostListInfo;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
