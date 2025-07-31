@@ -61,11 +61,15 @@ public class JwtProvider {
                 .getSubject();
     }
 
-    public String getAccessToken(@NonNull HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
+    public void checkAuthorization(String authorizationHeader) {
         if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new InvalidJsonWebTokenException();
         }
+    }
+
+    public String getAccessToken(@NonNull HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        checkAuthorization(authorizationHeader);
         return jwtVerifyAccessToken(authorizationHeader.substring(7));
     }
 

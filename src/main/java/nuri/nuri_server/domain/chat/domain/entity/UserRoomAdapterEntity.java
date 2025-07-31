@@ -11,7 +11,7 @@ import nuri.nuri_server.global.entity.BaseEntity;
 @Getter
 @Table(name = "tbl_user_room_adapter")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserRoomAdapter extends BaseEntity {
+public class UserRoomAdapterEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private RoomEntity room;

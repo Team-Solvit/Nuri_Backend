@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     private final NuriUserDetailsService nuriUserDetailsService;
-    private final List<String> excludedUrls = List.of("/static/**", "/resources/**", "/public/**", "/auth/signup", "/auth/login", "/auth/reissue", "/graphql");
+    private final List<String> excludedUrls = List.of("/static/**", "/resources/**", "/public/**", "/auth/signup", "/auth/login", "/auth/reissue", "/graphql", "/websocket/**");
 
     @Bean
     public PasswordEncoder passwordEncoder() {

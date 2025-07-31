@@ -3,7 +3,7 @@ spring:
     name: nuri-local
   config:
     import:
-      - optional:file:env/local.env[.properties]
+      - optional:file:env/nuri/local.env[.properties]
 
   datasource:
     driver-class-name:
@@ -18,6 +18,31 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+
+  kafka:
+    bootstrap-servers:
+      - kafka1:29092
+      - kafka2:29092
+      - kafka3:29092
+    client-id: chat-service
+    producer:
+      acks: all
+      retries: 3
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: chat-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 100
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual
+    properties:
+      security.protocol: PLAINTEXT
 
 
   graphql:
@@ -38,9 +63,13 @@ jwt:
   access-expiration: ${JWT_ACCESS_EXPIRATION}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION}
 
+session:
+  chat-expiration: ${CHAT_EXPIRATION}
+
 redis:
   host: ${REDIS_HOST}
   port: ${REDIS_PORT}
+  password: ${REDIS_PASSWORD}
 
 front-url:
   ${FRONTEND_URL}
