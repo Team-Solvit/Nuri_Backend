@@ -1,0 +1,17 @@
+extend type Mutation {
+    createBoardingRoom(createBoardingRoomInput : CreateBoardingRoomRequest!) : String!
+}
+
+input CreateBoardingRoomRequest{
+    files : [String!]!
+    boardingRoomInfo : BoardingRoomInfo!
+    contractPeriod : [Int!]!,
+    options : [String]!
+}
+
+input BoardingRoomInfo {
+    name : String!
+    description : String
+    monthlyRent : Int!
+    headCount : Int!
+}

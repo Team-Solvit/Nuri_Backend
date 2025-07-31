@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.post.domain.entity;
+package nuri.nuri_server.domain.boarding_house.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,21 +9,21 @@ import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
-@Table(name = "tbl_post_like")
+@Table(name = "tbl_boarding_room_like")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostLikeEntity extends BaseEntity {
+public class BoardingRoomLikeEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "post_id")
-    private PostEntity post;
+    @JoinColumn(nullable = false, name = "boarding_room_id")
+    private BoardingRoomEntity boardingRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id")
     private UserEntity user;
 
     @Builder
-    public PostLikeEntity(PostEntity post, UserEntity user) {
-        this.post = post;
+    public BoardingRoomLikeEntity(BoardingRoomEntity boardingRoom, UserEntity user) {
+        this.boardingRoom = boardingRoom;
         this.user = user;
     }
 }

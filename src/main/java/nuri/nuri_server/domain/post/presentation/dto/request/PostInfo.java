@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.post.domain.service.dto;
+package nuri.nuri_server.domain.post.presentation.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import nuri.nuri_server.domain.post.domain.share_range.ShareRange;

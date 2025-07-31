@@ -5,8 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
+import java.util.UUID;
 
-public record CreatePostRequest(
+public record UpdatePostRequest(
+        @NotNull(message = "게시물 아이디(postId)는 필수 항목입니다.")
+        UUID postId,
+
         @Valid
         PostInfo postInfo,
 

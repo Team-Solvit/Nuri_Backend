@@ -1,5 +1,20 @@
+extend type Query {
+    getPostList(start : Int!) : [getPostListResponse!]!
+}
+
 extend type Mutation {
     createPost(createPostInput : CreatePostRequest!) : String
+    updatePost(updatePostInput : UpdatePostRequest!) : String
+    deletePost(postId : String!) : String
+    likePost(postId : String!) : String
+    unlikePost(postId : String!) : String
+}
+
+input UpdatePostRequest {
+    postId : String
+    postInfo : PostInfo!
+    files : [String!]!
+    hashTags : [String]!
 }
 
 input CreatePostRequest {
@@ -19,3 +34,45 @@ enum ShareRange {
     ALL, BOARDING_HOUSE, GROUP
 }
 
+type getPostListResponse {
+    post : PostListInfo
+    author : AuthorInfo
+}
+
+union PostListInfo = SnsPost | BoardingPost
+
+type SnsPost {
+    type : PostType!
+    postId : String!
+    files : [String!]!
+    title : String
+    contents : String
+    likes : Int
+    comments : Int
+    day : String
+    hashtags : [String]
+}
+
+type BoardingPost {
+    type : PostType!
+    postId : String!
+    files : [String!]!
+    title : String
+    contents : String
+    likes : Int
+    comments : Int
+    price : Int
+    day : String
+}
+
+enum PostType {
+    GROUP
+    SNS
+    BOARDING
+}
+
+type AuthorInfo {
+    authorId : String
+    profile : String
+    name : String
+}

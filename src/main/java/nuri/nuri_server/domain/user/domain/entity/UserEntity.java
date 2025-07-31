@@ -22,7 +22,7 @@ public class UserEntity extends BaseEntity {
     @JoinColumn(nullable = false, name = "language_id")
     private LanguageEntity language;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name = "user_id")
     private String userId;
 
     @Column(nullable = false)
