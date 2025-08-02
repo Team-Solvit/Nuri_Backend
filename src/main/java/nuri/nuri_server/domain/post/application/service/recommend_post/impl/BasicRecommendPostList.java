@@ -18,8 +18,6 @@ import nuri.nuri_server.domain.post.presentation.dto.PostType;
 import nuri.nuri_server.domain.post.presentation.dto.SnsPost;
 import nuri.nuri_server.domain.post.presentation.dto.response.*;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
-import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
-import nuri.nuri_server.domain.user.domain.repository.UserRepository;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -43,7 +41,6 @@ public class BasicRecommendPostList implements RecommendPostList {
     private final BoardingRoomFileRepository boardingRoomFileRepository;
     private final BoardingRoomLikeRepository boardingRoomLikeRepository;
     private final BoardingRoomCommentRepository boardingRoomCommentRepository;
-    private final UserRepository userRepository;
     private final Integer snsSize = 15;
     private final Integer boardingSize = 5;
 
@@ -61,8 +58,7 @@ public class BasicRecommendPostList implements RecommendPostList {
         List<String> hashTags = getHashTags(post);
         Long likes = postLikeRepository.countByPostId(post.getId());
         Long comments = commentRepository.countByPostId(post.getId());
-        UserEntity user = userRepository.findById(post.getUser().getId())
-                .orElseThrow(() -> new UserNotFoundException(post.getUser().getUserId()));
+        UserEntity user = post.getUser();
 
         SnsPost snsPost = SnsPost.builder()
                 .type(PostType.SNS)
@@ -119,8 +115,7 @@ public class BasicRecommendPostList implements RecommendPostList {
         List<String> fileUrls = getFileUrls(boardingRoom);
         Long likes = boardingRoomLikeRepository.countByBoardingRoomId(boardingRoom.getId());
         Long comments = boardingRoomCommentRepository.countByBoardingRoomId(boardingRoom.getId());
-        UserEntity user = userRepository.findById(boardingRoom.getBoardingHouse().getHost().getUser().getId())
-                .orElseThrow(() -> new UserNotFoundException(boardingRoom.getBoardingHouse().getHost().getUser().getUserId()));
+        UserEntity user = boardingRoom.getBoardingHouse().getHost().getUser();
 
         BoardingPost boardingPost = BoardingPost.builder()
                 .type(PostType.BOARDING)

@@ -7,9 +7,12 @@ import nuri.nuri_server.domain.post.application.service.CreatePostService;
 import nuri.nuri_server.domain.post.application.service.DeletePostService;
 import nuri.nuri_server.domain.post.application.service.GetPostService;
 import nuri.nuri_server.domain.post.application.service.UpdatePostService;
+import nuri.nuri_server.domain.post.presentation.dto.PostThumbnailInfo;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostRequest;
+import nuri.nuri_server.domain.post.presentation.dto.request.GetUserPostListRequest;
 import nuri.nuri_server.domain.post.presentation.dto.request.UpdatePostRequest;
 import nuri.nuri_server.domain.post.presentation.dto.response.GetPostListResponse;
+import nuri.nuri_server.domain.post.presentation.dto.response.GetPostResponse;
 import nuri.nuri_server.global.security.annotation.User;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -45,6 +48,20 @@ public class PostController {
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
         return getPostService.getPostList(start, nuriUserDetails);
+    }
+
+    @QueryMapping
+    public List<PostThumbnailInfo> getUserPostList(
+            @Argument("getUserPostListInput") @Valid GetUserPostListRequest getUserPostListRequest
+    ) {
+        return getPostService.getUserPostList(getUserPostListRequest);
+    }
+
+    @QueryMapping
+    public GetPostResponse getPost(
+            @Argument("postId") @NotNull(message = "게시물 자세히 보기시 게시물 아이디(postId)는 필수 항목입니다.") UUID postId
+    ) {
+        return getPostService.getPost(postId);
     }
 
     @User

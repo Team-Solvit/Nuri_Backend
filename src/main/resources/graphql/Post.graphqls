@@ -1,5 +1,7 @@
 extend type Query {
     getPostList(start : Int!) : [getPostListResponse]!
+    getUserPostList(getUserPostListInput : GetUserPostListRequest!) : [PostThumbnailInfo]!
+    getPost(postId : String!) : getPostResponse
     getPostCommentList(getPostCommentListInput : GetCommentListRequest!) : [GetCommentResponse]!
 }
 
@@ -14,6 +16,16 @@ extend type Mutation {
     createPostComment(createPostCommentInput : CreatePostCommentRequest!) : String
     updatePostComment(updatePostCommentInput : UpdatePostCommentRequest!) : String
     deletePostComment(commentId : String!) : String
+}
+
+input GetUserPostListRequest {
+    userId : String!
+    start : Int
+}
+
+type PostThumbnailInfo {
+    postId : String
+    thumbnail : String
 }
 
 input GetCommentListRequest {
@@ -69,6 +81,11 @@ input PostInfo {
 
 enum ShareRange {
     ALL, BOARDING_HOUSE, GROUP
+}
+
+type getPostResponse {
+    post : SnsPost
+    author : AuthorInfo
 }
 
 type getPostListResponse {
