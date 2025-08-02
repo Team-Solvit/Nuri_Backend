@@ -1,7 +1,7 @@
 package nuri.nuri_server.global.config;
 
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.global.interceptor.StompConnectionInterceptor;
+import nuri.nuri_server.global.websocket.interceptor.StompConnectionInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

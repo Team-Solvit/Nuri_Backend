@@ -1,8 +1,9 @@
-package nuri.nuri_server.global.interceptor;
+package nuri.nuri_server.global.websocket.interceptor;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nuri.nuri_server.domain.chat.domain.principal.ChatUserPrincipal;
 import nuri.nuri_server.domain.session.domain.application.service.DuplicateLoginService;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +12,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -35,7 +35,13 @@ public class StompConnectionInterceptor implements ChannelInterceptor {
 
             String newSessionId = accessor.getSessionId();
 
+            ChatUserPrincipal chatUserPrincipal = new ChatUserPrincipal(userId);
+
+            accessor.setUser(chatUserPrincipal);
+
             log.info("STOMP 커넥션 USERID : {}", userId);
+
+            log.info("SESSION : {}", newSessionId);
 
             duplicateLoginService.handleDuplicateLogin(userId, newSessionId);
         }

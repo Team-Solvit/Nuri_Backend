@@ -1,6 +1,7 @@
-package nuri.nuri_server.global.listener;
+package nuri.nuri_server.global.websocket.listener;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.session.domain.event.DuplicateLoginEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -8,11 +9,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class StompEventListener {
     private final SimpMessageSendingOperations messagingTemplate;
 
     @EventListener
     public void onDuplicateLogin(DuplicateLoginEvent event) {
+        log.info("중복 로그인 이벤트 리스너 작동 : {}", event.getUserId());
         messagingTemplate.convertAndSendToUser(
                 event.getUserId(),
                 "/login/status",
