@@ -7,7 +7,6 @@ import nuri.nuri_server.domain.post.application.service.CommentService;
 import nuri.nuri_server.domain.post.presentation.dto.CommentInfo;
 import nuri.nuri_server.domain.post.presentation.dto.request.GetCommentListRequest;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostCommentRequest;
-import nuri.nuri_server.domain.post.presentation.dto.response.GetCommentResponse;
 import nuri.nuri_server.global.security.annotation.User;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -36,7 +35,7 @@ public class CommentController {
     }
 
     @QueryMapping
-    public List<GetCommentResponse> getPostCommentList(
+    public List<CommentInfo> getPostCommentList(
             @Argument("getPostCommentListInput") @Valid GetCommentListRequest getCommentListRequest
     ) {
         return commentService.getCommentList(getCommentListRequest);

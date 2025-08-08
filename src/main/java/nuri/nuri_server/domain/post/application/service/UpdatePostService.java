@@ -9,7 +9,7 @@ import nuri.nuri_server.domain.post.domain.exception.PostNotFoundException;
 import nuri.nuri_server.domain.post.domain.repository.HashTagRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostFileRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostRepository;
-import nuri.nuri_server.domain.post.presentation.dto.PostInfo;
+import nuri.nuri_server.domain.post.presentation.dto.UpsertPostInfo;
 import nuri.nuri_server.domain.post.presentation.dto.request.UpdatePostRequest;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class UpdatePostService {
 
         post.validateAuthor(nuriUserDetails.getUser());
 
-        PostInfo postInfo = updatePostRequest.postInfo();
+        UpsertPostInfo postInfo = updatePostRequest.postInfo();
         post.updatePost(postInfo.title(),
                 postInfo.contents(),
                 postInfo.shareRange(),

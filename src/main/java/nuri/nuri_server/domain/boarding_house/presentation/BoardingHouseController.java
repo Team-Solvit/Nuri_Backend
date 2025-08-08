@@ -2,7 +2,7 @@ package nuri.nuri_server.domain.boarding_house.presentation;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.domain.boarding_house.application.service.BoardingHouseService;
+import nuri.nuri_server.domain.boarding_house.application.service.CreateBoardingHouseService;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomRequest;
 import nuri.nuri_server.global.security.annotation.Host;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class BoardingHouseController {
 
-    private final BoardingHouseService boardingHouseService;
+    private final CreateBoardingHouseService createBoardingHouseService;
 
     @Host
     @MutationMapping
@@ -23,7 +23,7 @@ public class BoardingHouseController {
             @Argument("createBoardingRoomInput") @Valid CreateBoardingRoomRequest createBoardingRoomRequest,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
-        boardingHouseService.createBoardingRoom(nuriUserDetails, createBoardingRoomRequest);
+        createBoardingHouseService.createBoardingRoom(nuriUserDetails, createBoardingRoomRequest);
         return "하숙방을 추가하였습니다";
     }
 }
