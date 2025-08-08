@@ -7,9 +7,9 @@ import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpCacheUser;
 import nuri.nuri_server.domain.auth.oauth2.domain.service.OAuthSignUpCacheUserDomainService;
 import nuri.nuri_server.domain.auth.oauth2.presentation.dto.req.OAuthSignUpRequest;
-import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
-import nuri.nuri_server.domain.country.domain.service.CountryService;
-import nuri.nuri_server.domain.user.domain.entity.Language;
+import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
+import nuri.nuri_server.domain.user.domain.service.CountryDomainService;
+import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.repository.UserAgreementRepository;
@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OAuth2SignUpService {
     private final UserRepository userRepository;
-    private final CountryService countryService;
+    private final CountryDomainService countryDomainService;
     private final UserDomainService userDomainService;
     private final LanguageDomainService languageDomainService;
     private final OAuthSignUpCacheUserDomainService oauthSignUpCacheUserDomainService;
@@ -47,8 +47,8 @@ public class OAuth2SignUpService {
 
     private UserEntity saveUserEntity(OAuthSignUpRequest oauthSignUpRequest, OAuthSignUpCacheUser oauthSignUpCacheUser) {
         userDomainService.validateDuplicateUserId(oauthSignUpRequest.id());
-        CountryEntity country = countryService.getCountryEntity(oauthSignUpRequest.country());
-        Language language = languageDomainService.getLanguageByName(oauthSignUpRequest.language());
+        CountryEntity country = countryDomainService.getCountryEntity(oauthSignUpRequest.country());
+        LanguageEntity language = languageDomainService.getLanguageByName(oauthSignUpRequest.language());
 
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(oauthSignUpRequest.id())

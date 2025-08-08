@@ -4,7 +4,7 @@ type Query {
 }
 
 type Mutation {
-    loginByOAuthCode(OAuthLoginInput : loginOAuthRequest!) : OAuthLoginResponse!
+    loginByOAuthCode(oauthLoginInput : loginOAuthRequest!) : OAuthLoginResponse!
     saveOAuthUserInfo(saveUserInput : OAuthSignUpRequest!) : String
 
     localSignUp(localSignUpInput: localSignUpRequest!) : String

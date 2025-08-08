@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nuri.nuri_server.domain.country.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.entity.BaseEntity;
 
@@ -21,9 +20,9 @@ public class UserEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "language_id")
-    private Language language;
+    private LanguageEntity language;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name = "user_id")
     private String userId;
 
     @Column(nullable = false)
@@ -50,7 +49,7 @@ public class UserEntity extends BaseEntity {
     private String oauthId;
 
     @Builder(builderMethodName = "signupBuilder")
-    public UserEntity(String userId, CountryEntity country, Language language, String name, String password, String email, String introduce, String profile, Role role, String oauthProvider, String oauthId) {
+    public UserEntity(String userId, CountryEntity country, LanguageEntity language, String name, String password, String email, String introduce, String profile, Role role, String oauthProvider, String oauthId) {
         this.userId = userId;
         this.country = country;
         this.language = language;

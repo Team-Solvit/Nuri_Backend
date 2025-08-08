@@ -1,5 +1,6 @@
 package nuri.nuri_server.global.security.user;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+
+@Getter
 @RequiredArgsConstructor
 public class NuriUserDetails implements UserDetails {
     private final UserEntity user;

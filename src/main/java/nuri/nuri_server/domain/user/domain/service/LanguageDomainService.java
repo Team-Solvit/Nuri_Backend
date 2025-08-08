@@ -1,7 +1,7 @@
 package nuri.nuri_server.domain.user.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.domain.user.domain.entity.Language;
+import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
 import nuri.nuri_server.domain.user.domain.exception.LanguageNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.LanguageRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class LanguageDomainService {
     private final LanguageRepository languageRepository;
 
-    public Language getLanguageByName(String languageName) {
+    public LanguageEntity getLanguageByName(String languageName) {
         return languageRepository.findByName(languageName).orElseThrow(() -> new LanguageNotFoundException(languageName));
     }
 }
