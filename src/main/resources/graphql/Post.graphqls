@@ -1,8 +1,8 @@
 extend type Query {
     getPostList(start : Int!) : [getPostListResponse]!
     getUserPostList(getUserPostListInput : GetUserPostListRequest!) : [PostThumbnailInfo]!
-    getPost(postId : String!) : getPostResponse
-    getPostCommentList(getPostCommentListInput : GetCommentListRequest!) : [GetCommentResponse]!
+    getPost(postId : String!) : SnsPostInfo
+    getPostCommentList(getPostCommentListInput : GetCommentListRequest!) : [CommentInfo]!
 }
 
 extend type Mutation {
@@ -23,24 +23,9 @@ input GetUserPostListRequest {
     start : Int
 }
 
-type PostThumbnailInfo {
-    postId : String
-    thumbnail : String
-}
-
 input GetCommentListRequest {
     start : Int!
     postId : String!
-}
-
-type GetCommentResponse {
-    comment : PostCommentInfo
-    commenter : CommenterInfo
-}
-
-type PostCommentInfo {
-    commentId : String!
-    content : String!
 }
 
 input UpdatePostCommentRequest {
@@ -53,26 +38,20 @@ input CreatePostCommentRequest {
     contents : String!
 }
 
-type CommenterInfo {
-    authorId : String
-    profile : String
-    name : String
-}
-
 input UpdatePostRequest {
     postId : String
-    postInfo : PostInfo!
+    postInfo : UpsertPostInfo!
     files : [String!]!
     hashTags : [String]!
 }
 
 input CreatePostRequest {
-    postInfo : PostInfo!
+    postInfo : UpsertPostInfo!
     files : [String!]!
     hashTags : [String]!
 }
 
-input PostInfo {
+input UpsertPostInfo {
     title : String
     contents : String
     shareRange : ShareRange!
@@ -83,50 +62,59 @@ enum ShareRange {
     ALL, BOARDING_HOUSE, GROUP
 }
 
-type getPostResponse {
-    post : SnsPost
-    author : AuthorInfo
-}
-
-type getPostListResponse {
-    post : PostListInfo
-    author : AuthorInfo
-}
-
-union PostListInfo = SnsPost | BoardingPost
-
-type SnsPost {
-    type : PostType!
-    postId : String!
-    files : [String!]!
-    title : String
-    contents : String
-    likes : Int
-    comments : Int
-    day : String
-    hashtags : [String]
-}
-
-type BoardingPost {
-    type : PostType!
-    postId : String!
-    files : [String!]!
-    title : String
-    contents : String
-    likes : Int
-    comments : Int
-    price : Int
-    day : String
-}
+union PostInfo = SnsPostInfo | BoardingPostInfo
 
 enum PostType {
-    GROUP
     SNS
+    Group
     BOARDING
 }
 
-type AuthorInfo {
-    authorId : String
-    profile : String
+type getPostListResponse {
+    postType : PostType
+    postInfo : PostInfo
+}
+
+type BoardingPostInfo {
+    room : BoardingRoomInfo
+    likeCount : Int
+    commentCount : Int
+}
+
+type SnsPostInfo {
+    postId : String
+    title : String
+    contents : String
+    shareRange : ShareRange
+    isGroup : Boolean
+    files : [SnsPostFile]
+    likeCount : Int
+    commentCount : Int
+    day : String
+    hashtags : [SnsHashtag]
+    author : UserInfo
+}
+
+type SnsPostFile {
+    fileId : String
+    postId : String
+    url : String
+}
+
+type SnsHashtag {
+    hashtagId : String
+    postId : String
     name : String
+}
+
+type PostThumbnailInfo {
+    postId : String
+    thumbnail : String
+}
+
+type CommentInfo {
+    commentId : String!
+    postId : String
+    commenter : UserInfo
+    content : String!
 }

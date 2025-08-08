@@ -1,11 +1,11 @@
-package nuri.nuri_server.domain.post.presentation.dto;
+package nuri.nuri_server.domain.post.presentation.dto.response;
 
 import lombok.Builder;
 
 import java.util.UUID;
 
 @Builder
-public record PostThumbnailInfo(
+public record GetPostThumbnailResponse(
         UUID postId,
         String thumbnail
 ) {}

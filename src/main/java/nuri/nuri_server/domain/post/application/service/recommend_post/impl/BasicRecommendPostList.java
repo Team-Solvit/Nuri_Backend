@@ -1,23 +1,18 @@
 package nuri.nuri_server.domain.post.application.service.recommend_post.impl;
 
 import lombok.RequiredArgsConstructor;
+import nuri.nuri_server.domain.boarding_house.application.service.BoardingRoomQueryService;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
-import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomFileEntity;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomCommentRepository;
-import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomFileRepository;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomLikeRepository;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomRepository;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomInfo;
+import nuri.nuri_server.domain.post.application.service.SnsPostQueryService;
 import nuri.nuri_server.domain.post.application.service.recommend_post.RecommendPostList;
-import nuri.nuri_server.domain.post.domain.entity.HashTagEntity;
 import nuri.nuri_server.domain.post.domain.entity.PostEntity;
-import nuri.nuri_server.domain.post.domain.entity.PostFileEntity;
 import nuri.nuri_server.domain.post.domain.repository.*;
-import nuri.nuri_server.domain.post.presentation.dto.AuthorInfo;
-import nuri.nuri_server.domain.post.presentation.dto.BoardingPost;
-import nuri.nuri_server.domain.post.presentation.dto.PostType;
-import nuri.nuri_server.domain.post.presentation.dto.SnsPost;
+import nuri.nuri_server.domain.post.presentation.dto.*;
 import nuri.nuri_server.domain.post.presentation.dto.response.*;
-import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -33,14 +28,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BasicRecommendPostList implements RecommendPostList {
     private final PostRepository postRepository;
-    private final PostFileRepository postFileRepository;
-    private final HashTagRepository hashTagRepository;
-    private final PostLikeRepository postLikeRepository;
-    private final CommentRepository commentRepository;
     private final BoardingRoomRepository boardingRoomRepository;
-    private final BoardingRoomFileRepository boardingRoomFileRepository;
     private final BoardingRoomLikeRepository boardingRoomLikeRepository;
     private final BoardingRoomCommentRepository boardingRoomCommentRepository;
+    private final BoardingRoomQueryService boardingRoomQueryService;
+    private final SnsPostQueryService snsPostQueryService;
     private final Integer snsSize = 15;
     private final Integer boardingSize = 5;
 
@@ -54,52 +46,12 @@ public class BasicRecommendPostList implements RecommendPostList {
     }
 
     private GetPostListResponse setSnsPostResponse(PostEntity post) {
-        List<String> fileUrls = getFileUrls(post);
-        List<String> hashTags = getHashTags(post);
-        Long likes = postLikeRepository.countByPostId(post.getId());
-        Long comments = commentRepository.countByPostId(post.getId());
-        UserEntity user = post.getUser();
-
-        SnsPost snsPost = SnsPost.builder()
-                .type(PostType.SNS)
-                .postId(post.getId())
-                .files(fileUrls)
-                .title(post.getTitle())
-                .contents(post.getContents())
-                .likes(likes)
-                .comments(comments)
-                .day(post.getUpdatedAt().toLocalDate())
-                .hashtags(hashTags)
-                .build();
-
-        AuthorInfo author = AuthorInfo.builder()
-                .authorId(user.getId())
-                .profile(user.getProfile())
-                .name(user.getName())
-                .build();
+        SnsPostInfo snsPostInfo = snsPostQueryService.getSnsPost(post);
 
         return GetPostListResponse.builder()
-                .post(snsPost)
-                .author(author)
+                .postType(PostType.SNS)
+                .postInfo(snsPostInfo)
                 .build();
-    }
-
-    private List<String> getFileUrls(PostEntity post) {
-        return postFileRepository.findAllByPostId(post.getId()).stream()
-                .map(PostFileEntity::getMediaUrl)
-                .toList();
-    }
-
-    private List<String> getFileUrls(BoardingRoomEntity boardingRoom) {
-        return boardingRoomFileRepository.findAllByBoardingRoomId(boardingRoom.getId()).stream()
-                .map(BoardingRoomFileEntity::getMediaUrl)
-                .toList();
-    }
-
-    private List<String> getHashTags(PostEntity post) {
-        return hashTagRepository.findAllByPostId(post.getId()).stream()
-                .map(HashTagEntity::getName)
-                .toList();
     }
 
     @Override
@@ -112,32 +64,20 @@ public class BasicRecommendPostList implements RecommendPostList {
     }
 
     private GetPostListResponse setBoardingPostResponse(BoardingRoomEntity boardingRoom) {
-        List<String> fileUrls = getFileUrls(boardingRoom);
-        Long likes = boardingRoomLikeRepository.countByBoardingRoomId(boardingRoom.getId());
-        Long comments = boardingRoomCommentRepository.countByBoardingRoomId(boardingRoom.getId());
-        UserEntity user = boardingRoom.getBoardingHouse().getHost().getUser();
+        Long likeCount = boardingRoomLikeRepository.countByBoardingRoomId(boardingRoom.getId());
+        Long commentCount = boardingRoomCommentRepository.countByBoardingRoomId(boardingRoom.getId());
 
-        BoardingPost boardingPost = BoardingPost.builder()
-                .type(PostType.BOARDING)
-                .postId(boardingRoom.getId())
-                .files(fileUrls)
-                .title(boardingRoom.getName())
-                .contents(boardingRoom.getDescription())
-                .likes(likes)
-                .comments(comments)
-                .price(boardingRoom.getMonthlyRent())
-                .day(boardingRoom.getUpdatedAt().toLocalDate())
-                .build();
+        BoardingRoomInfo room = boardingRoomQueryService.getBoardingRoomInfo(boardingRoom);
 
-        AuthorInfo author = AuthorInfo.builder()
-                .authorId(user.getId())
-                .profile(user.getProfile())
-                .name(user.getName())
+        BoardingPostInfo boardingPostInfo = BoardingPostInfo.builder()
+                .room(room)
+                .likeCount(likeCount)
+                .commentCount(commentCount)
                 .build();
 
         return GetPostListResponse.builder()
-                .post(boardingPost)
-                .author(author)
+                .postType(PostType.BOARDING)
+                .postInfo(boardingPostInfo)
                 .build();
     }
 }

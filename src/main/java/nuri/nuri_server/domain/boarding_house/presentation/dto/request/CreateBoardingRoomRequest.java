@@ -12,7 +12,7 @@ public record CreateBoardingRoomRequest(
         List<String> files,
 
         @Valid
-        BoardingRoomInfo boardingRoomInfo,
+        UpsertBoardingRoomInfo boardingRoomInfo,
 
         @NotNull(message = "계약기간(contractPeriod)은 필수 항목입니다.")
         @Size(min = 1, message = "계약기간은 최소 1개 이상 입력되어야 합니다.")

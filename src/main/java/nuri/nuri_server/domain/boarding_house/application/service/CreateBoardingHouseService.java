@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.boarding_house.domain.entity.*;
 import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingHouseNotFoundException;
 import nuri.nuri_server.domain.boarding_house.domain.repository.*;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.BoardingRoomInfo;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.request.UpsertBoardingRoomInfo;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomRequest;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class BoardingHouseService {
+public class CreateBoardingHouseService {
 
     private final BoardingRoomRepository boardingRoomRepository;
     private final BoardingHouseRepository boardingHouseRepository;
@@ -37,7 +37,7 @@ public class BoardingHouseService {
                 .orElseThrow(BoardingHouseNotFoundException::new);
     }
 
-    private BoardingRoomEntity toBoardingRoomEntity(BoardingHouseEntity boardingHouse, BoardingRoomInfo boardingRoom) {
+    private BoardingRoomEntity toBoardingRoomEntity(BoardingHouseEntity boardingHouse, UpsertBoardingRoomInfo boardingRoom) {
         return BoardingRoomEntity.builder()
                 .boardingHouse(boardingHouse)
                 .name(boardingRoom.name())

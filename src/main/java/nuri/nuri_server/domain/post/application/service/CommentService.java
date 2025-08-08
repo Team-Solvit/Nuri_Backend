@@ -8,11 +8,9 @@ import nuri.nuri_server.domain.post.domain.exception.CommentNotFoundException;
 import nuri.nuri_server.domain.post.domain.exception.PostNotFoundException;
 import nuri.nuri_server.domain.post.domain.repository.CommentRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostRepository;
-import nuri.nuri_server.domain.post.presentation.dto.AuthorInfo;
 import nuri.nuri_server.domain.post.presentation.dto.CommentInfo;
 import nuri.nuri_server.domain.post.presentation.dto.request.GetCommentListRequest;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostCommentRequest;
-import nuri.nuri_server.domain.post.presentation.dto.response.GetCommentResponse;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.data.domain.Page;
@@ -52,36 +50,17 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetCommentResponse> getCommentList(GetCommentListRequest getCommentListRequest) {
+    public List<CommentInfo> getCommentList(GetCommentListRequest getCommentListRequest) {
         log.info("댓글 리스트 조회 요청 : postId={}", getCommentListRequest.postId());
         Pageable pageable = PageRequest.of(getCommentListRequest.start(), size, Sort.by("updatedAt").descending());
         Page<CommentEntity> pageCommentEntities = commentRepository.findAllByPostId(getCommentListRequest.postId(), pageable);
 
-        List<GetCommentResponse> results = pageCommentEntities.getContent().stream()
-                .map(this::setCommentResponse)
+        List<CommentInfo> results = pageCommentEntities.getContent().stream()
+                .map(CommentInfo::from)
                 .toList();
 
         log.info("댓글 리스트 조회 완료 : CommentCount={}", results.size());
         return results;
-    }
-
-    private GetCommentResponse setCommentResponse(CommentEntity commentEntity) {
-        CommentInfo comment = CommentInfo.builder()
-                .commentId(commentEntity.getId())
-                .content(commentEntity.getContents())
-                .build();
-        UserEntity user = commentEntity.getUser();
-
-        AuthorInfo commenter = AuthorInfo.builder()
-                .authorId(user.getId())
-                .name(user.getName())
-                .profile(user.getProfile())
-                .build();
-
-        return GetCommentResponse.builder()
-                .comment(comment)
-                .commenter(commenter)
-                .build();
     }
 
     @Transactional

@@ -3,7 +3,7 @@ package nuri.nuri_server.domain.post.presentation.dto.request;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import nuri.nuri_server.domain.post.presentation.dto.PostInfo;
+import nuri.nuri_server.domain.post.presentation.dto.UpsertPostInfo;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +13,7 @@ public record UpdatePostRequest(
         UUID postId,
 
         @Valid
-        PostInfo postInfo,
+        UpsertPostInfo postInfo,
 
         @NotNull(message = "미디어(files)는 필수 항목입니다.")
         @Size(min = 1, message = "미디어는 최소 1개 이상 첨부해야 합니다.")

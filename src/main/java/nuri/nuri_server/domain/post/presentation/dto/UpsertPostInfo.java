@@ -3,7 +3,7 @@ package nuri.nuri_server.domain.post.presentation.dto;
 import jakarta.validation.constraints.NotNull;
 import nuri.nuri_server.domain.post.domain.share_range.ShareRange;
 
-public record PostInfo(
+public record UpsertPostInfo(
         String title,
 
         String contents,
