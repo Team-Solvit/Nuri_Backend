@@ -50,6 +50,5 @@ jobs:
             mkdir -p ~/env/nuri
             echo "${{ secrets.NURI_PROD_ENV }}" > ~/env/prod.env
             docker-compose down
-            docker image prune -a -f
             docker pull $IMAGE
             docker-compose --env-file ~/env/prod.env up -d
