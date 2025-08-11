@@ -48,9 +48,8 @@ jobs:
             IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
             mkdir -p ~/env/docker
             mkdir -p ~/env/nuri
-            echo "${{ secrets.DOCKER_PROD_ENV }}" > ~/env/docker/prod.env
-            echo "${{ secrets.NURI_PROD_ENV }}" > ~/env/nuri/prod.env
+            echo "${{ secrets.NURI_PROD_ENV }}" > ~/env/prod.env
             docker-compose down
             docker image prune -a -f
             docker pull $IMAGE
-            docker-compose --env-file ~/env/docker/prod.env up -d
+            docker-compose --env-file ~/env/prod.env up -d

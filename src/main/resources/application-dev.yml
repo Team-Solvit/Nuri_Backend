@@ -1,9 +1,6 @@
 spring:
   application:
     name: nuri-dev
-  config:
-    import:
-      - optional:file:~/env/nuri/dev.env[.properties]
 
   datasource:
     driver-class-name:
