@@ -23,3 +23,9 @@ type HostInfo {
     callNumber : String
     userInfo : UserInfo
 }
+
+type BoarderInfo {
+    callNumber : String
+    gender : String
+    userInfo : UserInfo
+}
