@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.domain.boarding_status.BoardingStatus;
 import nuri.nuri_server.global.entity.BaseEntity;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Objects;
 
