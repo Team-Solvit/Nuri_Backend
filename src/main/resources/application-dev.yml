@@ -3,7 +3,7 @@ spring:
     name: nuri-dev
   config:
     import:
-      - optional:file:env/dev.env[.properties]
+      - optional:file:~/env/nuri/dev.env[.properties]
 
   datasource:
     driver-class-name:

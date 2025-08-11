@@ -3,7 +3,7 @@ spring:
     name: nuri-local
   config:
     import:
-      - optional:file:env/local.env[.properties]
+      - optional:file:~/env/nuri/local.env[.properties]
 
   datasource:
     driver-class-name:
