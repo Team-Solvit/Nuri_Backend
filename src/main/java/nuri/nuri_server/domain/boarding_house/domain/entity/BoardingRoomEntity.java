@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.domain.boarding_status.BoardingStatus;
 import nuri.nuri_server.global.entity.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -34,6 +36,9 @@ public class BoardingRoomEntity extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BoardingStatus status;
+
+    @OneToMany(mappedBy = "boarderRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContractEntity> contracts = new ArrayList<>();
 
     @Builder
     public BoardingRoomEntity(BoardingHouseEntity boardingHouse, String name, String description, Integer monthlyRent, Integer headCount, BoardingStatus status) {

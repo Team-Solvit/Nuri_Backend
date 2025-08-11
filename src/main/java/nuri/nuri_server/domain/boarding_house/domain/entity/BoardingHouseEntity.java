@@ -8,6 +8,9 @@ import nuri.nuri_server.domain.boarding_house.domain.gender.Gender;
 import nuri.nuri_server.domain.user.domain.entity.HostEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "tbl_boarding_house")
 @Getter
@@ -41,4 +44,7 @@ public class BoardingHouseEntity extends BaseEntity {
 
     @Column(nullable = false, name = "is_meal_provided")
     private Boolean isMealProvided;
+
+    @OneToMany(mappedBy = "boardingHouse", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRoomEntity> boardingRooms = new ArrayList<>();
 }
