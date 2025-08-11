@@ -2,14 +2,11 @@ package nuri.nuri_server.global.exception.handler;
 
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.global.exception.ErrorResponse;
 import nuri.nuri_server.global.exception.ErrorType;
 import nuri.nuri_server.global.exception.NuriBusinessException;
 import nuri.nuri_server.global.exception.NuriSystemError;
-import nuri.nuri_server.global.security.exception.SecurityAccessDeniedException;
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -36,19 +33,6 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @GraphQlExceptionHandler(SecurityAccessDeniedException.class)
-    public GraphQLError handleGraphQLAccessDeniedException() {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .code(HttpStatus.FORBIDDEN.getReasonPhrase())
-                .build();
-
-        return GraphqlErrorBuilder.newError()
-                .message("권한으로 인한 인증 오류가 발생했습니다.")
-                .errorType(ErrorType.FORBIDDEN)
-                .extensions(errorResponse.getMap())
-                .build();
-    }
-
     @GraphQlExceptionHandler(AccessDeniedException.class)
     public GraphQLError handleAccessDeniedException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -58,21 +42,6 @@ public class GlobalExceptionHandler {
         return GraphqlErrorBuilder.newError()
                 .message("권한으로 인한 인증 오류가 발생했습니다.")
                 .errorType(ErrorType.FORBIDDEN)
-                .extensions(errorResponse.getMap())
-                .build();
-    }
-
-    @GraphQlExceptionHandler(ConstraintViolationException.class)
-    public GraphQLError handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .build();
-
-        return GraphqlErrorBuilder.newError()
-                .message(constraintViolationException.getConstraintViolations().stream().findFirst()
-                        .map(ConstraintViolation::getMessage)
-                        .orElse("입력값이 유효하지 않습니다."))
-                .errorType(ErrorType.VALIDATION_ERROR)
                 .extensions(errorResponse.getMap())
                 .build();
     }
