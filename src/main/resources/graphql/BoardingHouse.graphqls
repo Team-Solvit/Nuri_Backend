@@ -18,7 +18,7 @@ input UpsertBoardingRoomInfo {
 
 type BoardingRoomInfo {
     roomId : String
-    boardingHouseId : String
+    boardingHouse : BoardingHouseInfo
     name : String
     description : String
     monthlyRent : Int
@@ -28,7 +28,23 @@ type BoardingRoomInfo {
     boardingRoomFile : [BoardingRoomFile]
     contractPeriod : [ContractPeriod]
     day : String
+}
+
+type BoardingHouseInfo {
+    houseId : String
     host : HostInfo
+    name : String
+    location : String
+    houseCallNumber : String
+    description : String
+    nearestStation : String
+    nearestSchool : String
+    gender : Gender
+    isMealProvided : Boolean
+}
+
+enum Gender {
+    MALE, FEMALE, ALL
 }
 
 type BoardingRoomOption {

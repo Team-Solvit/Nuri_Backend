@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nuri.nuri_server.domain.boarding_house.domain.gender.Gender;
 import nuri.nuri_server.domain.user.domain.entity.HostEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
@@ -22,6 +23,22 @@ public class BoardingHouseEntity extends BaseEntity {
     @Column(nullable = false)
     private String location;
 
-    @Column
+    @Column(name = "house_call_number")
     private String houseCallNumber;
+
+    @Column
+    private String description;
+
+    @Column(name = "nearest_station")
+    private String nearestStation;
+
+    @Column(name = "nearest_school")
+    private String nearestSchool;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(nullable = false, name = "is_meal_provided")
+    private Boolean isMealProvided;
 }

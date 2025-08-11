@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 public record BoardingRoomInfo(
         UUID roomId,
-        UUID boardingHouseId,
+        BoardingHouseInfo boardingHouse,
         String name,
         String description,
         Integer monthlyRent,
@@ -21,14 +21,13 @@ public record BoardingRoomInfo(
         List<BoardingRoomOption> boardingRoomOption,
         List<BoardingRoomFile> boardingRoomFile,
         List<ContractPeriod> contractPeriod,
-        LocalDate day,
-        HostInfo host
+        LocalDate day
 ) {
     public static BoardingRoomInfo from(BoardingRoomEntity room, List<BoardingRoomOption> option, List<BoardingRoomFile> file, List<ContractPeriod> contractPeriod) {
-        HostInfo host = HostInfo.from(room.getBoardingHouse().getHost());
+        BoardingHouseInfo house = BoardingHouseInfo.from(room.getBoardingHouse());
         return BoardingRoomInfo.builder()
                 .roomId(room.getId())
-                .boardingHouseId(room.getBoardingHouse().getId())
+                .boardingHouse(house)
                 .name(room.getName())
                 .description(room.getDescription())
                 .monthlyRent(room.getMonthlyRent())
@@ -38,7 +37,6 @@ public record BoardingRoomInfo(
                 .boardingRoomFile(file)
                 .contractPeriod(contractPeriod)
                 .day(room.getUpdatedAt().toLocalDate())
-                .host(host)
                 .build();
     }
 }
