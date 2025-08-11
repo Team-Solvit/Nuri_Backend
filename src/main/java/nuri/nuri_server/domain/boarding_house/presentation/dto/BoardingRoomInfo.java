@@ -3,7 +3,6 @@ package nuri.nuri_server.domain.boarding_house.presentation.dto;
 import lombok.Builder;
 import nuri.nuri_server.domain.boarding_house.domain.boarding_status.BoardingStatus;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
-import nuri.nuri_server.domain.user.presentation.dto.HostInfo;
 
 import java.time.LocalDate;
 import java.util.List;
