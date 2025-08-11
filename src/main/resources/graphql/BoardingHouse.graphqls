@@ -1,6 +1,7 @@
 extend type Query {
     getMyBoardingHouse : BoardingHouseInfo
     getBoardingRoomAndBoardersInfoList(houseId : String) : [BoardingRoomAndBoardersInfo]
+    getBoardingRoom(roomId : String!) : BoardingRoomInfo
 }
 
 extend type Mutation {
