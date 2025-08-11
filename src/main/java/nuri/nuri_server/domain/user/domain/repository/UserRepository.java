@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     @Query("select u.role from UserEntity u where u.userId = :userId")
     Optional<Role> findRoleByUserId(String userId);
+
+    Optional<UserEntity> findByOauthProviderAndOauthId(String provider, String oauthId);
 }

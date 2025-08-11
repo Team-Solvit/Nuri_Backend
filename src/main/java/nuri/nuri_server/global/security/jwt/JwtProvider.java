@@ -2,8 +2,8 @@ package nuri.nuri_server.global.security.jwt;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.NonNull;
+import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
+import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.properties.JwtProperties;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
@@ -20,15 +20,26 @@ public class JwtProvider {
     private final SecretKey secretKey;
     private final Long accessExpiration;
     private final Long refreshExpiration;
+    private final CookieManager cookieManager;
+
+    public TokenResponse createTokenResponse(UserEntity userEntity) {
+        String accessToken = createAccessToken(userEntity.getUserId(), userEntity.getRole());
+        String refreshToken = createRefreshToken(userEntity.getUserId());
+
+        String refreshTokenCookie = cookieManager.createRefreshTokenCookie(userEntity.getUserId(), refreshToken);
+
+        return new TokenResponse(accessToken, refreshTokenCookie);
+    }
 
     @Autowired
-    public JwtProvider(JwtProperties jwtProperties) {
+    public JwtProvider(JwtProperties jwtProperties, CookieManager cookieManager) {
         this.secretKey = new SecretKeySpec(
                 jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm()
         );
         this.accessExpiration = jwtProperties.getAccessExpiration();
         this.refreshExpiration = jwtProperties.getRefreshExpiration();
+        this.cookieManager = cookieManager;
     }
 
     public String createAccessToken(String userId, Role role) {
@@ -61,11 +72,7 @@ public class JwtProvider {
                 .getSubject();
     }
 
-    public String getAccessToken(@NonNull HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new InvalidJsonWebTokenException();
-        }
+    public String getAccessToken(String authorizationHeader) {
         return jwtVerifyAccessToken(authorizationHeader.substring(7));
     }
 
