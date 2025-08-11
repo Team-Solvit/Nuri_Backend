@@ -1,7 +1,6 @@
 package nuri.nuri_server.domain.boarding_house.presentation;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.application.service.CreateBoardingHouseService;
 import nuri.nuri_server.domain.boarding_house.application.service.GetBoardingHouseService;
@@ -17,7 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller
