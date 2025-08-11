@@ -8,15 +8,17 @@ import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpCacheUser;
 import nuri.nuri_server.domain.auth.oauth2.domain.service.OAuthSignUpCacheUserDomainService;
 import nuri.nuri_server.domain.auth.oauth2.presentation.dto.req.OAuthSignUpRequest;
 import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
-import nuri.nuri_server.domain.user.domain.service.CountryDomainService;
+import nuri.nuri_server.domain.user.domain.exception.CountryNotFoundException;
+import nuri.nuri_server.domain.user.domain.exception.DuplicateUserException;
+import nuri.nuri_server.domain.user.domain.exception.LanguageNotFoundException;
+import nuri.nuri_server.domain.user.domain.repository.CountryRepository;
 import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
+import nuri.nuri_server.domain.user.domain.repository.LanguageRepository;
 import nuri.nuri_server.domain.user.domain.repository.UserAgreementRepository;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
 import nuri.nuri_server.domain.user.domain.role.Role;
-import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
-import nuri.nuri_server.domain.user.domain.service.UserDomainService;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OAuth2SignUpService {
     private final UserRepository userRepository;
-    private final CountryDomainService countryDomainService;
-    private final UserDomainService userDomainService;
-    private final LanguageDomainService languageDomainService;
+    private final CountryRepository countryRepository;
+    private final LanguageRepository languageRepository;
     private final OAuthSignUpCacheUserDomainService oauthSignUpCacheUserDomainService;
     private final UserAgreementRepository userAgreementRepository;
     private final JwtProvider jwtProvider;
@@ -46,9 +47,12 @@ public class OAuth2SignUpService {
     }
 
     private UserEntity saveUserEntity(OAuthSignUpRequest oauthSignUpRequest, OAuthSignUpCacheUser oauthSignUpCacheUser) {
-        userDomainService.validateDuplicateUserId(oauthSignUpRequest.id());
-        CountryEntity country = countryDomainService.getCountryEntity(oauthSignUpRequest.country());
-        LanguageEntity language = languageDomainService.getLanguageByName(oauthSignUpRequest.language());
+        validateDuplicateUserId(oauthSignUpRequest.id());
+        CountryEntity country = countryRepository.findByName(oauthSignUpRequest.country())
+                .orElseThrow(() -> new CountryNotFoundException(oauthSignUpRequest.country()));
+
+        LanguageEntity language = languageRepository.findByName(oauthSignUpRequest.language())
+                .orElseThrow(() -> new LanguageNotFoundException(oauthSignUpRequest.language()));
 
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(oauthSignUpRequest.id())
@@ -63,6 +67,10 @@ public class OAuth2SignUpService {
                 .build();
 
         return userRepository.save(userEntity);
+    }
+
+    public void validateDuplicateUserId(String userId) {
+        if(userRepository.existsByUserId(userId)) throw new DuplicateUserException(userId);
     }
 
     private void userAgree(UserEntity user, UserAgreement userAgreement) {

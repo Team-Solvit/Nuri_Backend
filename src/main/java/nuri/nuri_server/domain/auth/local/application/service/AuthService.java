@@ -9,10 +9,12 @@ import nuri.nuri_server.domain.auth.local.presentation.dto.req.SignupRequest;
 import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreement;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
 import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
-import nuri.nuri_server.domain.user.domain.service.CountryDomainService;
+import nuri.nuri_server.domain.user.domain.exception.CountryNotFoundException;
+import nuri.nuri_server.domain.user.domain.exception.DuplicateUserException;
+import nuri.nuri_server.domain.user.domain.exception.LanguageNotFoundException;
+import nuri.nuri_server.domain.user.domain.repository.CountryRepository;
 import nuri.nuri_server.domain.user.domain.entity.LanguageEntity;
-import nuri.nuri_server.domain.user.domain.service.LanguageDomainService;
-import nuri.nuri_server.domain.user.domain.service.UserDomainService;
+import nuri.nuri_server.domain.user.domain.repository.LanguageRepository;
 import nuri.nuri_server.domain.user.domain.entity.UserAgreementEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
@@ -31,23 +33,24 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserDomainService userDomainService;
-    private final CountryDomainService countryDomainService;
+    private final CountryRepository countryRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final CookieManager cookieManager;
     private final UserAgreementRepository userAgreementRepository;
-    private final LanguageDomainService languageDomainService;
+    private final LanguageRepository languageRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
-        userDomainService.validateDuplicateUserId(signupRequest.id());
+        validateDuplicateUserId(signupRequest.id());
         String userId = signupRequest.id();
         String password = passwordEncoder.encode(signupRequest.password());
-        CountryEntity country = countryDomainService.getCountryEntity(signupRequest.country());
+        CountryEntity country = countryRepository.findByName(signupRequest.country())
+                .orElseThrow(() -> new CountryNotFoundException(signupRequest.country()));
 
-        LanguageEntity language = languageDomainService.getLanguageByName(signupRequest.language());
+        LanguageEntity language = languageRepository.findByName(signupRequest.language())
+                .orElseThrow(() -> new LanguageNotFoundException(signupRequest.language()));
 
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(userId)
@@ -62,6 +65,10 @@ public class AuthService {
         userRepository.save(userEntity);
 
         userAgree(userEntity, signupRequest.userAgreement());
+    }
+
+    public void validateDuplicateUserId(String userId) {
+        if(userRepository.existsByUserId(userId)) throw new DuplicateUserException(userId);
     }
 
     @Transactional
@@ -86,7 +93,7 @@ public class AuthService {
 
         cookieManager.validateRefreshToken(userId, refreshToken);
 
-        Role role = userDomainService.getRole(userId);
+        Role role = userRepository.findRoleByUserId(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         return jwtProvider.createAccessToken(userId, role);
     }
