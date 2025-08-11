@@ -53,4 +53,4 @@ jobs:
             docker compose down
             docker image prune -a -f
             docker pull $IMAGE
-            docker compose --env-file ~/env/docker/prod.env up -d
+            docker-compose --env-file ~/env/docker/prod.env up -d
