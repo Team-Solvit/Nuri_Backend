@@ -47,7 +47,7 @@ public class LikeService {
 
     @Transactional
     public void unlike(UUID postId, NuriUserDetails nuriUserDetails) {
-        UUID userId = nuriUserDetails.getUser().getId();
+        UUID userId = nuriUserDetails.getId();
         log.info("게시물 좋아요 취소 요청: userId={}, postId={}", userId, postId);
 
         Integer deleteCount = postLikeRepository.deleteByPostIdAndUserId(postId, userId);
