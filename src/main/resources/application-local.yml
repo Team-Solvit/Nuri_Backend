@@ -1,6 +1,6 @@
 spring:
   application:
-    name: nuri-local1
+    name: nuri-local
   config:
     import:
       - optional:file:env/local.env[.properties]
