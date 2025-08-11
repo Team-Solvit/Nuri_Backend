@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import nuri.nuri_server.global.security.user.NuriUserDetailsService;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,7 +23,7 @@ public class NuriAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if(request.getMethod().equals(HttpMethod.GET.name())) {
+        if(request.getMethod().equals("GET")) {
             filterChain.doFilter(request, response);
             return;
         }
