@@ -13,8 +13,8 @@ public record CreatePostRequest(
 
         @NotNull(message = "미디어(files)는 필수 항목입니다.")
         @Size(min = 1, message = "미디어는 최소 1개 이상 첨부해야 합니다.")
-        List<String> files,
+        List<@NotNull(message = "미디어 요소는 null일 수 없습니다.") String> files,
 
         @NotNull(message = "해시테그(hashTags)는 필수 항목입니다.")
-        List<String> hashTags
+        List<@NotNull(message = "해시태그 요소는 null일 수 없습니다.") String> hashTags
 ) {}
