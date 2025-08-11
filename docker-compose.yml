@@ -107,7 +107,7 @@ services:
   nuri:
     ports:
       - "8080:8080"
-    image: dwk48/nuri:latest
+    image: solvit25/nuri:latest
     container_name: nuri
     networks:
       - kafka-net
