@@ -1,15 +1,15 @@
 package nuri.nuri_server.domain.chat.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
 @Getter
 @Table(name = "tbl_user_room_adapter")
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserRoomAdapterEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)

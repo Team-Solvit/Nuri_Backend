@@ -1,10 +1,10 @@
-package nuri.nuri_server.global.exception.handler;
+package nuri.nuri_server.global.exception.graphql.handler;
 
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import lombok.extern.slf4j.Slf4j;
-import nuri.nuri_server.global.exception.ErrorResponse;
-import nuri.nuri_server.global.exception.ErrorType;
+import nuri.nuri_server.global.exception.graphql.GraphQLErrorResponse;
+import nuri.nuri_server.global.exception.graphql.GraphQLErrorType;
 import nuri.nuri_server.global.exception.NuriBusinessException;
 import nuri.nuri_server.global.exception.NuriSystemError;
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler;
@@ -18,37 +18,37 @@ import java.nio.file.AccessDeniedException;
 
 @Slf4j
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GraphQLExceptionHandler {
 
     @GraphQlExceptionHandler(AuthenticationException.class)
     public GraphQLError handleAuthenticationException() {
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(HttpStatus.UNAUTHORIZED.getReasonPhrase())
                 .build();
 
         return GraphqlErrorBuilder.newError()
                 .message("인증 오류가 발생했습니다.")
-                .errorType(ErrorType.UNAUTHENTICATED)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.UNAUTHENTICATED)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 
     @GraphQlExceptionHandler(AccessDeniedException.class)
     public GraphQLError handleAccessDeniedException() {
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .build();
 
         return GraphqlErrorBuilder.newError()
                 .message("권한으로 인한 인증 오류가 발생했습니다.")
-                .errorType(ErrorType.FORBIDDEN)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.FORBIDDEN)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 
     @GraphQlExceptionHandler(MethodArgumentNotValidException.class)
     public GraphQLError handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .build();
 
@@ -56,75 +56,75 @@ public class GlobalExceptionHandler {
                 .message(methodArgumentNotValidException.getBindingResult().getFieldError() != null
                                                 ? methodArgumentNotValidException.getBindingResult().getFieldError().getDefaultMessage()
                                                 : "Validation error occurred")
-                .errorType(ErrorType.VALIDATION_ERROR)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.VALIDATION_ERROR)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 
     @GraphQlExceptionHandler(IllegalArgumentException.class)
     public GraphQLError handleIllegalArgumentException() {
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .build();
 
         return GraphqlErrorBuilder.newError()
                 .message("잘못된 인자 값 입니다.")
-                .errorType(ErrorType.VALIDATION_ERROR)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.VALIDATION_ERROR)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 
     @GraphQlExceptionHandler(HttpMessageNotReadableException.class)
     public GraphQLError handleHttpMessageNotReadableException() {
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .build();
 
         return GraphqlErrorBuilder.newError()
                 .message("요청 본문을 읽을 수 없습니다.")
-                .errorType(ErrorType.DATA_FETCHING_EXCEPTION)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.DATA_FETCHING_EXCEPTION)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 
     @GraphQlExceptionHandler(NuriBusinessException.class)
     public GraphQLError handleNuriBusinessException(NuriBusinessException nuriBusinessException) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(nuriBusinessException.getStatus().getReasonPhrase())
                 .build();
 
         return GraphqlErrorBuilder.newError()
                 .message(nuriBusinessException.getMessage())
-                .errorType(nuriBusinessException.getErrorType())
-                .extensions(errorResponse.getMap())
+                .errorType(nuriBusinessException.getGraphQLErrorType())
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 
     @GraphQlExceptionHandler(NuriSystemError.class)
     public GraphQLError handleNuriSystemError(NuriSystemError nuriSystemError) {
         loggingError(nuriSystemError);
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(nuriSystemError.getStatus().getReasonPhrase())
                 .build();
 
         return GraphqlErrorBuilder.newError()
                 .message(nuriSystemError.getMessage())
-                .errorType(ErrorType.INTERNAL_SERVER_ERROR)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.INTERNAL_SERVER_ERROR)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 
     @GraphQlExceptionHandler(Exception.class)
     public GraphQLError handleException(Exception exception) {
         loggingError(exception);
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .build();
 
         return GraphqlErrorBuilder.newError()
                 .message("서버에서 예상치 못한 오류가 발생했습니다.")
-                .errorType(ErrorType.INTERNAL_SERVER_ERROR)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.INTERNAL_SERVER_ERROR)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
     }
 

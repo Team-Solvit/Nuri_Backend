@@ -1,4 +1,4 @@
-package nuri.nuri_server.global.exception;
+package nuri.nuri_server.global.exception.graphql;
 
 import graphql.ErrorClassification;
 import graphql.GraphQLError;
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum ErrorType implements ErrorClassification {
+public enum GraphQLErrorType implements ErrorClassification {
 
     BAD_REQUEST("BAD_REQUEST", "요청이 올바르지 않습니다."),
     UNAUTHENTICATED("UNAUTHENTICATED", "인증되지 않았습니다."),

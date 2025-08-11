@@ -2,7 +2,11 @@ scalar DateTime
 scalar UUID
 
 type Query {
-    readMessages(room_id: UUID!): [ChatRecord]
+    readMessages(room_id: String!): [ChatRecord]
+}
+
+type Mutation {
+    createRoom(input: RoomCreateRequestInput!): Room
 }
 
 type Sender {
@@ -19,11 +23,28 @@ type ReplyChat {
 type ChatRecord {
     id: UUID!
 
-    roomId: UUID!
+    roomId: String!
     sender: Sender!
 
     createdAt: DateTime!
 
     contents: String!
     replyChat: ReplyChat
+}
+
+input RoomRequestInput {
+    name: String
+    profile: String
+}
+
+input RoomCreateRequestInput {
+    roomRequestDto: RoomRequestInput
+    users: [String!]!
+}
+
+type Room {
+    id: ID!
+    name: String
+    profile: String
+    users: [String!]!
 }

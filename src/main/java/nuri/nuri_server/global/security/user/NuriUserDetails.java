@@ -6,11 +6,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 
 @RequiredArgsConstructor
-public class NuriUserDetails implements UserDetails {
+public class NuriUserDetails implements UserDetails, Principal {
     private final UserEntity user;
 
     @Override
@@ -25,6 +26,15 @@ public class NuriUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
+        return user.getUserId();
+    }
+
+    public String getProfile() {
+        return user.getProfile();
+    }
+
+    @Override
+    public String getName() {
         return user.getUserId();
     }
 }

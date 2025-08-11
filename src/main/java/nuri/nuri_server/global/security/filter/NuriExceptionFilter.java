@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.global.exception.ErrorResponse;
-import nuri.nuri_server.global.exception.ErrorType;
+import nuri.nuri_server.global.exception.graphql.GraphQLErrorResponse;
+import nuri.nuri_server.global.exception.graphql.GraphQLErrorType;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,14 +37,14 @@ public class NuriExceptionFilter extends OncePerRequestFilter {
     }
 
     private void handleJwtException(HttpServletResponse response, String message) throws IOException {
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        GraphQLErrorResponse graphQLErrorResponse = GraphQLErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .build();
 
         GraphQLError graphQLError = GraphqlErrorBuilder.newError()
                 .message(message)
-                .errorType(ErrorType.UNAUTHENTICATED)
-                .extensions(errorResponse.getMap())
+                .errorType(GraphQLErrorType.UNAUTHENTICATED)
+                .extensions(graphQLErrorResponse.getMap())
                 .build();
 
         Map<String, Object> responseBody = new HashMap<>();

@@ -30,8 +30,9 @@ spring:
       retries: 3
       batch-size: 16384
       buffer-memory: 33554432
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      key-serializer: org.apache.kafka.common.serialization.Json
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      transaction-id-prefix: chat
     consumer:
       group-id: chat-group
       auto-offset-reset: earliest

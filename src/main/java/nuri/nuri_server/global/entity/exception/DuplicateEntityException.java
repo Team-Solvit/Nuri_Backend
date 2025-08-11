@@ -1,11 +1,11 @@
 package nuri.nuri_server.global.entity.exception;
 
-import nuri.nuri_server.global.exception.ErrorType;
+import nuri.nuri_server.global.exception.graphql.GraphQLErrorType;
 import nuri.nuri_server.global.exception.NuriBusinessException;
 import org.springframework.http.HttpStatus;
 
 public class DuplicateEntityException extends NuriBusinessException {
   public DuplicateEntityException(String message) {
-    super(message, HttpStatus.CONFLICT, ErrorType.BAD_REQUEST);
+    super(message, HttpStatus.CONFLICT, GraphQLErrorType.BAD_REQUEST);
   }
 }

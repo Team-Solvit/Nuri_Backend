@@ -1,4 +1,4 @@
-package nuri.nuri_server.global.exception;
+package nuri.nuri_server.global.exception.graphql;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,12 +7,12 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 
 @Getter
-public class ErrorResponse {
+public class GraphQLErrorResponse {
     private final String code;
     private final OffsetDateTime timestamp;
 
     @Builder
-    public ErrorResponse(String code) {
+    public GraphQLErrorResponse(String code) {
         this.code = code;
         this.timestamp = OffsetDateTime.now();
     }

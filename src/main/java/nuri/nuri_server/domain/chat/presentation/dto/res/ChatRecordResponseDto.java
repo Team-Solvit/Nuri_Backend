@@ -1,31 +1,28 @@
 package nuri.nuri_server.domain.chat.presentation.dto.res;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Getter;
 import nuri.nuri_server.domain.chat.domain.entity.ReplyChat;
 import nuri.nuri_server.domain.chat.domain.entity.Sender;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Getter
 @Builder
-public class ChatRecordResponseDto {
-    @Column(nullable = false)
-    private UUID id;
+public record ChatRecordResponseDto (
+    @NotNull
+    UUID id,
 
-    @Column(nullable = false)
-    private UUID roomId;
+    String roomId,
 
-    @Column(nullable = false)
-    private Sender sender;
+    @NotNull
+    Sender sender,
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+    @NotNull
+    OffsetDateTime createdAt,
 
-    @Column(nullable = false)
-    private String contents;
+    @NotNull
+    String contents,
 
-    private ReplyChat replyChat;
-}
+    ReplyChat replyChat
+) {}
