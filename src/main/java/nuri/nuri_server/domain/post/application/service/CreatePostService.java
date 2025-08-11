@@ -54,6 +54,9 @@ public class CreatePostService {
         List<PostFileEntity> postFileEntities = Optional.ofNullable(files)
                 .orElse(Collections.emptyList())
                 .stream()
+                .peek(url -> {
+                    if (url == null) throw new IllegalArgumentException("미디어 요소는 null일 수 없습니다.");
+                })
                 .map(url -> PostFileEntity.builder()
                         .post(post)
                         .mediaUrl(url)
@@ -68,6 +71,9 @@ public class CreatePostService {
         List<HashTagEntity> hashTagEntities = Optional.ofNullable(hashTags)
                 .orElse(Collections.emptyList())
                 .stream()
+                .peek(tag -> {
+                    if (tag == null) throw new IllegalArgumentException("해시태그 요소는 null일 수 없습니다.");
+                })
                 .map(tag -> HashTagEntity.builder()
                         .post(post)
                         .name(tag)
