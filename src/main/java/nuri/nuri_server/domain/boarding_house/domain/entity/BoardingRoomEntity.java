@@ -33,7 +33,6 @@ public class BoardingRoomEntity extends BaseEntity {
     private Integer headCount;
 
     @Column(nullable = false)
-    @ColumnDefault("'EMPTY_ROOM'")
     @Enumerated(EnumType.STRING)
     private BoardingStatus status;
 

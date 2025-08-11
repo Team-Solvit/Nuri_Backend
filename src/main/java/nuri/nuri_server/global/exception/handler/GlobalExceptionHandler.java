@@ -9,7 +9,7 @@ import nuri.nuri_server.global.exception.ErrorResponse;
 import nuri.nuri_server.global.exception.ErrorType;
 import nuri.nuri_server.global.exception.NuriBusinessException;
 import nuri.nuri_server.global.exception.NuriSystemError;
-import nuri.nuri_server.global.security.exception.GraphQLAccessDeniedException;
+import nuri.nuri_server.global.security.exception.SecurityAccessDeniedException;
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @GraphQlExceptionHandler(GraphQLAccessDeniedException.class)
+    @GraphQlExceptionHandler(SecurityAccessDeniedException.class)
     public GraphQLError handleGraphQLAccessDeniedException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.FORBIDDEN.getReasonPhrase())

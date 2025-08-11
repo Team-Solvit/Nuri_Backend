@@ -2,7 +2,7 @@ package nuri.nuri_server.global.security.aop;
 
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.security.annotation.*;
-import nuri.nuri_server.global.security.exception.GraphQLAccessDeniedException;
+import nuri.nuri_server.global.security.exception.SecurityAccessDeniedException;
 import nuri.nuri_server.global.security.exception.InvalidJsonWebTokenException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -56,7 +56,7 @@ public class SecurityAspect {
         
         Collection<? extends GrantedAuthority> authorities = getCurrentRole();
         if (authorities.stream().noneMatch(auth -> strRoles.contains(auth.getAuthority()))) {
-            throw new GraphQLAccessDeniedException();
+            throw new SecurityAccessDeniedException();
         }
     }
 

@@ -9,6 +9,7 @@ import nuri.nuri_server.domain.boarding_house.presentation.dto.request.UpsertBoa
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomRequest;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class CreateBoardingHouseService {
     private final ContractPeriodRepository contractPeriodRepository;
     private final BoardingRoomOptionRepository boardingRoomOptionRepository;
 
+    @Transactional
     public void createBoardingRoom(NuriUserDetails nuriUserDetails, CreateBoardingRoomRequest createBoardingRoomRequest) {
         BoardingHouseEntity house = getBoardingHouseByHostId(nuriUserDetails.getUser().getId());
         BoardingRoomEntity room = boardingRoomRepository.save(toBoardingRoomEntity(house, createBoardingRoomRequest.boardingRoomInfo()));
