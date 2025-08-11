@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingHouseEntity;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
 import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingHouseNotFoundException;
+import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingRoomNotFoundException;
 import nuri.nuri_server.domain.boarding_house.domain.repository.*;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingHouseInfo;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomInfo;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class GetBoardingHouseService {
     private final BoardingHouseRepository boardingHouseRepository;
     private final BoardingRoomQueryService boardingRoomQueryService;
+    private final BoardingRoomRepository boardingRoomRepository;
     private final HostRepository hostRepository;
 
     @Transactional(readOnly = true)
@@ -87,5 +89,16 @@ public class GetBoardingHouseService {
                 .room(room)
                 .boarders(boarders)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public BoardingRoomInfo getBoardingRoom(UUID roomId) {
+        log.info("하숙방 정보 요청: roomId={}", roomId);
+        BoardingRoomEntity room = boardingRoomRepository.findById(roomId)
+                .orElseThrow(BoardingRoomNotFoundException::new);
+
+        BoardingRoomInfo roomInfo = boardingRoomQueryService.getBoardingRoomInfo(room);
+        log.info("하숙방 정보 반환: roomInfo={}", roomInfo);
+        return roomInfo;
     }
 }

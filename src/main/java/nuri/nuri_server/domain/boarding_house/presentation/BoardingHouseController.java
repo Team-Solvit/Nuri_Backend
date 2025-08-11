@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.application.service.CreateBoardingHouseService;
 import nuri.nuri_server.domain.boarding_house.application.service.GetBoardingHouseService;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingHouseInfo;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomInfo;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomRequest;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.response.BoardingRoomAndBoardersInfo;
 import nuri.nuri_server.global.security.annotation.Host;
@@ -53,5 +54,12 @@ public class BoardingHouseController {
         return houseId != null
                 ? getBoardingHouseService.getBoardingRoomAndBoardersInfo(houseId)
                 : getBoardingHouseService.getBoardingRoomAndBoardersInfo(nuriUserDetails);
+    }
+
+    @QueryMapping
+    public BoardingRoomInfo getBoardingRoom(
+            @Argument("roomId") UUID roomId
+    ) {
+        return getBoardingHouseService.getBoardingRoom(roomId);
     }
 }
