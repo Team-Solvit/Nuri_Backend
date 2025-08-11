@@ -15,7 +15,9 @@ import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -49,7 +51,9 @@ public class CreatePostService {
     }
 
     private void savePostFiles(PostEntity post, List<String> files) {
-        List<PostFileEntity> postFileEntities = files.stream()
+        List<PostFileEntity> postFileEntities = Optional.ofNullable(files)
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(url -> PostFileEntity.builder()
                         .post(post)
                         .mediaUrl(url)
@@ -61,7 +65,9 @@ public class CreatePostService {
     }
 
     private void saveHashTags(PostEntity post, List<String> hashTags) {
-        List<HashTagEntity> hashTagEntities = hashTags.stream()
+        List<HashTagEntity> hashTagEntities = Optional.ofNullable(hashTags)
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(tag -> HashTagEntity.builder()
                         .post(post)
                         .name(tag)
