@@ -112,8 +112,8 @@ services:
     networks:
       - kafka-net
       - backend-net
-    environment:
-      - SPRING_PROFILE_ACTIVE=${SPRING_PROFILE_ACTIVE}
+    env_file:
+      /home/deploy/env/prod.env
     depends_on:
       - kafka1
       - kafka2
