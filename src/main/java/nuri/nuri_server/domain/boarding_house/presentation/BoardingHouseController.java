@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.application.service.CreateBoardingHouseService;
+import nuri.nuri_server.domain.boarding_house.application.service.DeleteBoardingHouseService;
 import nuri.nuri_server.domain.boarding_house.application.service.GetBoardingHouseService;
 import nuri.nuri_server.domain.boarding_house.application.service.UpdateBoardingHouseService;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingHouseInfo;
@@ -29,6 +30,7 @@ public class BoardingHouseController {
     private final CreateBoardingHouseService createBoardingHouseService;
     private final UpdateBoardingHouseService updateBoardingHouseService;
     private final GetBoardingHouseService getBoardingHouseService;
+    private final DeleteBoardingHouseService deleteBoardingHouseService;
 
     @Host
     @MutationMapping
@@ -48,6 +50,16 @@ public class BoardingHouseController {
     ) {
         updateBoardingHouseService.updateBoardingRoomInfo(nuriUserDetails, updateBoardingRoomRequest);
         return "하숙방 정보를 수정하였습니다.";
+    }
+
+    @Host
+    @MutationMapping
+    public String deleteBoardingRoom(
+            @Argument("roomId") @NotNull(message = "하숙방 삭제시 방 아이디(roomId)는 필수 항목입니다.") UUID roomId,
+            @AuthenticationPrincipal NuriUserDetails nuriUserDetails
+    ) {
+        deleteBoardingHouseService.deleteBoardingRoom(nuriUserDetails, roomId);
+        return "하숙방을 삭제하였습니다";
     }
 
     @Host

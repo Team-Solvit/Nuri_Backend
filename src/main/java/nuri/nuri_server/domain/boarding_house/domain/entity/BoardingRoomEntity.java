@@ -42,6 +42,21 @@ public class BoardingRoomEntity extends BaseEntity {
     @OneToMany(mappedBy = "boarderRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContractEntity> contracts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "boardingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRoomCommentEntity> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRoomFileEntity> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRoomLikeEntity> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRoomOptionEntity> options = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContractPeriodEntity> contractPeriods = new ArrayList<>();
+
     @Builder
     public BoardingRoomEntity(BoardingHouseEntity boardingHouse, String name, String description, Integer monthlyRent, Integer headCount, BoardingStatus status) {
         this.boardingHouse = boardingHouse;
