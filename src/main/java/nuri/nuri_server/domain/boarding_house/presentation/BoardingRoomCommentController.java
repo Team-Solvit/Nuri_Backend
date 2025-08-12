@@ -1,6 +1,7 @@
 package nuri.nuri_server.domain.boarding_house.presentation;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.application.service.BoardingRoomCommentService;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomCommentInfo;
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class BoardingRoomCommentController {
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
         boardingRoomCommentService.createComment(nuriUserDetails, createBoardingRoomCommentRequest);
-        return "게시물 댓글을 작성하였습니다.";
+        return "하숙방 댓글을 작성하였습니다.";
     }
 
     @QueryMapping
@@ -43,10 +45,20 @@ public class BoardingRoomCommentController {
     @User
     @MutationMapping
     public String updateBoardingRoomComment(
-            @Argument("updateBoardingRoomCommentInput") UpdateBoardingRoomCommentRequest updateBoardingRoomCommentRequest,
+            @Argument("updateBoardingRoomCommentInput") @Valid UpdateBoardingRoomCommentRequest updateBoardingRoomCommentRequest,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
         boardingRoomCommentService.updateComment(nuriUserDetails, updateBoardingRoomCommentRequest);
-        return "게시물 댓글을 수정하였습니다.";
+        return "하숙방 댓글을 수정하였습니다.";
+    }
+
+    @User
+    @MutationMapping
+    public String deleteBoardingRoomComment(
+            @Argument("commentId")  @NotNull(message = "댓글 아이디(commentId)는 필수 항목입니다.") UUID commentId,
+            @AuthenticationPrincipal NuriUserDetails nuriUserDetails
+    ) {
+        boardingRoomCommentService.deleteComment(nuriUserDetails, commentId);
+        return "하숙방 댓글을 삭제하였습니다.";
     }
 }

@@ -15,6 +15,7 @@ extend type Mutation {
 
     createBoardingRoomComment(createBoardingRoomInput : CreateBoardingRoomCommentRequest) : String
     updateBoardingRoomComment(updateBoardingRoomCommentInput : UpdateBoardingRoomCommentRequest!) : String
+    deleteBoardingRoomComment(commentId : String!) : String
 }
 
 input UpdateBoardingRoomCommentRequest {

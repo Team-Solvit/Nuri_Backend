@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -78,5 +79,19 @@ public class BoardingRoomCommentService {
 
         comment.edit(updateBoardingRoomCommentRequest.content());
         log.info("하숙방 댓글 수정 완료 : commentId={}, content={}",  updateBoardingRoomCommentRequest.commentId(), comment.getContents());
+    }
+
+    @Transactional
+    public void deleteComment(NuriUserDetails nuriUserDetails, UUID commentId) {
+        UserEntity user = nuriUserDetails.getUser();
+        log.info("하숙방 댓글 삭제 요청 : userId={}, commentId={}", user.getId() , commentId);
+
+        BoardingRoomCommentEntity comment = boardingRoomCommentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        comment.validateCommenter(user);
+
+        boardingRoomCommentRepository.delete(comment);
+        log.info("하숙방 댓글 삭제 완료 : userId={}, commentId={}", user.getId() , commentId);
     }
 }
