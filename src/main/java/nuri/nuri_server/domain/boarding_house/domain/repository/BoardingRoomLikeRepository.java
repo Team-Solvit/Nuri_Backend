@@ -1,6 +1,5 @@
 package nuri.nuri_server.domain.boarding_house.domain.repository;
 
-import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomLikeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
