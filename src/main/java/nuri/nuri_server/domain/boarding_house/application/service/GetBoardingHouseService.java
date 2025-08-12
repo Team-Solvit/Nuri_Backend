@@ -50,9 +50,12 @@ public class GetBoardingHouseService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardingRoomAndBoardersInfo> getBoardingRoomAndBoardersInfo(UUID houseId) {
-        log.info("하숙방과 하숙생 정보 요청: houseId={}", houseId);
-        BoardingHouseEntity house = boardingHouseRepository.findById(houseId)
+    public List<BoardingRoomAndBoardersInfo> getBoardingRoomAndBoardersInfo(UUID hostId) {
+        log.info("하숙방과 하숙생 정보 요청: hostId={}", hostId);
+
+        validateHostId(hostId);
+
+        BoardingHouseEntity house = boardingHouseRepository.findByHostId(hostId)
                 .orElseThrow(BoardingHouseNotFoundException::new);
 
         List<BoardingRoomEntity> boardingRooms = house.getBoardingRooms();
@@ -64,19 +67,6 @@ public class GetBoardingHouseService {
         log.info("하숙방과 하숙생 정보 반환: roomAndBoardersInfoCount={}", results.size());
 
         return results;
-    }
-
-    @Transactional(readOnly = true)
-    public List<BoardingRoomAndBoardersInfo> getBoardingRoomAndBoardersInfo(NuriUserDetails nuriUserDetails) {
-        UUID hostId = nuriUserDetails.getId();
-        log.info("하숙방과 하숙생 정보 요청전 오버로딩 메서드: hostId={}", hostId);
-
-        validateHostId(hostId);
-
-        UUID houseId = boardingHouseRepository.findByHostId(hostId)
-                .orElseThrow(BoardingHouseNotFoundException::new).getId();
-
-        return this.getBoardingRoomAndBoardersInfo(houseId);
     }
 
     private BoardingRoomAndBoardersInfo toBoardingRoomAndBoardersInfo(BoardingRoomEntity boardingRoom) {

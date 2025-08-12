@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface ContractPeriodRepository extends JpaRepository<ContractPeriodEntity, UUID> {
     List<ContractPeriodEntity> findAllByBoardingRoomId(UUID boardingRoomId);
+    void deleteAllByBoardingRoomId(UUID boardingRoomId);
 }

@@ -1,21 +1,30 @@
 extend type Query {
     getMyBoardingHouse : BoardingHouseInfo
-    getBoardingRoomAndBoardersInfoList(houseId : String) : [BoardingRoomAndBoardersInfo]
+    getBoardingRoomAndBoardersInfoList(userId : String) : [BoardingRoomAndBoardersInfo]
     getBoardingRoom(roomId : String!) : BoardingRoomInfo
 }
 
 extend type Mutation {
-    createBoardingRoom(createBoardingRoomInput : CreateBoardingRoomRequest!) : String!
+    createBoardingRoom(createBoardingRoomInput : CreateBoardingRoomRequest!) : String
+    updateBoardingRoom(updateBoardingRoomInput : UpdateBoardingRoomRequest!) : String
 }
 
-input CreateBoardingRoomRequest{
+input CreateBoardingRoomRequest {
     files : [String!]!
-    boardingRoomInfo : UpsertBoardingRoomInfo!
+    boardingRoomInfo : BoardingRoomUpsertInfo!
     contractPeriod : [Int!]!,
     options : [String]!
 }
 
-input UpsertBoardingRoomInfo {
+input UpdateBoardingRoomRequest {
+    roomId : String!
+    files : [String!]!
+    boardingRoomInfo : BoardingRoomUpsertInfo!
+    contractPeriod : [Int!]!,
+    options : [String]!
+}
+
+input BoardingRoomUpsertInfo {
     name : String!
     description : String
     monthlyRent : Int!
