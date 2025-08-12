@@ -3,7 +3,7 @@ package nuri.nuri_server.domain.boarding_house.presentation.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record UpsertBoardingRoomInfo(
+public record BoardingRoomUpsertInfo(
         @NotBlank(message = "방 이름(name)은 필수 항목입니다.")
         String name,
 

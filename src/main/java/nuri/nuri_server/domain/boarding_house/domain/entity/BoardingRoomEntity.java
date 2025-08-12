@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.domain.boarding_status.BoardingStatus;
+import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingRoomHostMismatchException;
+import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
 import java.util.ArrayList;
@@ -48,5 +50,17 @@ public class BoardingRoomEntity extends BaseEntity {
         this.monthlyRent = monthlyRent;
         this.headCount = headCount;
         this.status = Objects.requireNonNullElse(status, BoardingStatus.EMPTY_ROOM);
+    }
+
+    public void updateBoardingRoom(String name, String description, Integer monthlyRent, Integer headCount) {
+        this.name = name;
+        this.description = description;
+        this.monthlyRent = monthlyRent;
+        this.headCount = headCount;
+    }
+
+    public void validateHost(UserEntity requestUser) {
+        if(!this.boardingHouse.getHost().getId().equals(requestUser.getId()))
+            throw new BoardingRoomHostMismatchException();
     }
 }

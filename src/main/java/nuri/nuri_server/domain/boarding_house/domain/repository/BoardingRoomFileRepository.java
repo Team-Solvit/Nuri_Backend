@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface BoardingRoomFileRepository extends JpaRepository<BoardingRoomFileEntity, UUID> {
     List<BoardingRoomFileEntity> findAllByBoardingRoomId(UUID boardingRoomId);
+    void deleteAllByBoardingRoomId(UUID boardingRoomId);
 }
