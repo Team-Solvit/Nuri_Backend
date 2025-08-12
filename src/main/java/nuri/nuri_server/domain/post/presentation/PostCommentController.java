@@ -3,7 +3,7 @@ package nuri.nuri_server.domain.post.presentation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import nuri.nuri_server.domain.post.application.service.CommentService;
+import nuri.nuri_server.domain.post.application.service.PostCommentService;
 import nuri.nuri_server.domain.post.presentation.dto.CommentInfo;
 import nuri.nuri_server.domain.post.presentation.dto.request.GetCommentListRequest;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostCommentRequest;
@@ -20,9 +20,9 @@ import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
-public class CommentController {
+public class PostCommentController {
 
-    private final CommentService commentService;
+    private final PostCommentService postCommentService;
 
     @User
     @MutationMapping
@@ -30,7 +30,7 @@ public class CommentController {
             @Argument("createPostCommentInput") @Valid CreatePostCommentRequest createPostCommentRequest,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
-        commentService.createComment(createPostCommentRequest, nuriUserDetails);
+        postCommentService.createComment(createPostCommentRequest, nuriUserDetails);
         return "게시물 댓글을 작성하였습니다.";
     }
 
@@ -38,7 +38,7 @@ public class CommentController {
     public List<CommentInfo> getPostCommentList(
             @Argument("getPostCommentListInput") @Valid GetCommentListRequest getCommentListRequest
     ) {
-        return commentService.getCommentList(getCommentListRequest);
+        return postCommentService.getCommentList(getCommentListRequest);
     }
 
     @User
@@ -47,7 +47,7 @@ public class CommentController {
             @Argument("updatePostCommentInput") @Valid CommentInfo commentInfo,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
-        commentService.updateComment(commentInfo, nuriUserDetails);
+        postCommentService.updateComment(commentInfo, nuriUserDetails);
         return "게시물 댓글을 수정하였습니다.";
     }
 
@@ -57,7 +57,7 @@ public class CommentController {
             @Argument("commentId") @NotNull(message = "댓글 아이디(commentId)는 필수 항목입니다.") UUID commentId,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
-        commentService.deleteComment(commentId, nuriUserDetails);
+        postCommentService.deleteComment(commentId, nuriUserDetails);
         return "게시물 댓글을 삭제하였습니다.";
     }
 }

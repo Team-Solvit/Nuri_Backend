@@ -2,7 +2,7 @@ package nuri.nuri_server.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nuri.nuri_server.domain.post.domain.entity.CommentEntity;
+import nuri.nuri_server.domain.post.domain.entity.PostCommentEntity;
 import nuri.nuri_server.domain.post.domain.entity.PostEntity;
 import nuri.nuri_server.domain.post.domain.exception.CommentNotFoundException;
 import nuri.nuri_server.domain.post.domain.exception.PostNotFoundException;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CommentService {
+public class PostCommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final Integer size = 20;
@@ -39,13 +39,13 @@ public class CommentService {
         PostEntity post = postRepository.findById(createPostCommentRequest.postId())
                 .orElseThrow(PostNotFoundException::new);
 
-        CommentEntity commentEntity = CommentEntity.builder()
+        PostCommentEntity postCommentEntity = PostCommentEntity.builder()
                 .post(post)
                 .user(user)
                 .contents(createPostCommentRequest.contents())
                 .build();
 
-        commentRepository.save(commentEntity);
+        commentRepository.save(postCommentEntity);
         log.info("댓글 작성 완료 : userId={}, postId={}", user.getId() , createPostCommentRequest.postId());
     }
 
@@ -53,7 +53,7 @@ public class CommentService {
     public List<CommentInfo> getCommentList(GetCommentListRequest getCommentListRequest) {
         log.info("댓글 리스트 조회 요청 : postId={}", getCommentListRequest.postId());
         Pageable pageable = PageRequest.of(getCommentListRequest.start(), size, Sort.by("updatedAt").descending());
-        Page<CommentEntity> pageCommentEntities = commentRepository.findAllByPostId(getCommentListRequest.postId(), pageable);
+        Page<PostCommentEntity> pageCommentEntities = commentRepository.findAllByPostId(getCommentListRequest.postId(), pageable);
 
         List<CommentInfo> results = pageCommentEntities.getContent().stream()
                 .map(CommentInfo::from)
@@ -68,7 +68,7 @@ public class CommentService {
         UserEntity user = nuriUserDetails.getUser();
         log.info("댓글 수정 요청 : userId={}, commentId={}", user.getId() , commentInfo.commentId());
 
-        CommentEntity comment = commentRepository.findById(commentInfo.commentId())
+        PostCommentEntity comment = commentRepository.findById(commentInfo.commentId())
                 .orElseThrow(CommentNotFoundException::new);
 
         comment.validateCommenter(user);
@@ -82,7 +82,7 @@ public class CommentService {
         UserEntity user = nuriUserDetails.getUser();
         log.info("댓글 삭제 요청 : userId={}, commentId={}", user.getId() , commentId);
 
-        CommentEntity comment = commentRepository.findById(commentId)
+        PostCommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
 
         comment.validateCommenter(user);

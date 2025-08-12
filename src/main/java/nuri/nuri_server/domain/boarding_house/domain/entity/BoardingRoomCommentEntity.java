@@ -9,7 +9,7 @@ import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
-@Table(name = "tbl_boarding_room_like")
+@Table(name = "tbl_boarding_room_comment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardingRoomCommentEntity extends BaseEntity {

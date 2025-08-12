@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class LikeService {
+public class PostLikeService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
 
@@ -31,7 +31,7 @@ public class LikeService {
         UserEntity user = nuriUserDetails.getUser();
 
         if(postLikeRepository.existsByPostIdAndUserId(postId, user.getId())) {
-            log.debug("좋아요를 이미 생성한 유저입니다. : userId={}, postId={}", user.getId(), postId);
+            log.debug("게시물 좋아요를 이미 생성한 유저입니다. : userId={}, postId={}", user.getId(), postId);
             return;
         }
 
@@ -42,7 +42,7 @@ public class LikeService {
 
         postLikeRepository.save(likeEntity);
 
-        log.info("좋아요 생성 완료 : userId={}, postId={}", user.getId(), postId);
+        log.info("게시물 좋아요 생성 완료 : userId={}, postId={}", user.getId(), postId);
     }
 
     @Transactional
@@ -53,10 +53,10 @@ public class LikeService {
         Integer deleteCount = postLikeRepository.deleteByPostIdAndUserId(postId, userId);
 
         if(deleteCount.equals(0)) {
-            log.debug("좋아요 기록이 없어 삭제할 수 없습니다 : userId={}, postId={}", userId, postId);
+            log.debug("게시물 좋아요 기록이 없어 삭제할 수 없습니다 : userId={}, postId={}", userId, postId);
             return;
         }
 
-        log.info("좋아요 취소 완료 : userId={}, postId={}", userId, postId);
+        log.info("게시물 좋아요 취소 완료 : userId={}, postId={}", userId, postId);
     }
 }

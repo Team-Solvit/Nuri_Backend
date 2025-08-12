@@ -41,7 +41,7 @@ public class PostEntity extends BaseEntity {
     private List<HashTagEntity> postHashtags = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> postComments = new ArrayList<>();
+    private List<PostCommentEntity> postComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLikeEntity> postLikeEntities = new ArrayList<>();
