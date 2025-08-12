@@ -10,10 +10,10 @@ import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
 @Entity
-@Table(name = "tbl_comment")
+@Table(name = "tbl_post_comment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentEntity extends BaseEntity {
+public class PostCommentEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "post_id")
     private PostEntity post;
@@ -26,7 +26,7 @@ public class CommentEntity extends BaseEntity {
     private String contents;
 
     @Builder
-    public CommentEntity(PostEntity post, UserEntity user, String contents) {
+    public PostCommentEntity(PostEntity post, UserEntity user, String contents) {
         this.post = post;
         this.user = user;
         this.contents = contents;
