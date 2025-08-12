@@ -11,6 +11,7 @@ import nuri.nuri_server.domain.post.domain.repository.PostRepository;
 import nuri.nuri_server.domain.post.presentation.dto.PostCommentInfo;
 import nuri.nuri_server.domain.post.presentation.dto.request.GetPostCommentListRequest;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostCommentRequest;
+import nuri.nuri_server.domain.post.presentation.dto.request.UpdatePostCommentRequest;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,17 +68,17 @@ public class PostCommentService {
     }
 
     @Transactional
-    public void updateComment(PostCommentInfo postCommentInfo, NuriUserDetails nuriUserDetails) {
+    public void updateComment(UpdatePostCommentRequest updatePostCommentRequest, NuriUserDetails nuriUserDetails) {
         UserEntity user = nuriUserDetails.getUser();
-        log.info("게시물 댓글 수정 요청 : userId={}, commentId={}", user.getId() , postCommentInfo.commentId());
+        log.info("게시물 댓글 수정 요청 : userId={}, commentId={}", user.getId() , updatePostCommentRequest.commentId());
 
-        PostCommentEntity comment = postCommentRepository.findById(postCommentInfo.commentId())
+        PostCommentEntity comment = postCommentRepository.findById(updatePostCommentRequest.commentId())
                 .orElseThrow(CommentNotFoundException::new);
 
         comment.validateCommenter(user);
 
-        comment.edit(postCommentInfo.content());
-        log.info("게시물 댓글 수정 완료 : commentId={}, content={}",  postCommentInfo.commentId(), comment.getContents());
+        comment.edit(updatePostCommentRequest.content());
+        log.info("게시물 댓글 수정 완료 : commentId={}, content={}",  updatePostCommentRequest.commentId(), comment.getContents());
     }
 
     @Transactional

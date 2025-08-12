@@ -10,6 +10,8 @@ import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomRepo
 import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomCommentInfo;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomCommentRequest;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.GetBoardingRoomCommentListRequest;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.request.UpdateBoardingRoomCommentRequest;
+import nuri.nuri_server.domain.post.domain.exception.CommentNotFoundException;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,5 +64,19 @@ public class BoardingRoomCommentService {
 
         log.info("하숙방 댓글 리스트 조회 완료 : commentCount={}", results.size());
         return results;
+    }
+
+    @Transactional
+    public void updateComment(NuriUserDetails nuriUserDetails, UpdateBoardingRoomCommentRequest updateBoardingRoomCommentRequest) {
+        UserEntity user = nuriUserDetails.getUser();
+        log.info("하숙방 댓글 수정 요청 : userId={}, commentId={}", user.getId() , updateBoardingRoomCommentRequest.commentId());
+
+        BoardingRoomCommentEntity comment = boardingRoomCommentRepository.findById(updateBoardingRoomCommentRequest.commentId())
+                .orElseThrow(CommentNotFoundException::new);
+
+        comment.validateCommenter(user);
+
+        comment.edit(updateBoardingRoomCommentRequest.content());
+        log.info("하숙방 댓글 수정 완료 : commentId={}, content={}",  updateBoardingRoomCommentRequest.commentId(), comment.getContents());
     }
 }

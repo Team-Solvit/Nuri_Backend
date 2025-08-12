@@ -7,6 +7,7 @@ import nuri.nuri_server.domain.post.application.service.PostCommentService;
 import nuri.nuri_server.domain.post.presentation.dto.PostCommentInfo;
 import nuri.nuri_server.domain.post.presentation.dto.request.GetPostCommentListRequest;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostCommentRequest;
+import nuri.nuri_server.domain.post.presentation.dto.request.UpdatePostCommentRequest;
 import nuri.nuri_server.global.security.annotation.User;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -44,10 +45,10 @@ public class PostCommentController {
     @User
     @MutationMapping
     public String updatePostComment(
-            @Argument("updatePostCommentInput") @Valid PostCommentInfo postCommentInfo,
+            @Argument("updatePostCommentInput") @Valid UpdatePostCommentRequest updatePostCommentRequest,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
-        postCommentService.updateComment(postCommentInfo, nuriUserDetails);
+        postCommentService.updateComment(updatePostCommentRequest, nuriUserDetails);
         return "게시물 댓글을 수정하였습니다.";
     }
 

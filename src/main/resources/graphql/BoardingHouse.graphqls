@@ -14,6 +14,12 @@ extend type Mutation {
     unlikeRoom(roomId : String!) : String
 
     createBoardingRoomComment(createBoardingRoomInput : CreateBoardingRoomCommentRequest) : String
+    updateBoardingRoomComment(updateBoardingRoomCommentInput : UpdateBoardingRoomCommentRequest!) : String
+}
+
+input UpdateBoardingRoomCommentRequest {
+    commentId : String!
+    content : String!
 }
 
 input GetBoardingRoomCommentListRequest {

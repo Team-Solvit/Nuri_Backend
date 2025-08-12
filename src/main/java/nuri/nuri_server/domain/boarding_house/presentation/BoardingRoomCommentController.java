@@ -6,6 +6,7 @@ import nuri.nuri_server.domain.boarding_house.application.service.BoardingRoomCo
 import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomCommentInfo;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomCommentRequest;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.request.GetBoardingRoomCommentListRequest;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.request.UpdateBoardingRoomCommentRequest;
 import nuri.nuri_server.global.security.annotation.User;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -37,5 +38,15 @@ public class BoardingRoomCommentController {
             @Argument("getBoardingRoomCommentListInput") @Valid GetBoardingRoomCommentListRequest getBoardingRoomCommentListRequest
     ) {
         return boardingRoomCommentService.getCommentList(getBoardingRoomCommentListRequest);
+    }
+
+    @User
+    @MutationMapping
+    public String updateBoardingRoomComment(
+            @Argument("updateBoardingRoomCommentInput") UpdateBoardingRoomCommentRequest updateBoardingRoomCommentRequest,
+            @AuthenticationPrincipal NuriUserDetails nuriUserDetails
+    ) {
+        boardingRoomCommentService.updateComment(nuriUserDetails, updateBoardingRoomCommentRequest);
+        return "게시물 댓글을 수정하였습니다.";
     }
 }

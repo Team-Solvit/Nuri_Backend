@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nuri.nuri_server.domain.post.domain.exception.CommenterMismatchException;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
@@ -29,5 +30,14 @@ public class BoardingRoomCommentEntity extends BaseEntity {
         this.boardingRoom = boardingRoom;
         this.user = user;
         this.contents = contents;
+    }
+
+    public void validateCommenter(UserEntity requestUser) {
+        if(!this.user.getId().equals(requestUser.getId()))
+            throw new CommenterMismatchException();
+    }
+
+    public void edit(String content) {
+        this.contents = content;
     }
 }
