@@ -2,7 +2,7 @@ extend type Query {
     getPostList(start : Int!) : [getPostListResponse]!
     getUserPostList(getUserPostListInput : GetUserPostListRequest!) : [PostThumbnailInfo]!
     getPost(postId : String!) : SnsPostInfo
-    getPostCommentList(getPostCommentListInput : GetCommentListRequest!) : [CommentInfo]!
+    getPostCommentList(getPostCommentListInput : GetPostCommentListRequest!) : [PostCommentInfo]!
 }
 
 extend type Mutation {
@@ -23,7 +23,7 @@ input GetUserPostListRequest {
     start : Int
 }
 
-input GetCommentListRequest {
+input GetPostCommentListRequest {
     start : Int!
     postId : String!
 }
@@ -112,7 +112,7 @@ type PostThumbnailInfo {
     thumbnail : String
 }
 
-type CommentInfo {
+type PostCommentInfo {
     commentId : String!
     postId : String
     commenter : UserInfo

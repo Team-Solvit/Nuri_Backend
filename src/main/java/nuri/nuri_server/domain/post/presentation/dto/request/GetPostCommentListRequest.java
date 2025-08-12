@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record GetCommentListRequest(
+public record GetPostCommentListRequest(
         @NotNull(message = "댓글 조회시 시작위치(start)는 필수 항목입니다.")
         Integer start,
 

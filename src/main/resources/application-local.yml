@@ -75,3 +75,6 @@ redis:
 
 front-url:
   ${FRONTEND_URL}
+
+page-size:
+  comment : ${COMENT_LIST_SIZE}

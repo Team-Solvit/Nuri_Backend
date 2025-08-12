@@ -7,15 +7,15 @@ import nuri.nuri_server.domain.user.presentation.dto.UserInfo;
 import java.util.UUID;
 
 @Builder
-public record CommentInfo(
+public record PostCommentInfo(
         UUID commentId,
         UUID postId,
         UserInfo commenter,
         String content
 ) {
-        public static CommentInfo from(PostCommentEntity comment) {
+        public static PostCommentInfo from(PostCommentEntity comment) {
                 UserInfo commenter = UserInfo.from(comment.getUser());
-                return CommentInfo.builder()
+                return PostCommentInfo.builder()
                         .commentId(comment.getId())
                         .postId(comment.getPost().getId())
                         .commenter(commenter)

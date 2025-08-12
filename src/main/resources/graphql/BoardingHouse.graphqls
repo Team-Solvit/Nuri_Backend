@@ -2,6 +2,7 @@ extend type Query {
     getMyBoardingHouse : BoardingHouseInfo
     getBoardingRoomAndBoardersInfoList(userId : String) : [BoardingRoomAndBoardersInfo]
     getBoardingRoom(roomId : String!) : BoardingRoomInfo
+    getBoardingRoomCommentList(getBoardingRoomCommentListInput : GetBoardingRoomCommentListRequest!) : [BoardingRoomCommentInfo]!
 }
 
 extend type Mutation {
@@ -11,6 +12,18 @@ extend type Mutation {
 
     likeRoom(roomId : String!) : String
     unlikeRoom(roomId : String!) : String
+
+    createBoardingRoomComment(createBoardingRoomInput : CreateBoardingRoomCommentRequest) : String
+}
+
+input GetBoardingRoomCommentListRequest {
+    start : Int!
+    roomId : String!
+}
+
+input CreateBoardingRoomCommentRequest {
+    roomId : String!
+    contents : String!
 }
 
 input CreateBoardingRoomRequest {
@@ -33,6 +46,13 @@ input BoardingRoomUpsertInfo {
     description : String
     monthlyRent : Int!
     headCount : Int!
+}
+
+type BoardingRoomCommentInfo {
+    commentId : String!
+    roomId : String
+    commenter : UserInfo
+    content : String!
 }
 
 type BoardingRoomAndBoardersInfo {

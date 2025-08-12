@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface CommentRepository extends JpaRepository<PostCommentEntity, UUID> {
+public interface PostCommentRepository extends JpaRepository<PostCommentEntity, UUID> {
     Long countByPostId(UUID postId);
     Page<PostCommentEntity> findAllByPostId(UUID postId, Pageable pageable);
 }

@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.post.application.service.PostCommentService;
-import nuri.nuri_server.domain.post.presentation.dto.CommentInfo;
-import nuri.nuri_server.domain.post.presentation.dto.request.GetCommentListRequest;
+import nuri.nuri_server.domain.post.presentation.dto.PostCommentInfo;
+import nuri.nuri_server.domain.post.presentation.dto.request.GetPostCommentListRequest;
 import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostCommentRequest;
 import nuri.nuri_server.global.security.annotation.User;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
@@ -35,19 +35,19 @@ public class PostCommentController {
     }
 
     @QueryMapping
-    public List<CommentInfo> getPostCommentList(
-            @Argument("getPostCommentListInput") @Valid GetCommentListRequest getCommentListRequest
+    public List<PostCommentInfo> getPostCommentList(
+            @Argument("getPostCommentListInput") @Valid GetPostCommentListRequest getPostCommentListRequest
     ) {
-        return postCommentService.getCommentList(getCommentListRequest);
+        return postCommentService.getCommentList(getPostCommentListRequest);
     }
 
     @User
     @MutationMapping
     public String updatePostComment(
-            @Argument("updatePostCommentInput") @Valid CommentInfo commentInfo,
+            @Argument("updatePostCommentInput") @Valid PostCommentInfo postCommentInfo,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
-        postCommentService.updateComment(commentInfo, nuriUserDetails);
+        postCommentService.updateComment(postCommentInfo, nuriUserDetails);
         return "게시물 댓글을 수정하였습니다.";
     }
 
