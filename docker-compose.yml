@@ -112,9 +112,9 @@ services:
     networks:
       - kafka-net
       - backend-net
-    env_file:
-      /home/deploy/env/prod.env
     depends_on:
+      - postgres
+      - redis
       - kafka1
       - kafka2
       - kafka3
