@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.session.domain.event;
+package nuri.nuri_server.domain.session.infra.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

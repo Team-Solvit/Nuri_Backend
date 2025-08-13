@@ -1,8 +1,7 @@
 package nuri.nuri_server.global.websocket.listener;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import nuri.nuri_server.domain.session.domain.event.DuplicateLoginEvent;
+import nuri.nuri_server.domain.session.infra.event.DuplicateLoginEvent;
 import nuri.nuri_server.global.exception.stomp.StompErrorResponse;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -10,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
-public class StompEventListener {
+public class DuplicateLoginEventListener {
     private final SimpMessagingTemplate messagingTemplate;
 
     @EventListener

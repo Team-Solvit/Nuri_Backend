@@ -3,7 +3,7 @@ package nuri.nuri_server.domain.chat.infra.listener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.chat.application.service.ChatStompService;
-import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
+import nuri.nuri_server.domain.chat.presentation.dto.res.NotificationResponseDto;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +14,8 @@ public class ChatListener {
     private final ChatStompService chatStompService;
 
     @KafkaListener(topics = "chat", concurrency = "10", groupId = "chat-group")
-    public void listen(ChatRecordResponseDto chatRecordResponseDto) {
-        log.info(chatRecordResponseDto.contents());
-        chatStompService.listenGroupMessage(chatRecordResponseDto);
+    public void listen(NotificationResponseDto notificationResponseDto) {
+        log.info(notificationResponseDto.contents());
+        chatStompService.listenGroupMessage(notificationResponseDto);
     }
 }

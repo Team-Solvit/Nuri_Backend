@@ -2,8 +2,8 @@ package nuri.nuri_server.global.config;
 
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.global.exception.stomp.handler.StompAuthenticationExceptionHandler;
+import nuri.nuri_server.global.properties.WebProperties;
 import nuri.nuri_server.global.websocket.interceptor.StompConnectionInterceptor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -19,9 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final StompConnectionInterceptor stompConnectionInterceptor;
     private final ThreadPoolTaskScheduler messageBrokerTaskScheduler;
     private final StompAuthenticationExceptionHandler stompAuthenticationExceptionHandler;
-
-    @Value("${front-url}")
-    private String frontUrl;
+    private final WebProperties webProperties;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
@@ -35,7 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         registry.addEndpoint("/websocket")
-                .setAllowedOriginPatterns(frontUrl)
+                .setAllowedOriginPatterns(webProperties.getFrontUrl())
                 .withSockJS();
         registry.setErrorHandler(stompAuthenticationExceptionHandler);
     }

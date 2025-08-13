@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.chat.domain.entity.ChatRecord;
 import nuri.nuri_server.domain.chat.domain.entity.Sender;
 import nuri.nuri_server.domain.chat.domain.repository.ChatRecordRepository;
+import nuri.nuri_server.domain.chat.domain.repository.RoomRepository;
 import nuri.nuri_server.domain.chat.domain.repository.UserRoomAdapterEntityRepository;
 import nuri.nuri_server.domain.chat.presentation.dto.req.ChatRecordRequestDto;
-import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
-import nuri.nuri_server.domain.user.domain.entity.UserEntity;
+import nuri.nuri_server.domain.chat.presentation.dto.res.NotificationResponseDto;
+import nuri.nuri_server.global.properties.ChatProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,21 +27,23 @@ public class ChatStompService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRecordRepository chatRecordRepository;
     private final UserRoomAdapterEntityRepository userRoomAdapterEntityRepository;
-    private final KafkaTemplate<String, ChatRecordResponseDto> kafkaTemplate;
+    private final KafkaTemplate<String, NotificationResponseDto> kafkaTemplate;
+    private final RoomRepository roomRepository;
+    private final ChatProperties chatProperties;
 
     @Transactional
     public void sendDirectMessage(String userId, NuriUserDetails principal, ChatRecordRequestDto chatRecordRequestDto) {
-        ChatRecordResponseDto chatRecordResponseDto = saveMessage(principal, chatRecordRequestDto);
-        simpMessagingTemplate.convertAndSendToUser(userId, "/messages", chatRecordResponseDto);
+        NotificationResponseDto notificationResponseDto = saveMessage(principal, chatRecordRequestDto);
+        simpMessagingTemplate.convertAndSendToUser(userId, "/messages", notificationResponseDto);
     }
 
     @Transactional
     public void sendGroupMessage(NuriUserDetails principal, ChatRecordRequestDto chatRecordRequestDto) {
-        ChatRecordResponseDto chatRecordResponseDto = saveMessage(principal, chatRecordRequestDto);
-        kafkaTemplate.send("chat", chatRecordResponseDto);
+        NotificationResponseDto notificationResponseDto = saveMessage(principal, chatRecordRequestDto);
+        kafkaTemplate.send("chat", notificationResponseDto);
     }
 
-    private ChatRecordResponseDto saveMessage(NuriUserDetails principal, ChatRecordRequestDto chatRecordRequestDto) {
+    private NotificationResponseDto saveMessage(NuriUserDetails principal, ChatRecordRequestDto chatRecordRequestDto) {
         UUID uuid = UUID.randomUUID();
 
         Sender sender = Sender.builder()
@@ -59,17 +62,33 @@ public class ChatStompService {
 
         chatRecordRepository.save(chatRecord);
 
-        return ChatRecordResponseDto.builder()
-                .id(uuid)
-                .replyChat(chatRecordRequestDto.replyChat())
-                .sender(sender)
-                .roomId(chatRecordRequestDto.roomId())
+        String picture = sender.getProfile();
+
+        if(!chatRecordRequestDto.roomId().contains(":")) {
+            picture = roomRepository.findPictureById(UUID.fromString(chatRecordRequestDto.roomId()));
+        }
+
+        return NotificationResponseDto.builder()
+                .sendAt(OffsetDateTime.now())
                 .contents(chatRecordRequestDto.contents())
-                .createdAt(OffsetDateTime.now())
+                .roomId(chatRecordRequestDto.roomId())
+                .name(principal.getNickname())
+                .picture(picture)
                 .build();
     }
 
-    public void listenGroupMessage(ChatRecordResponseDto chatRecordResponseDto) {
-        List<UserEntity> users = userRoomAdapterEntityRepository.findUsersByRoomId(UUID.fromString(chatRecordResponseDto.roomId()));
+    public void listenGroupMessage(NotificationResponseDto notificationResponseDto) {
+        UUID roomId = UUID.fromString(notificationResponseDto.roomId());
+
+        List<String> users = userRoomAdapterEntityRepository.findUsersByRoomId(roomId);
+
+        if((long) users.size() > chatProperties.getBroadcastThreshold()) {
+            simpMessagingTemplate.convertAndSend("/messages/" + notificationResponseDto.roomId(), notificationResponseDto);
+        }
+        else {
+            users.forEach(userId ->
+                    simpMessagingTemplate.convertAndSendToUser(userId, "/messages", notificationResponseDto)
+            );
+        }
     }
 }

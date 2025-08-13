@@ -37,4 +37,8 @@ public class NuriUserDetails implements UserDetails, Principal {
     public String getName() {
         return user.getUserId();
     }
+
+    public String getNickname() {
+        return user.getName();
+    }
 }

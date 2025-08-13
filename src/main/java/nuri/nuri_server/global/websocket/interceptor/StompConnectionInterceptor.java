@@ -3,12 +3,12 @@ package nuri.nuri_server.global.websocket.interceptor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.session.domain.entity.SessionEntity;
-import nuri.nuri_server.domain.session.domain.event.DuplicateLoginEvent;
+import nuri.nuri_server.domain.session.infra.event.DuplicateLoginEvent;
 import nuri.nuri_server.domain.session.domain.repository.SessionEntityRepository;
+import nuri.nuri_server.global.properties.SessionProperties;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import nuri.nuri_server.global.security.user.NuriUserDetailsService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.Message;
@@ -29,9 +29,7 @@ public class StompConnectionInterceptor implements ChannelInterceptor {
     private final SessionEntityRepository sessionEntityRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final NuriUserDetailsService nuriUserDetailsService;
-
-    @Value("${session.chat-expiration}")
-    private Long chatExpiration;
+    private final SessionProperties sessionProperties;
 
     @Override
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
@@ -63,7 +61,7 @@ public class StompConnectionInterceptor implements ChannelInterceptor {
                 SessionEntity.builder()
                         .userId(userId)
                         .sessionId(newSessionId)
-                        .timeToLive(chatExpiration)
+                        .timeToLive(sessionProperties.getChatExpiration())
                         .build()
         );
     }

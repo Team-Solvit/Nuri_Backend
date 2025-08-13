@@ -1,9 +1,6 @@
 spring:
   application:
     name: nuri-prod
-  config:
-    import:
-      - optional:file:env/nuri/prod.env[.properties]
 
   datasource:
     driver-class-name:
@@ -18,7 +15,9 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
-
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   graphql:
     schema:
@@ -36,9 +35,15 @@ jwt:
   access-expiration: ${JWT_ACCESS_EXPIRATION}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION}
 
+session:
+  chat-expiration: ${CHAT_EXPIRATION}
+
 redis:
   host: ${REDIS_HOST}
   port: ${REDIS_PORT}
 
-front-url:
-  ${FRONTEND_URL}
+web:
+  front-url: ${FRONTEND_URL}
+
+chat:
+  broadcast-threshold: ${BROADCAST_THRESHOLD}
