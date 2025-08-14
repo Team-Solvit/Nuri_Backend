@@ -8,8 +8,8 @@ import nuri.nuri_server.domain.post.domain.entity.PostFileEntity;
 import nuri.nuri_server.domain.post.domain.repository.HashTagRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostFileRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostRepository;
-import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostRequest;
-import nuri.nuri_server.domain.post.presentation.dto.UpsertPostInfo;
+import nuri.nuri_server.domain.post.presentation.dto.req.PostCreateRequestDto;
+import nuri.nuri_server.domain.post.presentation.dto.common.PostUpsertDto;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
@@ -28,17 +28,17 @@ public class CreatePostService {
     private final HashTagRepository hashTagRepository;
 
     @Transactional
-    public void createPost(CreatePostRequest createPostRequest, NuriUserDetails nuriUserDetails) {
+    public void createPost(PostCreateRequestDto postCreateRequestDto, NuriUserDetails nuriUserDetails) {
         log.info("게시물 생성 요청: userId={}, title={}",
                 nuriUserDetails.getUser().getId(),
-                createPostRequest.postInfo().title());
-        PostEntity post = savePost(nuriUserDetails.getUser(), createPostRequest.postInfo());
+                postCreateRequestDto.postInfo().title());
+        PostEntity post = savePost(nuriUserDetails.getUser(), postCreateRequestDto.postInfo());
         log.info("게시물 저장 완료: postId={}", post.getId());
-        savePostFiles(post, createPostRequest.files());
-        saveHashTags(post, createPostRequest.hashTags());
+        savePostFiles(post, postCreateRequestDto.files());
+        saveHashTags(post, postCreateRequestDto.hashTags());
     }
 
-    private PostEntity savePost(UserEntity user, UpsertPostInfo postInfo) {
+    private PostEntity savePost(UserEntity user, PostUpsertDto postInfo) {
         PostEntity post = PostEntity.builder()
                 .user(user)
                 .title(postInfo.title())

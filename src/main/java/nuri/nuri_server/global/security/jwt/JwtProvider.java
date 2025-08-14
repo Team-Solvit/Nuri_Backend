@@ -2,7 +2,7 @@ package nuri.nuri_server.global.security.jwt;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
+import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponseDto;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.role.Role;
 import nuri.nuri_server.global.properties.JwtProperties;
@@ -22,13 +22,13 @@ public class JwtProvider {
     private final Long refreshExpiration;
     private final CookieManager cookieManager;
 
-    public TokenResponse createTokenResponse(UserEntity userEntity) {
+    public TokenResponseDto createTokenResponse(UserEntity userEntity) {
         String accessToken = createAccessToken(userEntity.getUserId(), userEntity.getRole());
         String refreshToken = createRefreshToken(userEntity.getUserId());
 
         String refreshTokenCookie = cookieManager.createRefreshTokenCookie(userEntity.getUserId(), refreshToken);
 
-        return new TokenResponse(accessToken, refreshTokenCookie);
+        return new TokenResponseDto(accessToken, refreshTokenCookie);
     }
 
     @Autowired

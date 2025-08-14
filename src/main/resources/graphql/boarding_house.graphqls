@@ -1,0 +1,123 @@
+extend type Query {
+    getMyBoardingHouse : BoardingHouse
+    getBoardingRoomAndBoardersInfoList(userId : String) : [BoardingRoomAndBoarders]
+    getBoardingRoom(roomId : String!) : BoardingRoom
+    getBoardingRoomCommentList(boardingRoomCommentListReadInput : BoardingRoomCommentListReadInput!) : [BoardingRoomComment]!
+}
+
+extend type Mutation {
+    createBoardingRoom(boardingRoomCreateInput : BoardingRoomCreateInput!) : String
+    updateBoardingRoom(boardingRoomUpdateInput : BoardingRoomUpdateInput!) : String
+    deleteBoardingRoom(roomId : String!) : String
+
+    likeRoom(roomId : String!) : String
+    unlikeRoom(roomId : String!) : String
+
+    createBoardingRoomComment(boardingRoomCommentCreateInput : BoardingRoomCommentCreateInput) : String
+    updateBoardingRoomComment(boardingRoomCommentUpdateInput : BoardingRoomCommentUpdateInput!) : String
+    deleteBoardingRoomComment(commentId : String!) : String
+}
+
+input BoardingRoomCommentUpdateInput {
+    commentId : String!
+    content : String!
+}
+
+input BoardingRoomCommentListReadInput {
+    start : Int!
+    roomId : String!
+}
+
+input BoardingRoomCommentCreateInput {
+    roomId : String!
+    contents : String!
+}
+
+input BoardingRoomCreateInput {
+    files : [String!]!
+    boardingRoomInfo : BoardingRoomUpsertInfo!
+    contractPeriod : [Int!]!,
+    options : [String]!
+}
+
+input BoardingRoomUpdateInput {
+    roomId : String!
+    files : [String!]!
+    boardingRoomInfo : BoardingRoomUpsertInfo!
+    contractPeriod : [Int!]!,
+    options : [String]!
+}
+
+input BoardingRoomUpsertInfo {
+    name : String!
+    description : String
+    monthlyRent : Int!
+    headCount : Int!
+}
+
+type BoardingRoomComment {
+    commentId : String!
+    roomId : String
+    commenter : User
+    content : String!
+}
+
+type BoardingRoomAndBoarders {
+    room : BoardingRoom
+    boarders : [Boarder]
+}
+
+type BoardingRoom {
+    roomId : String
+    boardingHouse : BoardingHouse
+    name : String
+    description : String
+    monthlyRent : Int
+    headCount : Int
+    status : RoomStatus
+    boardingRoomOption : [BoardingRoomOption]
+    boardingRoomFile : [BoardingRoomFile]
+    contractPeriod : [ContractPeriod]
+    day : String
+}
+
+type BoardingHouse {
+    houseId : String
+    host : Host
+    name : String
+    location : String
+    houseCallNumber : String
+    description : String
+    nearestStation : String
+    nearestSchool : String
+    gender : Gender
+    isMealProvided : Boolean
+}
+
+enum Gender {
+    MALE, FEMALE, ALL
+}
+
+type BoardingRoomOption {
+    optionId : String
+    roomId : String
+    name : String
+}
+
+type BoardingRoomFile {
+    fileId : String
+    roomId : String
+    url : String
+}
+
+type ContractPeriod {
+    contractPeriodId : String
+    roomId : String
+    contractPeriod : Int
+}
+
+enum RoomStatus {
+    EMPTY_ROOM
+    FULL
+    REMAIN
+}

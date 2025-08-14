@@ -1,7 +1,7 @@
 package nuri.nuri_server.domain.auth.oauth2.infra.builder.impl;
 
 import nuri.nuri_server.domain.auth.oauth2.infra.builder.OAuthLinkBuilder;
-import nuri.nuri_server.global.properties.OAuth2Properties;
+import nuri.nuri_server.global.properties.OAuth2ProviderListProperties;
 import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +10,8 @@ public class KakaoOAuthLinkBuilder implements OAuthLinkBuilder {
     private final String clientId;
     private final String redirectUri;
 
-    public KakaoOAuthLinkBuilder(OAuth2Properties oauth2Properties) {
-        OAuth2ProviderProperties kakaoProps = oauth2Properties.getKakao();
+    public KakaoOAuthLinkBuilder(OAuth2ProviderListProperties oauth2ProviderListProperties) {
+        OAuth2ProviderProperties kakaoProps = oauth2ProviderListProperties.getKakao();
         this.clientId = kakaoProps.getClientId();
         this.redirectUri = kakaoProps.getRedirectUrl();
     }
