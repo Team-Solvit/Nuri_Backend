@@ -2,7 +2,7 @@ package nuri.nuri_server.domain.auth.oauth2.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
+import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponseDto;
 import nuri.nuri_server.domain.auth.oauth2.infra.client.OAuthClient;
 import nuri.nuri_server.domain.auth.oauth2.infra.client.dto.OAuth2InformationResponse;
 import nuri.nuri_server.domain.auth.oauth2.domain.entity.OAuthSignUpCacheUser;
@@ -11,8 +11,8 @@ import nuri.nuri_server.domain.auth.oauth2.application.service.dto.OAuthLoginVal
 import nuri.nuri_server.domain.auth.oauth2.application.service.exception.OAuthProviderNotFoundException;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
+import nuri.nuri_server.global.properties.OAuth2NewUserProperties;
 import nuri.nuri_server.global.security.jwt.JwtProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -26,9 +26,7 @@ public class OAuth2LoginService {
     private final UserRepository userRepository;
     private final OAuthSignUpCacheUserRepository oauthSignUpCacheUserRepository;
     private final JwtProvider jwtProvider;
-
-    @Value("${oauth2.new-user.caching-time}")
-    private Long cachingTime;
+    private final OAuth2NewUserProperties oauth2NewUserProperties;
 
     public String getAccessToken(String code, String provider) {
         OAuthClient client = selectOAuth2Client(provider);
@@ -45,13 +43,13 @@ public class OAuth2LoginService {
     }
 
     private OAuthLoginValue createLoginResponse(UserEntity user) {
-        TokenResponse tokenResponse = jwtProvider.createTokenResponse(user);
+        TokenResponseDto tokenResponseDto = jwtProvider.createTokenResponse(user);
 
         log.info("사용자 {}님이 로그인 하셨습니다.", user.getUserId());
 
         return OAuthLoginValue.builder()
-                .accessToken(tokenResponse.accessToken())
-                .refreshToken(tokenResponse.refreshTokenCookie())
+                .accessToken(tokenResponseDto.accessToken())
+                .refreshToken(tokenResponseDto.refreshTokenCookie())
                 .isNewUser(false)
                 .build();
     }
@@ -64,7 +62,7 @@ public class OAuth2LoginService {
                 .profile(userInfo.profile())
                 .id(userInfo.id())
                 .provider(provider)
-                .timeToLive(cachingTime)
+                .timeToLive(oauth2NewUserProperties.getCachingTime())
                 .build();
 
         oauthSignUpCacheUserRepository.save(oauthSignUpCacheUser);

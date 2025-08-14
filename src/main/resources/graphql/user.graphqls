@@ -1,0 +1,31 @@
+type User {
+    id : String
+    userId : String
+    country : String
+    language : String
+    name : String
+    email : String
+    introduce : String
+    profile : String
+    role : Role
+}
+
+enum Role {
+    ANONYMOUS
+    USER
+    INTERNATIONAL_STUDENT
+    HOST
+    THIRD_PARTY
+    OPERATOR
+}
+
+type Host {
+    callNumber : String
+    user : User
+}
+
+type Boarder {
+    callNumber : String
+    gender : String
+    user : User
+}

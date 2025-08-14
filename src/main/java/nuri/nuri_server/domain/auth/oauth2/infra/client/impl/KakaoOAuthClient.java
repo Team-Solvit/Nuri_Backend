@@ -8,7 +8,7 @@ import nuri.nuri_server.global.feign.oauth2.req.KakaoTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.KakaoInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.information.KakaoProperties;
 import nuri.nuri_server.global.feign.oauth2.res.token.KakaoTokenResponse;
-import nuri.nuri_server.global.properties.OAuth2Properties;
+import nuri.nuri_server.global.properties.OAuth2ProviderListProperties;
 import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +19,10 @@ public class KakaoOAuthClient implements OAuthClient {
     private final KakaoOAuth2UserInfoClient kakaoOAuth2UserInfoClient;
     private final OAuth2ProviderProperties kakaoProps;
 
-    public KakaoOAuthClient(OAuth2Properties oAuth2Properties, KakaoOAuth2TokenClient kakaoOAuth2TokenClient, KakaoOAuth2UserInfoClient kakaoOAuth2UserInfoClient) {
+    public KakaoOAuthClient(OAuth2ProviderListProperties oAuth2ProviderListProperties, KakaoOAuth2TokenClient kakaoOAuth2TokenClient, KakaoOAuth2UserInfoClient kakaoOAuth2UserInfoClient) {
         this.kakaoOAuth2TokenClient = kakaoOAuth2TokenClient;
         this.kakaoOAuth2UserInfoClient = kakaoOAuth2UserInfoClient;
-        kakaoProps = oAuth2Properties.getKakao();
+        kakaoProps = oAuth2ProviderListProperties.getKakao();
     }
 
     @Override

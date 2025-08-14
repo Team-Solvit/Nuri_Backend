@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.boarding_house.domain.entity.*;
 import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingHouseNotFoundException;
 import nuri.nuri_server.domain.boarding_house.domain.repository.*;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.BoardingRoomUpsertInfo;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomRequest;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomUpsertDto;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomCreateRequestDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +26,13 @@ public class CreateBoardingHouseService {
     private final BoardingRoomOptionRepository boardingRoomOptionRepository;
 
     @Transactional
-    public void createBoardingRoom(NuriUserDetails nuriUserDetails, CreateBoardingRoomRequest createBoardingRoomRequest) {
+    public void createBoardingRoom(NuriUserDetails nuriUserDetails, BoardingRoomCreateRequestDto boardingRoomCreateRequestDto) {
         log.info("하숙방 추가 요청: userId={}", nuriUserDetails.getUser().getId());
         BoardingHouseEntity house = getBoardingHouseByHostId(nuriUserDetails.getUser().getId());
-        BoardingRoomEntity room = boardingRoomRepository.save(toBoardingRoomEntity(house, createBoardingRoomRequest.boardingRoomInfo()));
-        boardingRoomFileRepository.saveAll(toBoardingRoomFileList(room, createBoardingRoomRequest.files()));
-        contractPeriodRepository.saveAll(toContractPeriodList(room, createBoardingRoomRequest.contractPeriod()));
-        boardingRoomOptionRepository.saveAll(toOptionList(room, createBoardingRoomRequest.options()));
+        BoardingRoomEntity room = boardingRoomRepository.save(toBoardingRoomEntity(house, boardingRoomCreateRequestDto.boardingRoomInfo()));
+        boardingRoomFileRepository.saveAll(toBoardingRoomFileList(room, boardingRoomCreateRequestDto.files()));
+        contractPeriodRepository.saveAll(toContractPeriodList(room, boardingRoomCreateRequestDto.contractPeriod()));
+        boardingRoomOptionRepository.saveAll(toOptionList(room, boardingRoomCreateRequestDto.options()));
         log.info("하숙방 추가 완료: roomName={}", room.getName());
     }
 
@@ -41,7 +41,7 @@ public class CreateBoardingHouseService {
                 .orElseThrow(BoardingHouseNotFoundException::new);
     }
 
-    private BoardingRoomEntity toBoardingRoomEntity(BoardingHouseEntity boardingHouse, BoardingRoomUpsertInfo boardingRoom) {
+    private BoardingRoomEntity toBoardingRoomEntity(BoardingHouseEntity boardingHouse, BoardingRoomUpsertDto boardingRoom) {
         return BoardingRoomEntity.builder()
                 .boardingHouse(boardingHouse)
                 .name(boardingRoom.name())

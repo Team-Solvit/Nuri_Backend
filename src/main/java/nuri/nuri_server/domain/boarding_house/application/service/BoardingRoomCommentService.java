@@ -7,14 +7,14 @@ import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
 import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingRoomNotFoundException;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomCommentRepository;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomRepository;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomCommentInfo;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.CreateBoardingRoomCommentRequest;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.GetBoardingRoomCommentListRequest;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.UpdateBoardingRoomCommentRequest;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingRoomCommentDto;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomCommentCreateRequestDto;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomCommentListReadRequestDto;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomCommentUpdateRequestDto;
 import nuri.nuri_server.domain.post.domain.exception.CommentNotFoundException;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
+import nuri.nuri_server.global.properties.PageSizeProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,36 +31,36 @@ import java.util.UUID;
 public class BoardingRoomCommentService {
     private final BoardingRoomCommentRepository boardingRoomCommentRepository;
     private final BoardingRoomRepository boardingRoomRepository;
-
-    @Value("${page-size.comment}")
-    private Integer size;
+    private final PageSizeProperties pageSizeProperties;
 
     @Transactional
-    public void createComment(NuriUserDetails nuriUserDetails, CreateBoardingRoomCommentRequest createBoardingRoomCommentRequest) {
+    public void createComment(NuriUserDetails nuriUserDetails, BoardingRoomCommentCreateRequestDto boardingRoomCommentCreateRequestDto) {
         UserEntity user = nuriUserDetails.getUser();
-        log.info("하숙방 댓글 작성 요청 : userId={}, roomId={}", user.getId() , createBoardingRoomCommentRequest.roomId());
+        log.info("하숙방 댓글 작성 요청 : userId={}, roomId={}", user.getId() , boardingRoomCommentCreateRequestDto.roomId());
 
-        BoardingRoomEntity room = boardingRoomRepository.findById(createBoardingRoomCommentRequest.roomId())
+        BoardingRoomEntity room = boardingRoomRepository.findById(boardingRoomCommentCreateRequestDto.roomId())
                 .orElseThrow(BoardingRoomNotFoundException::new);
 
         BoardingRoomCommentEntity comment = BoardingRoomCommentEntity.builder()
                 .boardingRoom(room)
                 .user(user)
-                .contents(createBoardingRoomCommentRequest.contents())
+                .contents(boardingRoomCommentCreateRequestDto.contents())
                 .build();
 
         boardingRoomCommentRepository.save(comment);
-        log.info("하숙방 댓글 작성 완료 : userId={}, roomId={}", user.getId() , createBoardingRoomCommentRequest.roomId());
+        log.info("하숙방 댓글 작성 완료 : userId={}, roomId={}", user.getId() , boardingRoomCommentCreateRequestDto.roomId());
     }
 
     @Transactional(readOnly = true)
-    public List<BoardingRoomCommentInfo> getCommentList(GetBoardingRoomCommentListRequest getBoardingRoomCommentListRequest) {
-        log.info("댓글 리스트 조회 요청 : roomId={}", getBoardingRoomCommentListRequest.roomId());
-        Pageable pageable = PageRequest.of(getBoardingRoomCommentListRequest.start(), size, Sort.by("updatedAt").descending());
-        Page<BoardingRoomCommentEntity> pageCommentEntities = boardingRoomCommentRepository.findAllByBoardingRoomId(getBoardingRoomCommentListRequest.roomId(), pageable);
+    public List<BoardingRoomCommentDto> getCommentList(BoardingRoomCommentListReadRequestDto boardingRoomCommentListReadRequestDto) {
+        log.info("댓글 리스트 조회 요청 : roomId={}", boardingRoomCommentListReadRequestDto.roomId());
 
-        List<BoardingRoomCommentInfo> results = pageCommentEntities.getContent().stream()
-                .map(BoardingRoomCommentInfo::from)
+        Integer size = pageSizeProperties.getComment();
+        Pageable pageable = PageRequest.of(boardingRoomCommentListReadRequestDto.start(), size, Sort.by("updatedAt").descending());
+        Page<BoardingRoomCommentEntity> pageCommentEntities = boardingRoomCommentRepository.findAllByBoardingRoomId(boardingRoomCommentListReadRequestDto.roomId(), pageable);
+
+        List<BoardingRoomCommentDto> results = pageCommentEntities.getContent().stream()
+                .map(BoardingRoomCommentDto::from)
                 .toList();
 
         log.info("하숙방 댓글 리스트 조회 완료 : commentCount={}", results.size());
@@ -68,17 +68,17 @@ public class BoardingRoomCommentService {
     }
 
     @Transactional
-    public void updateComment(NuriUserDetails nuriUserDetails, UpdateBoardingRoomCommentRequest updateBoardingRoomCommentRequest) {
+    public void updateComment(NuriUserDetails nuriUserDetails, BoardingRoomCommentUpdateRequestDto boardingRoomCommentUpdateRequestDto) {
         UserEntity user = nuriUserDetails.getUser();
-        log.info("하숙방 댓글 수정 요청 : userId={}, commentId={}", user.getId() , updateBoardingRoomCommentRequest.commentId());
+        log.info("하숙방 댓글 수정 요청 : userId={}, commentId={}", user.getId() , boardingRoomCommentUpdateRequestDto.commentId());
 
-        BoardingRoomCommentEntity comment = boardingRoomCommentRepository.findById(updateBoardingRoomCommentRequest.commentId())
+        BoardingRoomCommentEntity comment = boardingRoomCommentRepository.findById(boardingRoomCommentUpdateRequestDto.commentId())
                 .orElseThrow(CommentNotFoundException::new);
 
         comment.validateCommenter(user);
 
-        comment.edit(updateBoardingRoomCommentRequest.content());
-        log.info("하숙방 댓글 수정 완료 : commentId={}, content={}",  updateBoardingRoomCommentRequest.commentId(), comment.getContents());
+        comment.edit(boardingRoomCommentUpdateRequestDto.content());
+        log.info("하숙방 댓글 수정 완료 : commentId={}, content={}",  boardingRoomCommentUpdateRequestDto.commentId(), comment.getContents());
     }
 
     @Transactional

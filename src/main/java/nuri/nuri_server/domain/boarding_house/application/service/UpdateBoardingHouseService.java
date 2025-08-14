@@ -11,8 +11,8 @@ import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomFile
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomOptionRepository;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomRepository;
 import nuri.nuri_server.domain.boarding_house.domain.repository.ContractPeriodRepository;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.BoardingRoomUpsertInfo;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.request.UpdateBoardingRoomRequest;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomUpsertDto;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomUpdateRequest;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,16 +29,16 @@ public class UpdateBoardingHouseService {
     private final ContractPeriodRepository contractPeriodRepository;
 
     @Transactional
-    public void updateBoardingRoomInfo(NuriUserDetails nuriUserDetails, UpdateBoardingRoomRequest updateBoardingRoomRequest) {
+    public void updateBoardingRoomInfo(NuriUserDetails nuriUserDetails, BoardingRoomUpdateRequest boardingRoomUpdateRequest) {
         log.info("하숙방 정보 수정 요청: userId={}, roomId={}",
-                nuriUserDetails.getId(), updateBoardingRoomRequest.roomId());
+                nuriUserDetails.getId(), boardingRoomUpdateRequest.roomId());
 
-        BoardingRoomEntity room = boardingRoomRepository.findById(updateBoardingRoomRequest.roomId())
+        BoardingRoomEntity room = boardingRoomRepository.findById(boardingRoomUpdateRequest.roomId())
                 .orElseThrow(BoardingRoomNotFoundException::new);
 
         room.validateHost(nuriUserDetails.getUser());
 
-        BoardingRoomUpsertInfo roomInfo = updateBoardingRoomRequest.boardingRoomInfo();
+        BoardingRoomUpsertDto roomInfo = boardingRoomUpdateRequest.boardingRoomInfo();
         room.updateBoardingRoom(
                 roomInfo.name(),
                 roomInfo.description(),
@@ -46,9 +46,9 @@ public class UpdateBoardingHouseService {
                 roomInfo.headCount()
         );
 
-        updateContractPeriod(updateBoardingRoomRequest.contractPeriod(), room);
-        updateBoardingRoomOption(updateBoardingRoomRequest.options(), room);
-        updateBoardingRoomFile(updateBoardingRoomRequest.files(), room);
+        updateContractPeriod(boardingRoomUpdateRequest.contractPeriod(), room);
+        updateBoardingRoomOption(boardingRoomUpdateRequest.options(), room);
+        updateBoardingRoomFile(boardingRoomUpdateRequest.files(), room);
 
         log.info("하숙방 정보 수정 요청: userId={}, roomId={}",
                 nuriUserDetails.getId(), room.getId());

@@ -8,13 +8,13 @@ import nuri.nuri_server.domain.post.domain.exception.CommentNotFoundException;
 import nuri.nuri_server.domain.post.domain.exception.PostNotFoundException;
 import nuri.nuri_server.domain.post.domain.repository.PostCommentRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostRepository;
-import nuri.nuri_server.domain.post.presentation.dto.PostCommentInfo;
-import nuri.nuri_server.domain.post.presentation.dto.request.GetPostCommentListRequest;
-import nuri.nuri_server.domain.post.presentation.dto.request.CreatePostCommentRequest;
-import nuri.nuri_server.domain.post.presentation.dto.request.UpdatePostCommentRequest;
+import nuri.nuri_server.domain.post.presentation.dto.common.PostCommentDto;
+import nuri.nuri_server.domain.post.presentation.dto.req.PostCommentListReadRequestDto;
+import nuri.nuri_server.domain.post.presentation.dto.req.PostCommentCreateRequestDto;
+import nuri.nuri_server.domain.post.presentation.dto.req.PostCommentUpdateRequestDto;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
+import nuri.nuri_server.global.properties.PageSizeProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,36 +31,36 @@ import java.util.UUID;
 public class PostCommentService {
     private final PostCommentRepository postCommentRepository;
     private final PostRepository postRepository;
-
-    @Value("${page-size.comment}")
-    private Integer size;
+    private final PageSizeProperties pageSizeProperties;
 
     @Transactional
-    public void createComment(CreatePostCommentRequest createPostCommentRequest, NuriUserDetails nuriUserDetails) {
+    public void createComment(PostCommentCreateRequestDto postCommentCreateRequestDto, NuriUserDetails nuriUserDetails) {
         UserEntity user = nuriUserDetails.getUser();
-        log.info("게시물 댓글 작성 요청 : userId={}, postId={}", user.getId() , createPostCommentRequest.postId());
+        log.info("게시물 댓글 작성 요청 : userId={}, postId={}", user.getId() , postCommentCreateRequestDto.postId());
 
-        PostEntity post = postRepository.findById(createPostCommentRequest.postId())
+        PostEntity post = postRepository.findById(postCommentCreateRequestDto.postId())
                 .orElseThrow(PostNotFoundException::new);
 
         PostCommentEntity postCommentEntity = PostCommentEntity.builder()
                 .post(post)
                 .user(user)
-                .contents(createPostCommentRequest.contents())
+                .contents(postCommentCreateRequestDto.contents())
                 .build();
 
         postCommentRepository.save(postCommentEntity);
-        log.info("게시물 댓글 작성 완료 : userId={}, postId={}", user.getId() , createPostCommentRequest.postId());
+        log.info("게시물 댓글 작성 완료 : userId={}, postId={}", user.getId() , postCommentCreateRequestDto.postId());
     }
 
     @Transactional(readOnly = true)
-    public List<PostCommentInfo> getCommentList(GetPostCommentListRequest getPostCommentListRequest) {
-        log.info("게시물 댓글 리스트 조회 요청 : postId={}", getPostCommentListRequest.postId());
-        Pageable pageable = PageRequest.of(getPostCommentListRequest.start(), size, Sort.by("updatedAt").descending());
-        Page<PostCommentEntity> pageCommentEntities = postCommentRepository.findAllByPostId(getPostCommentListRequest.postId(), pageable);
+    public List<PostCommentDto> getCommentList(PostCommentListReadRequestDto postCommentListReadRequestDto) {
+        log.info("게시물 댓글 리스트 조회 요청 : postId={}", postCommentListReadRequestDto.postId());
 
-        List<PostCommentInfo> results = pageCommentEntities.getContent().stream()
-                .map(PostCommentInfo::from)
+        Integer size = pageSizeProperties.getComment();
+        Pageable pageable = PageRequest.of(postCommentListReadRequestDto.start(), size, Sort.by("updatedAt").descending());
+        Page<PostCommentEntity> pageCommentEntities = postCommentRepository.findAllByPostId(postCommentListReadRequestDto.postId(), pageable);
+
+        List<PostCommentDto> results = pageCommentEntities.getContent().stream()
+                .map(PostCommentDto::from)
                 .toList();
 
         log.info("게시물 댓글 리스트 조회 완료 : commentCount={}", results.size());
@@ -68,17 +68,17 @@ public class PostCommentService {
     }
 
     @Transactional
-    public void updateComment(UpdatePostCommentRequest updatePostCommentRequest, NuriUserDetails nuriUserDetails) {
+    public void updateComment(PostCommentUpdateRequestDto postCommentUpdateRequestDto, NuriUserDetails nuriUserDetails) {
         UserEntity user = nuriUserDetails.getUser();
-        log.info("게시물 댓글 수정 요청 : userId={}, commentId={}", user.getId() , updatePostCommentRequest.commentId());
+        log.info("게시물 댓글 수정 요청 : userId={}, commentId={}", user.getId() , postCommentUpdateRequestDto.commentId());
 
-        PostCommentEntity comment = postCommentRepository.findById(updatePostCommentRequest.commentId())
+        PostCommentEntity comment = postCommentRepository.findById(postCommentUpdateRequestDto.commentId())
                 .orElseThrow(CommentNotFoundException::new);
 
         comment.validateCommenter(user);
 
-        comment.edit(updatePostCommentRequest.content());
-        log.info("게시물 댓글 수정 완료 : commentId={}, content={}",  updatePostCommentRequest.commentId(), comment.getContents());
+        comment.edit(postCommentUpdateRequestDto.content());
+        log.info("게시물 댓글 수정 완료 : commentId={}, content={}",  postCommentUpdateRequestDto.commentId(), comment.getContents());
     }
 
     @Transactional

@@ -7,10 +7,11 @@ import nuri.nuri_server.domain.post.domain.entity.PostEntity;
 import nuri.nuri_server.domain.post.domain.entity.PostFileEntity;
 import nuri.nuri_server.domain.post.domain.exception.PostNotFoundException;
 import nuri.nuri_server.domain.post.domain.repository.*;
-import nuri.nuri_server.domain.post.presentation.dto.response.GetPostThumbnailResponse;
-import nuri.nuri_server.domain.post.presentation.dto.SnsPostInfo;
-import nuri.nuri_server.domain.post.presentation.dto.request.GetUserPostListRequest;
-import nuri.nuri_server.domain.post.presentation.dto.response.GetPostListResponse;
+import nuri.nuri_server.domain.post.presentation.dto.res.PostThumbnailGetResponseDto;
+import nuri.nuri_server.domain.post.presentation.dto.common.SnsPost;
+import nuri.nuri_server.domain.post.presentation.dto.req.UserPostListReadRequestDto;
+import nuri.nuri_server.domain.post.presentation.dto.res.PostListReadResponseDto;
+import nuri.nuri_server.global.properties.PageSizeProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,20 +32,20 @@ public class GetPostService {
     private final PostRepository postRepository;
     private final PostFileRepository postFileRepository;
     private final SnsPostQueryService snsPostQueryService;
-    private final Integer userPostSize = 20;
+    private final PageSizeProperties pageSizeProperties;
 
     @Transactional(readOnly = true)
-    public List<GetPostListResponse> getPostList(Integer start, NuriUserDetails nuriUserDetails) {
+    public List<PostListReadResponseDto> getPostList(Integer start, NuriUserDetails nuriUserDetails) {
         log.info("게시물 리스트 요청: start={}", start);
 
-        List<GetPostListResponse> snsPosts = recommendPostList.getRecommendSnsPostList(start, nuriUserDetails);
-        List<GetPostListResponse> boardingPosts = recommendPostList.getRecommendBoardingPostList(start, nuriUserDetails);
+        List<PostListReadResponseDto> snsPosts = recommendPostList.getRecommendSnsPostList(start, nuriUserDetails);
+        List<PostListReadResponseDto> boardingPosts = recommendPostList.getRecommendBoardingPostList(start, nuriUserDetails);
 
         log.debug("게시물 추천 결과: snsPostCount={}, boardingPostCount={}",
                 snsPosts.size(), boardingPosts.size());
 
         int boardingIndex = 0;
-        List<GetPostListResponse> results = new ArrayList<>();
+        List<PostListReadResponseDto> results = new ArrayList<>();
 
         for(int i = 0; i < snsPosts.size(); i++) {
             results.add(snsPosts.get(i));
@@ -62,13 +63,14 @@ public class GetPostService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetPostThumbnailResponse> getUserPostList(GetUserPostListRequest getUserPostListRequest) {
-        log.info("유저 게시물 리스트 요청: userId={}", getUserPostListRequest.userId());
+    public List<PostThumbnailGetResponseDto> getUserPostList(UserPostListReadRequestDto userPostListReadRequestDto) {
+        log.info("유저 게시물 리스트 요청: userId={}", userPostListReadRequestDto.userId());
 
-        Pageable pageable = PageRequest.of(getUserPostListRequest.start(), userPostSize, Sort.by("updatedAt").descending());
-        Page<PostEntity> pagePostEntities = postRepository.findAllByUserId(getUserPostListRequest.userId(), pageable);
+        Integer size = pageSizeProperties.getUserPost();
+        Pageable pageable = PageRequest.of(userPostListReadRequestDto.start(), size, Sort.by("updatedAt").descending());
+        Page<PostEntity> pagePostEntities = postRepository.findAllByUserId(userPostListReadRequestDto.userId(), pageable);
 
-        List<GetPostThumbnailResponse> results = pagePostEntities.getContent().stream()
+        List<PostThumbnailGetResponseDto> results = pagePostEntities.getContent().stream()
                 .map(this::setPostThumbnail)
                 .toList();
 
@@ -76,23 +78,23 @@ public class GetPostService {
         return results;
     }
 
-    private GetPostThumbnailResponse setPostThumbnail(PostEntity post) {
+    private PostThumbnailGetResponseDto setPostThumbnail(PostEntity post) {
         PostFileEntity postFile = postFileRepository.findFirstByPostIdOrderByCreatedAtAsc(post.getId())
                 .orElseThrow(PostNotFoundException::new);
 
-        return GetPostThumbnailResponse.builder()
+        return PostThumbnailGetResponseDto.builder()
                 .postId(post.getId())
                 .thumbnail(postFile.getMediaUrl())
                 .build();
     }
 
     @Transactional(readOnly = true)
-    public SnsPostInfo getPost(UUID postId) {
+    public SnsPost getPost(UUID postId) {
         log.info("게시물 자세히 보기 요청: postId={}", postId);
         PostEntity post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        SnsPostInfo snsPostInfo = snsPostQueryService.getSnsPost(post);
+        SnsPost snsPostInfo = snsPostQueryService.getSnsPost(post);
 
         log.info("게시물 자세히 보기 완료 : post={}", snsPostInfo.toString());
         return snsPostInfo;

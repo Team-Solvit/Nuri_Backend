@@ -4,10 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.auth.local.application.service.exception.PasswordMismatchException;
-import nuri.nuri_server.domain.auth.local.presentation.dto.req.LoginRequest;
-import nuri.nuri_server.domain.auth.local.presentation.dto.req.SignupRequest;
-import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreement;
-import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
+import nuri.nuri_server.domain.auth.local.presentation.dto.req.LoginRequestDto;
+import nuri.nuri_server.domain.auth.local.presentation.dto.req.SignupRequestDto;
+import nuri.nuri_server.domain.auth.local.presentation.dto.req.UserAgreementDto;
+import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponseDto;
 import nuri.nuri_server.domain.user.domain.entity.CountryEntity;
 import nuri.nuri_server.domain.user.domain.exception.CountryNotFoundException;
 import nuri.nuri_server.domain.user.domain.exception.DuplicateUserException;
@@ -42,29 +42,29 @@ public class AuthService {
     private final LanguageRepository languageRepository;
 
     @Transactional
-    public void signup(SignupRequest signupRequest) {
-        validateDuplicateUserId(signupRequest.id());
-        String userId = signupRequest.id();
-        String password = passwordEncoder.encode(signupRequest.password());
-        CountryEntity country = countryRepository.findByName(signupRequest.country())
-                .orElseThrow(() -> new CountryNotFoundException(signupRequest.country()));
+    public void signup(SignupRequestDto signupRequestDto) {
+        validateDuplicateUserId(signupRequestDto.id());
+        String userId = signupRequestDto.id();
+        String password = passwordEncoder.encode(signupRequestDto.password());
+        CountryEntity country = countryRepository.findByName(signupRequestDto.country())
+                .orElseThrow(() -> new CountryNotFoundException(signupRequestDto.country()));
 
-        LanguageEntity language = languageRepository.findByName(signupRequest.language())
-                .orElseThrow(() -> new LanguageNotFoundException(signupRequest.language()));
+        LanguageEntity language = languageRepository.findByName(signupRequestDto.language())
+                .orElseThrow(() -> new LanguageNotFoundException(signupRequestDto.language()));
 
         UserEntity userEntity = UserEntity.signupBuilder()
                 .userId(userId)
                 .country(country)
                 .language(language)
-                .name(signupRequest.name())
+                .name(signupRequestDto.name())
                 .password(password)
-                .email(signupRequest.email())
+                .email(signupRequestDto.email())
                 .role(Role.USER)
                 .build();
 
         userRepository.save(userEntity);
 
-        userAgree(userEntity, signupRequest.userAgreement());
+        userAgree(userEntity, signupRequestDto.userAgreement());
     }
 
     public void validateDuplicateUserId(String userId) {
@@ -72,9 +72,9 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse login(LoginRequest loginRequest) {
-        UserEntity userEntity = userRepository.findByUserId(loginRequest.id()).orElseThrow(() -> new UserNotFoundException(loginRequest.id()));
-        if(!passwordEncoder.matches(loginRequest.password(), userEntity.getPassword())) {
+    public TokenResponseDto login(LoginRequestDto loginRequestDto) {
+        UserEntity userEntity = userRepository.findByUserId(loginRequestDto.id()).orElseThrow(() -> new UserNotFoundException(loginRequestDto.id()));
+        if(!passwordEncoder.matches(loginRequestDto.password(), userEntity.getPassword())) {
             throw new PasswordMismatchException();
         }
 
@@ -98,7 +98,7 @@ public class AuthService {
         return jwtProvider.createAccessToken(userId, role);
     }
 
-    private void userAgree(UserEntity user, UserAgreement userAgreement) {
+    private void userAgree(UserEntity user, UserAgreementDto userAgreement) {
         UserAgreementEntity userAgreementEntity = UserAgreementEntity.userAgreeBuilder()
                 .user(user)
                 .agreedTermsOfService(userAgreement.agreedTermsOfService())
