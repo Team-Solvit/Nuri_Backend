@@ -1,5 +1,5 @@
 extend type Query {
-    getRoomContractList(roomId : String) : RoomContract
+    getRoomContractList(roomId : String!) : RoomContract
 }
 
 enum ContractStatus {

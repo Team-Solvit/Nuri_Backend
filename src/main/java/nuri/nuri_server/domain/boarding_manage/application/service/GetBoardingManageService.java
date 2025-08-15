@@ -7,7 +7,6 @@ import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingHo
 import nuri.nuri_server.domain.boarding_manage.domain.entity.BoardingManageWorkEntity;
 import nuri.nuri_server.domain.boarding_manage.domain.repository.BoardingManageWorkRepository;
 import nuri.nuri_server.domain.boarding_manage.presentation.dto.common.BoardingManageWorkDto;
-import nuri.nuri_server.domain.boarding_manage.presentation.dto.common.BoardingRelationshipDto;
 import nuri.nuri_server.domain.boarding_manage.presentation.dto.req.BoardingManageWorkReadRequestDto;
 import nuri.nuri_server.domain.contract.application.service.ContractQueryService;
 import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;

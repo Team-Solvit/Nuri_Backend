@@ -1,11 +1,16 @@
 extend type Query {
     getManageBoardingHouseList : [BoardingHouse]
-    getManageBoardingRoomList(houseId : String) : [RoomContract]
+    getManageBoardingRoomList(houseId : String!) : [RoomContract]
     getBoardingManageWork(boardingManageWorkReadInput : BoardingManageWorkReadInput) : [BoardingManageWork]
 }
 
+extend type Mutation {
+    completeBoardingManageWork(workId : String!) : String
+    inCompleteBoardingManageWork(workId : String!) : String
+}
+
 input BoardingManageWorkReadInput {
-    date : String
+    date : String!
     houseId : String
 }
 

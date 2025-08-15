@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingHouseDto;
+import nuri.nuri_server.domain.boarding_manage.application.service.WorkingBoardingManageService;
 import nuri.nuri_server.domain.boarding_manage.presentation.dto.common.BoardingManageWorkDto;
 import nuri.nuri_server.domain.boarding_manage.presentation.dto.req.BoardingManageWorkReadRequestDto;
 import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
@@ -11,6 +12,7 @@ import nuri.nuri_server.domain.boarding_manage.application.service.GetBoardingMa
 import nuri.nuri_server.global.security.annotation.ThirdParty;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class BoardingManageController {
 
     private final GetBoardingManageService getBoardingManageService;
+    private final WorkingBoardingManageService workingBoardingManageService;
 
     @ThirdParty
     @QueryMapping
@@ -48,5 +51,27 @@ public class BoardingManageController {
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
         return getBoardingManageService.getBoardingManageWork(nuriUserDetails, boardingManageWorkReadRequestDto);
+    }
+
+    @ThirdParty
+    @MutationMapping
+    public String completeBoardingManageWork(
+            @Argument("workId") @NotNull(message = "하숙관리 업무 완료시 업무 아이디(workId)는 필수 항목입니다.") UUID workId,
+            @AuthenticationPrincipal NuriUserDetails nuriUserDetails
+    ) {
+        workingBoardingManageService.completeBoardingManageWork(nuriUserDetails, workId);
+
+        return "하숙관리 업무를 완료 하였습니다.";
+    }
+
+    @ThirdParty
+    @MutationMapping
+    public String inCompleteBoardingManageWork(
+            @Argument("workId") @NotNull(message = "하숙관리 업무 완료 취소시 업무 아이디(workId)는 필수 항목입니다.") UUID workId,
+            @AuthenticationPrincipal NuriUserDetails nuriUserDetails
+    ) {
+        workingBoardingManageService.incompleteBoardingManageWork(nuriUserDetails, workId);
+
+        return "하숙관리 업무 완료를 취소 하였습니다.";
     }
 }

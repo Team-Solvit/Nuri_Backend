@@ -32,4 +32,12 @@ public class BoardingManageWorkEntity extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean status;
+
+    public void complete() {
+        status = true;
+    }
+
+    public void incomplete() {
+        status = false;
+    }
 }

@@ -13,7 +13,7 @@ extend type Mutation {
     likeRoom(roomId : String!) : String
     unlikeRoom(roomId : String!) : String
 
-    createBoardingRoomComment(boardingRoomCommentCreateInput : BoardingRoomCommentCreateInput) : String
+    createBoardingRoomComment(boardingRoomCommentCreateInput : BoardingRoomCommentCreateInput!) : String
     updateBoardingRoomComment(boardingRoomCommentUpdateInput : BoardingRoomCommentUpdateInput!) : String
     deleteBoardingRoomComment(commentId : String!) : String
 }

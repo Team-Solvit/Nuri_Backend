@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nuri.nuri_server.domain.boarding_manage.domain.exception.ThirdPartyMismatchException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -31,4 +32,10 @@ public class ThirdPartyEntity {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    public void validate(UserEntity user) {
+        if(!this.user.getId().equals(user.getId())) {
+            throw new ThirdPartyMismatchException();
+        }
+    }
 }
