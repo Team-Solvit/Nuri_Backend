@@ -39,4 +39,8 @@ public class ContractEntity extends BaseEntity {
         this.expiryDate = expiryDate;
         this.status = Objects.requireNonNullElse(status, ContractStatus.ACTIVE);
     }
+
+    public Boolean isActive() {
+        return status == ContractStatus.ACTIVE;
+    }
 }

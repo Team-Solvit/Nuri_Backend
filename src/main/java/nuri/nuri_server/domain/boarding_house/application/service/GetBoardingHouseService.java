@@ -9,10 +9,10 @@ import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingRoomNotFo
 import nuri.nuri_server.domain.boarding_house.domain.repository.*;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingHouseDto;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingRoomDto;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.res.BoardingRoomAndBoardersDto;
+import nuri.nuri_server.domain.contract.application.service.ContractQueryService;
+import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
 import nuri.nuri_server.domain.user.domain.exception.HostNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.HostRepository;
-import nuri.nuri_server.domain.user.presentation.dto.BoarderDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +27,7 @@ public class GetBoardingHouseService {
     private final BoardingHouseRepository boardingHouseRepository;
     private final BoardingRoomQueryService boardingRoomQueryService;
     private final BoardingRoomRepository boardingRoomRepository;
+    private final ContractQueryService contractQueryService;
     private final HostRepository hostRepository;
 
     @Transactional(readOnly = true)
@@ -50,7 +51,7 @@ public class GetBoardingHouseService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardingRoomAndBoardersDto> getBoardingRoomAndBoardersInfo(UUID hostId) {
+    public List<RoomContractDto> getBoardingRoomAndBoardersInfo(UUID hostId) {
         log.info("하숙방과 하숙생 정보 요청: hostId={}", hostId);
 
         validateHostId(hostId);
@@ -60,25 +61,13 @@ public class GetBoardingHouseService {
 
         List<BoardingRoomEntity> boardingRooms = house.getBoardingRooms();
 
-        List<BoardingRoomAndBoardersDto> results = boardingRooms.stream()
-                .map(this::toBoardingRoomAndBoardersInfo)
+        List<RoomContractDto> results = boardingRooms.stream()
+                .map(contractQueryService::getRoomContract)
                 .toList();
 
-        log.info("하숙방과 하숙생 정보 반환: roomAndBoardersInfoCount={}", results.size());
+        log.info("하숙방과 하숙생 정보 반환: RoomContractDtoCount={}", results.size());
 
         return results;
-    }
-
-    private BoardingRoomAndBoardersDto toBoardingRoomAndBoardersInfo(BoardingRoomEntity boardingRoom) {
-        BoardingRoomDto room = boardingRoomQueryService.getBoardingRoomInfo(boardingRoom);
-        List<BoarderDto> boarders = boardingRoom.getContracts().stream()
-                .map(contract -> BoarderDto.from(contract.getBoarder()))
-                .toList();
-
-        return BoardingRoomAndBoardersDto.builder()
-                .room(room)
-                .boarders(boarders)
-                .build();
     }
 
     @Transactional(readOnly = true)

@@ -4,28 +4,25 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nuri.nuri_server.domain.user.domain.gender.Gender;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "tbl_boarder")
+@Table(name = "tbl_third_party")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BoarderEntity {
+public class ThirdPartyEntity {
     @Id
+    @Column(name = "user_id")
+    private UUID id;
+
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @MapsId
+    @JoinColumn(name = "user_id")
     private UserEntity user;
-
-    @Column(nullable = false, name = "call_number")
-    private String callNumber;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)

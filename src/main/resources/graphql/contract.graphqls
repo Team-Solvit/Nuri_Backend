@@ -1,0 +1,25 @@
+extend type Query {
+    getRoomContractList(roomId : String) : RoomContract
+}
+
+enum ContractStatus {
+    ACTIVE, EXPIRED
+}
+
+type RoomContract {
+    room : BoardingRoom
+    contractInfo : [ContractInfo]
+}
+
+type ContractInfo {
+    boarder : Boarder
+    expiryDate : String
+    status : ContractStatus
+}
+
+type Contract {
+    room : BoardingRoom
+    boarder : Boarder
+    expiryDate : String
+    status : ContractStatus
+}

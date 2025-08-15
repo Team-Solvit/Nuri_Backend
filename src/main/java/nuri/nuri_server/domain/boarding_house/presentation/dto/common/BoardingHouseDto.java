@@ -2,7 +2,7 @@ package nuri.nuri_server.domain.boarding_house.presentation.dto.common;
 
 import lombok.Builder;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingHouseEntity;
-import nuri.nuri_server.domain.boarding_house.domain.gender.Gender;
+import nuri.nuri_server.domain.user.domain.gender.Gender;
 import nuri.nuri_server.domain.user.presentation.dto.HostDto;
 
 import java.util.UUID;
