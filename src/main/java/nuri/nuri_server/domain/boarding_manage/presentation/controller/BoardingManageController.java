@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingHouseDto;
 import nuri.nuri_server.domain.boarding_manage.application.service.WorkingBoardingManageService;
 import nuri.nuri_server.domain.boarding_manage.presentation.dto.common.BoardingManageWorkDto;
+import nuri.nuri_server.domain.boarding_manage.presentation.dto.req.BoardingManageWorkFileUploadRequestDto;
 import nuri.nuri_server.domain.boarding_manage.presentation.dto.req.BoardingManageWorkReadRequestDto;
 import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
 import nuri.nuri_server.domain.boarding_manage.application.service.GetBoardingManageService;
@@ -73,5 +74,15 @@ public class BoardingManageController {
         workingBoardingManageService.incompleteBoardingManageWork(nuriUserDetails, workId);
 
         return "하숙관리 업무 완료를 취소 하였습니다.";
+    }
+
+    @ThirdParty
+    @MutationMapping
+    public String uploadBoardingManageWorkFile(
+            @Argument("boardingManageWorkFileUploadInput") @Valid BoardingManageWorkFileUploadRequestDto boardingManageWorkFileUploadRequestDto,
+            @AuthenticationPrincipal NuriUserDetails nuriUserDetails
+    ) {
+        workingBoardingManageService.uploadBoardingManageWorkFile(nuriUserDetails, boardingManageWorkFileUploadRequestDto);
+        return "하숙관리 기록을 업로드하였습니다.";
     }
 }

@@ -7,11 +7,17 @@ extend type Query {
 extend type Mutation {
     completeBoardingManageWork(workId : String!) : String
     inCompleteBoardingManageWork(workId : String!) : String
+    uploadBoardingManageWorkFile(boardingManageWorkFileUploadInput : BoardingManageWorkFileUploadInput!) : String
 }
 
 input BoardingManageWorkReadInput {
     date : String!
     houseId : String
+}
+
+input BoardingManageWorkFileUploadInput {
+    workId : String!
+    file : String!
 }
 
 type BoardingRelationship {
