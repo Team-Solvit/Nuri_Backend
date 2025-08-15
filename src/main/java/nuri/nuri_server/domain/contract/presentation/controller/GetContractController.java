@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.contract.application.service.GetContractService;
 import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
 import nuri.nuri_server.global.security.annotation.BoardingAuthUsers;
-import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.util.UUID;
