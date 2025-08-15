@@ -11,9 +11,11 @@ import nuri.nuri_server.domain.chat.domain.repository.UserRoomAdapterEntityRepos
 import nuri.nuri_server.domain.chat.presentation.dto.req.RoomCreateRequestDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
+import nuri.nuri_server.domain.chat.presentation.dto.res.RoomReadResponseDto;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
+import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,5 +72,10 @@ public class ChatService {
                 .users(input.users())
                 .room(input.roomDto())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<RoomReadResponseDto> readRooms(NuriUserDetails nuriUserDetails) {
+
     }
 }
