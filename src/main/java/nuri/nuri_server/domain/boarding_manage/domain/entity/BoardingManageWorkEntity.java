@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class BoardingManageWorkEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_id", nullable = false)
-    private BoardingRelationshipEntity boardingRelationshipEntity;
+    private BoardingRelationshipEntity boardingRelationship;
 
     @Column(nullable = false)
     private String name;
@@ -24,7 +24,6 @@ public class BoardingManageWorkEntity extends BaseEntity {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
     private String file;
 
     @Column(nullable = false)

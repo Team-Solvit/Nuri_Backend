@@ -76,7 +76,7 @@ public class GetBoardingHouseService {
         BoardingRoomEntity room = boardingRoomRepository.findById(roomId)
                 .orElseThrow(BoardingRoomNotFoundException::new);
 
-        BoardingRoomDto roomInfo = boardingRoomQueryService.getBoardingRoomInfo(room);
+        BoardingRoomDto roomInfo = boardingRoomQueryService.getBoardingRoomDto(room);
         log.info("하숙방 정보 반환: roomInfo={}", roomInfo);
         return roomInfo;
     }

@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingHouseDto;
+import nuri.nuri_server.domain.boarding_manage.domain.entity.BoardingManageWorkEntity;
+import nuri.nuri_server.domain.boarding_manage.domain.repository.BoardingManageWorkRepository;
+import nuri.nuri_server.domain.boarding_manage.presentation.dto.common.BoardingManageWorkDto;
+import nuri.nuri_server.domain.boarding_manage.presentation.dto.common.BoardingRelationshipDto;
+import nuri.nuri_server.domain.boarding_manage.presentation.dto.req.BoardingManageWorkReadRequestDto;
 import nuri.nuri_server.domain.contract.application.service.ContractQueryService;
 import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
 import nuri.nuri_server.domain.boarding_manage.domain.entity.BoardingRelationshipEntity;
@@ -23,8 +28,10 @@ import java.util.UUID;
 public class GetBoardingManageService {
 
     private final BoardingRelationshipRepository boardingRelationshipRepository;
+    private final BoardingManageWorkRepository boardingManageWorkRepository;
     private final ThirdPartyRepository thirdPartyRepository;
     private final ContractQueryService contractQueryService;
+    private final BoardingManageQueryService boardingManageQueryService;
 
     @Transactional(readOnly = true)
     public List<BoardingHouseDto> getManageBoardingHouseList(NuriUserDetails nuriUserDetails) {
@@ -37,7 +44,7 @@ public class GetBoardingManageService {
 
         log.info("관리 하숙집 리스트 반환: relationshipCount={}", relationships.size());
         return relationships.stream()
-                .map(relationship -> BoardingHouseDto.from(relationship.getBoarderHouse()))
+                .map(relationship -> BoardingHouseDto.from(relationship.getBoardingHouse()))
                 .toList();
     }
 
@@ -62,6 +69,27 @@ public class GetBoardingManageService {
 
         log.info("관리 하숙방 리스트 반환: RoomContractDtoCount={}", results.size());
 
+        return results;
+    }
+
+    @Transactional(readOnly = true)
+    public List<BoardingManageWorkDto> getBoardingManageWork(NuriUserDetails nuriUserDetails, BoardingManageWorkReadRequestDto workReadRequestDto) {
+        UUID thirdPartyId = nuriUserDetails.getId();
+        log.info("하숙관리 업무 조회 요청: thirdPartyId={}", thirdPartyId);
+
+        validateThirdPartyId(thirdPartyId);
+
+        List<BoardingManageWorkEntity> workEntities;
+        if(workReadRequestDto.houseId() == null)
+            workEntities = boardingManageWorkRepository.findAllByThirdPartyIdAndDate(thirdPartyId, workReadRequestDto.date());
+        else
+            workEntities = boardingManageWorkRepository.findAllByThirdPartyIdAndHouseIdAndDate(thirdPartyId, workReadRequestDto.houseId(), workReadRequestDto.date());
+
+        List<BoardingManageWorkDto> results = workEntities.stream()
+                .map(boardingManageQueryService::getBoardingManageWorkDto)
+                .toList();
+
+        log.info("하숙관리 업무 조회 반환: workCount={}", results.size());
         return results;
     }
 }

@@ -18,7 +18,7 @@ public class ContractQueryService {
     private final BoardingRoomQueryService boardingRoomQueryService;
 
     public RoomContractDto getRoomContract(BoardingRoomEntity boardingRoom) {
-        BoardingRoomDto room = boardingRoomQueryService.getBoardingRoomInfo(boardingRoom);
+        BoardingRoomDto room = boardingRoomQueryService.getBoardingRoomDto(boardingRoom);
         List<ContractInfoDto> contractInfos = boardingRoom.getContracts().stream()
                 .filter(ContractEntity::isActive)
                 .map(ContractInfoDto::from)

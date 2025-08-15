@@ -71,7 +71,7 @@ public class BasicRecommendPostList implements RecommendPostList {
         Long likeCount = boardingRoomLikeRepository.countByBoardingRoomId(boardingRoom.getId());
         Long commentCount = boardingRoomCommentRepository.countByBoardingRoomId(boardingRoom.getId());
 
-        BoardingRoomDto room = boardingRoomQueryService.getBoardingRoomInfo(boardingRoom);
+        BoardingRoomDto room = boardingRoomQueryService.getBoardingRoomDto(boardingRoom);
 
         BoardingPost boardingPost = BoardingPost.builder()
                 .room(room)

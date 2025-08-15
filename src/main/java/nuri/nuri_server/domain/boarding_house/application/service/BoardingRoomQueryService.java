@@ -18,7 +18,7 @@ public class BoardingRoomQueryService {
     private final ContractPeriodRepository contractPeriodRepository;
     private final BoardingRoomOptionRepository boardingRoomOptionRepository;
 
-    public BoardingRoomDto getBoardingRoomInfo(BoardingRoomEntity room) {
+    public BoardingRoomDto getBoardingRoomDto(BoardingRoomEntity room) {
         List<BoardingRoomFileDto> files = boardingRoomFileRepository.findAllByBoardingRoomId(room.getId()).stream()
                 .map(BoardingRoomFileDto::from)
                 .toList();

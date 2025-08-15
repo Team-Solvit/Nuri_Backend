@@ -25,7 +25,7 @@ public class BoardingRelationshipEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boarding_house_id", nullable = false)
-    private BoardingHouseEntity boarderHouse;
+    private BoardingHouseEntity boardingHouse;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boarding_room_id", nullable = false)

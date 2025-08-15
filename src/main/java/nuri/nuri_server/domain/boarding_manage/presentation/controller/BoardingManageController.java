@@ -1,8 +1,11 @@
 package nuri.nuri_server.domain.boarding_manage.presentation.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingHouseDto;
+import nuri.nuri_server.domain.boarding_manage.presentation.dto.common.BoardingManageWorkDto;
+import nuri.nuri_server.domain.boarding_manage.presentation.dto.req.BoardingManageWorkReadRequestDto;
 import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
 import nuri.nuri_server.domain.boarding_manage.application.service.GetBoardingManageService;
 import nuri.nuri_server.global.security.annotation.ThirdParty;
@@ -36,5 +39,14 @@ public class BoardingManageController {
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {
         return getBoardingManageService.getManageBoardingRoomList(nuriUserDetails, houseId);
+    }
+
+    @ThirdParty
+    @QueryMapping
+    public List<BoardingManageWorkDto> getBoardingManageWork(
+            @Argument("boardingManageWorkReadInput") @Valid BoardingManageWorkReadRequestDto boardingManageWorkReadRequestDto,
+            @AuthenticationPrincipal NuriUserDetails nuriUserDetails
+    ) {
+        return getBoardingManageService.getBoardingManageWork(nuriUserDetails, boardingManageWorkReadRequestDto);
     }
 }

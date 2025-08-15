@@ -16,7 +16,7 @@ public interface BoardingRelationshipRepository extends JpaRepository<BoardingRe
     @Query("""
         select br.boardingRoom
         from BoardingRelationshipEntity br
-        where br.boarderHouse.id = :houseId
+        where br.boardingHouse.id = :houseId
     """)
     List<BoardingRoomEntity> findBoardingRoomByBoarderHouseId(UUID houseId);
 }

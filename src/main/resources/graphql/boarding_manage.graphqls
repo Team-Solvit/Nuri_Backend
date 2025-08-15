@@ -1,5 +1,32 @@
 extend type Query {
     getManageBoardingHouseList : [BoardingHouse]
     getManageBoardingRoomList(houseId : String) : [RoomContract]
-    getBoardingManageWork()
+    getBoardingManageWork(boardingManageWorkReadInput : BoardingManageWorkReadInput) : [BoardingManageWork]
+}
+
+input BoardingManageWorkReadInput {
+    date : String
+    houseId : String
+}
+
+type BoardingRelationship {
+    relationshipId: String
+    thirdParty : ThirdParty
+    boarder : Boarder
+    boarderHouse : BoardingHouse
+    boardingRoom : BoardingRoom
+}
+
+enum BoardingManageType {
+    VISIT, CALL
+}
+
+type BoardingManageWork {
+    manageWorkId : String
+    relationship : BoardingRelationship
+    name : String
+    date : String
+    file : String
+    type : BoardingManageType
+    status : Boolean
 }
