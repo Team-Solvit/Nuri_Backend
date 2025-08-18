@@ -69,7 +69,7 @@ public class GeoApiService {
         String country = detailAddressComponents.getOrDefault(AddressComponentType.COUNTRY, "");
         String city   = detailAddressComponents.getOrDefault(AddressComponentType.ADMINISTRATIVE_AREA_LEVEL_1, "");
         String gu = detailAddressComponents.getOrDefault(AddressComponentType.ADMINISTRATIVE_AREA_LEVEL_2,
-                detailAddressComponents.getOrDefault(AddressComponentType.SUBLOCALITY_LEVEL_1, ""));;
+                detailAddressComponents.getOrDefault(AddressComponentType.SUBLOCALITY_LEVEL_1, ""));
 
         return country + " " + city + " " + gu;
     }
