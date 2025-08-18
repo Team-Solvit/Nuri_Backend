@@ -2,6 +2,8 @@ package nuri.nuri_server.domain.chat.domain.repository;
 
 import nuri.nuri_server.domain.chat.domain.entity.RoomEntity;
 import nuri.nuri_server.domain.chat.domain.entity.UserRoomAdapterEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,5 +17,5 @@ public interface UserRoomAdapterEntityRepository extends JpaRepository<UserRoomA
     List<String> findUsersByRoomId(UUID roomId);
 
     @Query("select a.room.name, a.room.profile from UserRoomAdapterEntity a where a.user.id = :userId")
-    List<RoomEntity> findRoomsByUserId(String userId);
+    Page<RoomEntity> findRoomsByUserId(String userId, Pageable pageable);
 }

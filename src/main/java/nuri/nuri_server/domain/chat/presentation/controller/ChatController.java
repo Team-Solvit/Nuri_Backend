@@ -8,6 +8,7 @@ import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomReadResponseDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -32,7 +33,7 @@ public class ChatController {
     }
 
     @QueryMapping
-    public Page<RoomReadResponseDto> getRooms(@AuthenticationPrincipal NuriUserDetails nuriUserDetails) {
-        return chatService.readRooms(nuriUserDetails);
+    public Page<RoomReadResponseDto> getRooms(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument int page, @Argument int size) {
+        return chatService.readRooms(nuriUserDetails, PageRequest.of(page, size));
     }
 }

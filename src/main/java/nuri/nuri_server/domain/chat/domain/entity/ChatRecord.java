@@ -24,4 +24,8 @@ public class ChatRecord {
 
     private String contents;
     private ReplyChat replyChat;
+
+    public static String getCollectionName() {
+        return "chat-record";
+    }
 }

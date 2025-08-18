@@ -8,7 +8,6 @@ import nuri.nuri_server.domain.chat.domain.exception.RoomNotFoundException;
 import nuri.nuri_server.domain.chat.domain.repository.ChatRecordRepository;
 import nuri.nuri_server.domain.chat.domain.repository.RoomRepository;
 import nuri.nuri_server.domain.chat.domain.repository.UserRoomAdapterEntityRepository;
-import nuri.nuri_server.domain.chat.presentation.dto.common.RoomDto;
 import nuri.nuri_server.domain.chat.presentation.dto.req.RoomCreateRequestDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
@@ -17,11 +16,18 @@ import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,14 +82,26 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoomReadResponseDto> readRooms(NuriUserDetails nuriUserDetails) {
-        List<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getName());
-        rooms.stream().map(room -> {
-            RoomDto roomDto = RoomDto.builder()
-                    .name(room.getName())
-                    .profile(room.getProfile())
-                    .build();
-            chatRecordRepository.findByRoomIdOrderByCreatedAtDesc();
-        })
+    public Page<RoomReadResponseDto> readRooms(NuriUserDetails nuriUserDetails, Pageable pageable) {
+        Page<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getName(), pageable);
+        List<String> roomIds = rooms.stream()
+                .map(room -> room.getId().toString())
+                .toList();
+        List<ChatRecord> latestChatRecords = chatRecordRepository.findLatestMessagesByRoomIds(roomIds);
+
+        Map<String, ChatRecord> latestMessageMap = latestChatRecords.stream()
+                .collect(Collectors.toMap(ChatRecord::getRoomId, Function.identity()));
+
+        List<RoomReadResponseDto> roomReadResponseDtoList = rooms.stream()
+                .sorted(Comparator.comparing(
+                        room -> latestMessageMap.get(room.getId().toString()) == null,
+                        Comparator.reverseOrder()))
+                .map(room -> {
+                    ChatRecord latestMessage = latestMessageMap.get(room.getId().toString());
+                    return RoomReadResponseDto.from(latestMessage, room);
+                })
+                .toList();
+
+        return new PageImpl<>(roomReadResponseDtoList, pageable, rooms.getTotalElements());
     }
 }
