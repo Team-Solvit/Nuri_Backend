@@ -1,5 +1,6 @@
 package nuri.nuri_server.domain.chat.domain.repository;
 
+import nuri.nuri_server.domain.chat.domain.entity.RoomEntity;
 import nuri.nuri_server.domain.chat.domain.entity.UserRoomAdapterEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +13,7 @@ import java.util.UUID;
 public interface UserRoomAdapterEntityRepository extends JpaRepository<UserRoomAdapterEntity, UUID> {
     @Query("select a.user.id from UserRoomAdapterEntity a where a.room.id = :roomId")
     List<String> findUsersByRoomId(UUID roomId);
+
+    @Query("select a.room.name, a.room.profile from UserRoomAdapterEntity a where a.user.id = :userId")
+    List<RoomEntity> findRoomsByUserId(String userId);
 }

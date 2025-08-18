@@ -8,6 +8,7 @@ import nuri.nuri_server.domain.chat.domain.exception.RoomNotFoundException;
 import nuri.nuri_server.domain.chat.domain.repository.ChatRecordRepository;
 import nuri.nuri_server.domain.chat.domain.repository.RoomRepository;
 import nuri.nuri_server.domain.chat.domain.repository.UserRoomAdapterEntityRepository;
+import nuri.nuri_server.domain.chat.presentation.dto.common.RoomDto;
 import nuri.nuri_server.domain.chat.presentation.dto.req.RoomCreateRequestDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
@@ -76,6 +77,13 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<RoomReadResponseDto> readRooms(NuriUserDetails nuriUserDetails) {
-
+        List<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getName());
+        rooms.stream().map(room -> {
+            RoomDto roomDto = RoomDto.builder()
+                    .name(room.getName())
+                    .profile(room.getProfile())
+                    .build();
+            chatRecordRepository.findByRoomIdOrderByCreatedAtDesc();
+        })
     }
 }
