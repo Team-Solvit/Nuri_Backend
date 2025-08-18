@@ -19,6 +19,9 @@ spring:
     hibernate:
       ddl-auto: update
 
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL}
+
 
   graphql:
     schema:
@@ -62,12 +65,18 @@ jwt:
   access-expiration: ${JWT_ACCESS_EXPIRATION}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION}
 
+google:
+  maps:
+    api-key: ${GOOGLE_MAPS_API}
 
 logging:
   level:
     feign: DEBUG
     org.springframework.cloud.openfeign: DEBUG
     nuri.nuri_server.global.feign: DEBUG
+    co.elastic.clients: TRACE
+    org.elasticsearch.client.RestClient: TRACE
+    tracer: TRACE
 
 redis:
   host: ${REDIS_HOST}
@@ -81,3 +90,4 @@ page-size:
   user-post : ${USER_POST_SIZE}
   sns-post : ${SNS_POST_SIZE}
   boarding-post : ${BOARDING_POST_SIZE}
+  boarding-room-search : ${BOARDING_ROOM_SEARCH_SIZE}

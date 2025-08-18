@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nuri.nuri_server.domain.boarding_manage.domain.entity.BoardingRelationshipEntity;
 import nuri.nuri_server.domain.user.domain.gender.Gender;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_boarder")
@@ -34,4 +37,7 @@ public class BoarderEntity {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "boarder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRelationshipEntity> boardingRelationships = new ArrayList<>();
 }

@@ -1,0 +1,21 @@
+extend type Query {
+    searchBoardingRoom(boardingRoomSearchFilter : BoardingRoomSearchFilter) : [BoardingRoom]
+}
+
+input BoardingRoomSearchFilter{
+    name : String
+    region : String
+    contractPeriod : IntRangeFilter
+    price : IntRangeFilter
+    station : GeoFilter
+    school : GeoFilter
+    gender : Gender
+    start : Int
+}
+
+input GeoFilter { lat: Float, lon: Float, radiusMeters: String }
+
+input IntRangeFilter {
+    min : Int
+    max : Int
+}
