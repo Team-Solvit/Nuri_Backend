@@ -5,9 +5,14 @@ import nuri.nuri_server.domain.chat.application.service.ChatService;
 import nuri.nuri_server.domain.chat.presentation.dto.req.RoomCreateRequestDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
+import nuri.nuri_server.domain.chat.presentation.dto.res.RoomReadResponseDto;
+import nuri.nuri_server.global.security.user.NuriUserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -25,5 +30,10 @@ public class ChatController {
     @MutationMapping
     public RoomCreateResponseDto createRoom(@Argument("input") RoomCreateRequestDto input) {
         return chatService.createRoom(input);
+    }
+
+    @QueryMapping
+    public Page<RoomReadResponseDto> getRooms(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument int page, @Argument int size) {
+        return chatService.readRooms(nuriUserDetails, PageRequest.of(page, size));
     }
 }

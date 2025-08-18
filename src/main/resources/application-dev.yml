@@ -16,12 +16,9 @@ spring:
     hibernate:
       ddl-auto: update
 
-
   graphql:
     schema:
       locations: classpath:graphql/**
-    graphiql:
-      enabled: true
     cors:
       allowed-origins: ${FRONTEND_URL}
 
@@ -34,6 +31,9 @@ jwt:
   secret: ${JWT_SECRET}
   access-expiration: ${JWT_ACCESS_EXPIRATION}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+
+session:
+  chat-expiration: ${CHAT_EXPIRATION}
 
 redis:
   host: ${REDIS_HOST}
