@@ -1,17 +1,89 @@
 scalar DateTime
 scalar UUID
 
-type Query {
-    readMessages(room_id: String!): [ChatRecord]
+input RoomDtoInput {
+    name: String!
+    profile: String
 }
 
-type Mutation {
-    createRoom(input: RoomCreateRequestInput!): Room
+input RoomCreateRequestDto {
+    roomDto: RoomDtoInput!
+    users: [String!]!
+    isTeam: Boolean!
+}
+
+input RoomInviteRequestDto {
+    users: [String!]!
+    roomId: String!
+}
+
+input ChatRecordRequestDto {
+    roomId: String!
+    contents: String!
+    replyChat: ReplyChatInput
+}
+
+type ChatRecordResponseDto {
+    id: UUID!
+    roomId: String
+    sender: Sender!
+    createdAt: DateTime!
+    contents: String!
+    replyChat: ReplyChat
+}
+
+type NotificationResponseDto {
+    name: String!
+    picture: String!
+    roomId: String!
+    contents: String!
+    sendAt: DateTime!
+}
+
+type RoomDto {
+    name: String!
+    profile: String
+}
+
+type RoomCreateResponseDto {
+    id: UUID
+    room: RoomDto
+    users: [String!]
+}
+
+type RoomReadResponseDto {
+    roomDto: RoomDto!
+    latestMessage: String
+    latestCreatedAt: DateTime
+}
+
+type Query {
+    readMessages(roomId: String!): [ChatRecordResponseDto!]!
+    getRooms(page: Int!, size: Int!): RoomReadPage!
+    getRoomsGroupChat: [String!]!
+}
+
+type RoomReadPage {
+    content: [RoomReadResponseDto!]!
+    pageInfo: PageInfo!
+}
+
+type PageInfo {
+    pageNumber: Int!
+    pageSize: Int!
+    totalElements: Int!
+    totalPages: Int!
 }
 
 type Sender {
     name: String!
     profile: String!
+}
+
+input ReplyChatInput {
+    chatId: String!
+    contents: String!
+    name: String!
 }
 
 type ReplyChat {
@@ -20,31 +92,9 @@ type ReplyChat {
     name: String!
 }
 
-type ChatRecord {
-    id: UUID!
-
-    roomId: String!
-    sender: Sender!
-
-    createdAt: DateTime!
-
-    contents: String!
-    replyChat: ReplyChat
-}
-
-input RoomRequestInput {
-    name: String
-    profile: String
-}
-
-input RoomCreateRequestInput {
-    roomRequestDto: RoomRequestInput
-    users: [String!]!
-}
-
-type Room {
-    id: ID!
-    name: String
-    profile: String
-    users: [String!]!
+type Mutation {
+    createRoom(roomCreateRequestDto: RoomCreateRequestDto!): RoomCreateResponseDto!
+    invite(roomInviteRequestDto: RoomInviteRequestDto!): Boolean
+    exit(roomId: String!): Boolean
+    kick(roomId: String!, userId: String!): Boolean
 }
