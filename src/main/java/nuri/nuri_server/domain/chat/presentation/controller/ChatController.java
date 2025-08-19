@@ -1,8 +1,10 @@
 package nuri.nuri_server.domain.chat.presentation.controller;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.chat.application.service.ChatService;
 import nuri.nuri_server.domain.chat.presentation.dto.req.RoomCreateRequestDto;
+import nuri.nuri_server.domain.chat.presentation.dto.req.RoomInviteRequestDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomReadResponseDto;
@@ -23,17 +25,37 @@ public class ChatController {
     private final ChatService chatService;
 
     @QueryMapping
-    public List<ChatRecordResponseDto> readMessages(@Argument("room_id") String roomId) {
+    public List<ChatRecordResponseDto> readMessages(@Argument @NotNull(message = "방 아이디 값은 존재해야 합니다.") String roomId) {
         return chatService.readMessages(roomId);
     }
 
     @MutationMapping
-    public RoomCreateResponseDto createRoom(@Argument("input") RoomCreateRequestDto input) {
-        return chatService.createRoom(input);
+    public RoomCreateResponseDto createRoom(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument RoomCreateRequestDto roomCreateRequestDto) {
+        return chatService.createRoom(nuriUserDetails, roomCreateRequestDto);
     }
 
     @QueryMapping
-    public Page<RoomReadResponseDto> getRooms(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument int page, @Argument int size) {
-        return chatService.readRooms(nuriUserDetails, PageRequest.of(page, size));
+    public Page<RoomReadResponseDto> getRooms(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "페이지 값은 존재해야 합니다.") Integer page, @Argument @NotNull(message = "사이즈 값은 존재해야 합니다.") int size) {
+        return chatService.getRooms(nuriUserDetails, PageRequest.of(page, size));
+    }
+
+    @QueryMapping
+    public List<String> getRoomsGroupChat(@AuthenticationPrincipal NuriUserDetails nuriUserDetails) {
+        return chatService.getRoomsGroupChat(nuriUserDetails);
+    }
+
+    @MutationMapping
+    public void invite(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument RoomInviteRequestDto roomInviteRequestDto) {
+        chatService.invite(nuriUserDetails, roomInviteRequestDto);
+    }
+
+    @MutationMapping
+    public void exit(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId) {
+        chatService.exit(nuriUserDetails, roomId);
+    }
+
+    @MutationMapping
+    public void kick(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId, @Argument @NotNull(message = "추방시킬 유저가 존재해야 합니다.") String userId) {
+        chatService.kick(nuriUserDetails, roomId, userId);
     }
 }

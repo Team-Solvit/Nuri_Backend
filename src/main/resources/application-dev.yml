@@ -16,9 +16,38 @@ spring:
     hibernate:
       ddl-auto: update
 
+  kafka:
+    bootstrap-servers:
+      - kafka1:29092
+      - kafka2:29092
+      - kafka3:29092
+    client-id: chat-service
+    producer:
+      acks: all
+      retries: 3
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.Json
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      transaction-id-prefix: chat
+    consumer:
+      group-id: chat-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 100
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual
+    properties:
+      security.protocol: PLAINTEXT
+
+
   graphql:
     schema:
-      locations: classpath:graphql/**
+      locations: classpath*:graphql/**/
+    graphiql:
+      enabled: true
     cors:
       allowed-origins: ${FRONTEND_URL}
 
@@ -38,6 +67,7 @@ session:
 redis:
   host: ${REDIS_HOST}
   port: ${REDIS_PORT}
+  password: ${REDIS_PASSWORD}
 
 web:
   front-url: ${FRONTEND_URL}

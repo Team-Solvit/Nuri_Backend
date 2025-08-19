@@ -8,6 +8,8 @@ import nuri.nuri_server.domain.chat.domain.repository.ChatRecordRepository;
 import nuri.nuri_server.domain.chat.domain.repository.RoomRepository;
 import nuri.nuri_server.domain.chat.domain.repository.UserRoomAdapterEntityRepository;
 import nuri.nuri_server.domain.chat.presentation.dto.req.ChatRecordRequestDto;
+import nuri.nuri_server.domain.chat.presentation.dto.req.UserExitRequestDto;
+import nuri.nuri_server.domain.chat.presentation.dto.req.UserJoinRequestDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.NotificationResponseDto;
 import nuri.nuri_server.global.properties.ChatProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -91,4 +94,24 @@ public class ChatStompService {
             );
         }
     }
+
+    public void joinUser(UserJoinRequestDto userJoinRequestDto) {
+        if(userJoinRequestDto.participantNumber() > chatProperties.getBroadcastThreshold()) {
+            List<String> users = userRoomAdapterEntityRepository.findUsersByRoomId(userJoinRequestDto.roomId());
+            users.forEach(userId ->
+                    simpMessagingTemplate.convertAndSendToUser(userId, "/notify", "SUB " + userJoinRequestDto.roomId())
+            );
+        }
+    }
+
+    public void exitUser(UserExitRequestDto userExitRequestDto) {
+        if(Objects.equals(userExitRequestDto.participantNumber(), chatProperties.getBroadcastThreshold())) {
+            List<String> users = userRoomAdapterEntityRepository.findUsersByRoomId(userExitRequestDto.roomId());
+            users.forEach(userId ->
+                    simpMessagingTemplate.convertAndSendToUser(userId, "/notify", "UNSUB " + userExitRequestDto.roomId())
+            );
+        }
+        simpMessagingTemplate.convertAndSendToUser(userExitRequestDto.userId(), "/notify", "UNSUB " + userExitRequestDto.roomId());
+    }
+
 }

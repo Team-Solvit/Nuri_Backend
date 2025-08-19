@@ -8,5 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @RequiredArgsConstructor
 @ConfigurationProperties(prefix = "chat")
 public class ChatProperties {
-    private final Long broadcastThreshold;
+    private final Integer broadcastThreshold;
 }

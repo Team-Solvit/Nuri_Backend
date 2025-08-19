@@ -1,14 +1,19 @@
 package nuri.nuri_server.domain.chat.application.service;
 
 import lombok.RequiredArgsConstructor;
+import nuri.nuri_server.domain.chat.domain.exception.UnauthorizedInvitationException;
 import nuri.nuri_server.domain.chat.domain.entity.ChatRecord;
 import nuri.nuri_server.domain.chat.domain.entity.RoomEntity;
 import nuri.nuri_server.domain.chat.domain.entity.UserRoomAdapterEntity;
 import nuri.nuri_server.domain.chat.domain.exception.RoomNotFoundException;
+import nuri.nuri_server.domain.chat.domain.exception.UserRoomNotFoundException;
 import nuri.nuri_server.domain.chat.domain.repository.ChatRecordRepository;
 import nuri.nuri_server.domain.chat.domain.repository.RoomRepository;
 import nuri.nuri_server.domain.chat.domain.repository.UserRoomAdapterEntityRepository;
 import nuri.nuri_server.domain.chat.presentation.dto.req.RoomCreateRequestDto;
+import nuri.nuri_server.domain.chat.presentation.dto.req.RoomInviteRequestDto;
+import nuri.nuri_server.domain.chat.presentation.dto.req.UserExitRequestDto;
+import nuri.nuri_server.domain.chat.presentation.dto.req.UserJoinRequestDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomReadResponseDto;
@@ -19,6 +24,7 @@ import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +42,8 @@ public class ChatService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final UserRoomAdapterEntityRepository userRoomAdapterEntityRepository;
+    private final KafkaTemplate<String, UserJoinRequestDto> kafkaJoinTemplate;
+    private final KafkaTemplate<String, UserExitRequestDto> kafkaExitTemplate;
 
     @Transactional(readOnly = true)
     public List<ChatRecordResponseDto> readMessages(String roomId) {
@@ -58,31 +66,42 @@ public class ChatService {
     }
 
     @Transactional
-    public RoomCreateResponseDto createRoom(RoomCreateRequestDto input) {
+    public RoomCreateResponseDto createRoom(NuriUserDetails nuriUserDetails, RoomCreateRequestDto roomCreateRequestDto) {
         RoomEntity room = RoomEntity.builder()
-                .name(input.roomDto().name())
-                .profile(input.roomDto().profile())
+                .name(roomCreateRequestDto.roomDto().name())
+                .profile(roomCreateRequestDto.roomDto().profile())
+                .isTeam(roomCreateRequestDto.isTeam())
                 .build();
         roomRepository.save(room);
+        boolean globalInvitePermission = !roomCreateRequestDto.isTeam();
 
-        for(String userId : input.users()) {
+        for(String userId : roomCreateRequestDto.users()) {
+            boolean personalInvitePermission = nuriUserDetails.getName().equals(userId);
             UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(userId));
             userRoomAdapterEntityRepository.save(UserRoomAdapterEntity.builder()
                     .room(room)
                     .user(user)
+                    .invitePermission(globalInvitePermission || personalInvitePermission)
                     .build()
             );
         }
 
+        UserJoinRequestDto userJoinRequestDto = UserJoinRequestDto.builder()
+                .participantNumber(roomCreateRequestDto.users().size())
+                .roomId(room.getId())
+                .build();
+
+        kafkaJoinTemplate.send("user-join", userJoinRequestDto);
+
         return RoomCreateResponseDto.builder()
                 .id(room.getId())
-                .users(input.users())
-                .room(input.roomDto())
+                .users(roomCreateRequestDto.users())
+                .room(roomCreateRequestDto.roomDto())
                 .build();
     }
 
     @Transactional(readOnly = true)
-    public Page<RoomReadResponseDto> readRooms(NuriUserDetails nuriUserDetails, Pageable pageable) {
+    public Page<RoomReadResponseDto> getRooms(NuriUserDetails nuriUserDetails, Pageable pageable) {
         Page<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getName(), pageable);
         List<String> roomIds = rooms.stream()
                 .map(room -> room.getId().toString())
@@ -103,5 +122,86 @@ public class ChatService {
                 .toList();
 
         return new PageImpl<>(roomReadResponseDtoList, pageable, rooms.getTotalElements());
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getRoomsGroupChat(NuriUserDetails nuriUserDetails) {
+        List<UUID> rooms = userRoomAdapterEntityRepository.findGroupRoomsByUserId(nuriUserDetails.getName());
+        return rooms.stream().map(UUID::toString).toList();
+    }
+
+    @Transactional
+    public void invite(NuriUserDetails nuriUserDetails, RoomInviteRequestDto roomInviteRequestDto) {
+        if(userRoomAdapterEntityRepository.findInvitePermissionByRoomIdAndUserId(UUID.fromString(roomInviteRequestDto.roomId()), nuriUserDetails.getName())) {
+            throw new UnauthorizedInvitationException();
+        }
+
+        UUID roomId = UUID.fromString(roomInviteRequestDto.roomId());
+
+        RoomEntity roomEntity = roomRepository.findById(roomId).orElseThrow(() -> new RoomNotFoundException(roomInviteRequestDto.roomId()));
+
+        for(String userId : roomInviteRequestDto.users()) {
+            UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(userId));
+            userRoomAdapterEntityRepository.save(UserRoomAdapterEntity.builder()
+                    .room(roomEntity)
+                    .user(user)
+                    .invitePermission(!roomEntity.getIsTeam())
+                    .build()
+            );
+        }
+
+        Integer participantNumber = userRoomAdapterEntityRepository.countByRoom(roomEntity);
+
+        UserJoinRequestDto userJoinRequestDto = UserJoinRequestDto.builder()
+                .participantNumber(participantNumber)
+                .roomId(roomEntity.getId())
+                .build();
+
+        kafkaJoinTemplate.send("user-join", userJoinRequestDto);
+    }
+
+    @Transactional
+    public void exit(NuriUserDetails nuriUserDetails, String roomId) {
+        UUID roomUUID = UUID.fromString(roomId);
+
+        int deletedCount = userRoomAdapterEntityRepository.deleteByRoomIdAndUserId(roomUUID, nuriUserDetails.getName());
+
+        if (deletedCount == 0) {
+            throw new UserRoomNotFoundException(roomId, nuriUserDetails.getName());
+        }
+
+        Integer participantNumber = userRoomAdapterEntityRepository.countByRoomId(roomUUID);
+
+        UserExitRequestDto userExitRequestDto = UserExitRequestDto.builder()
+                .participantNumber(participantNumber)
+                .roomId(roomUUID)
+                .userId(nuriUserDetails.getName())
+                .build();
+
+        kafkaExitTemplate.send("user-exit", userExitRequestDto);
+    }
+
+    @Transactional
+    public void kick(NuriUserDetails nuriUserDetails, String roomId, String userId) {
+        UUID roomUUID = UUID.fromString(roomId);
+        if(userRoomAdapterEntityRepository.findInvitePermissionByRoomIdAndUserId(roomUUID, nuriUserDetails.getName())) {
+            throw new UnauthorizedInvitationException();
+        }
+
+        int deletedCount = userRoomAdapterEntityRepository.deleteByRoomIdAndUserId(roomUUID, userId);
+
+        if (deletedCount == 0) {
+            throw new UserRoomNotFoundException(roomId, userId);
+        }
+
+        Integer participantNumber = userRoomAdapterEntityRepository.countByRoomId(roomUUID);
+
+        UserExitRequestDto userExitRequestDto = UserExitRequestDto.builder()
+                .participantNumber(participantNumber)
+                .roomId(roomUUID)
+                .userId(userId)
+                .build();
+
+        kafkaExitTemplate.send("user-exit", userExitRequestDto);
     }
 }

@@ -19,4 +19,6 @@ public class UserRoomAdapterEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private UserEntity user;
+
+    private boolean invitePermission;
 }

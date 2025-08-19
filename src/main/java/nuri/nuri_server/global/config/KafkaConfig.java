@@ -43,10 +43,28 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic topic() {
+    public NewTopic chatTopic() {
         return TopicBuilder
                 .name("chat")
                 .partitions(10)
+                .replicas(3)
+                .build();
+    }
+
+    @Bean
+    public NewTopic userJoinTopic() {
+        return TopicBuilder
+                .name("user-join")
+                .partitions(4)
+                .replicas(3)
+                .build();
+    }
+
+    @Bean
+    public NewTopic userExitTopic() {
+        return TopicBuilder
+                .name("user-exit")
+                .partitions(4)
                 .replicas(3)
                 .build();
     }

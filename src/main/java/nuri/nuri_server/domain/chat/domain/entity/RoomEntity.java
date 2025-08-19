@@ -16,4 +16,6 @@ public class RoomEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
     private String profile;
+    @Column(nullable = false)
+    private Boolean isTeam;
 }
