@@ -54,13 +54,29 @@ public class FollowService {
     public List<FollowUserInfoResponseDto> getFollowerInfo(String targetId) {
         UserEntity target = userRepository.findByUserId(targetId).orElseThrow(() -> new UserNotFoundException(targetId));
 
-        List<FollowEntity> followers = followRepository.findAllByFollowing(target);
+        List<UserEntity> followers = followRepository.findAllFollowerByFollowing(target);
 
-
+        return followers.stream().map(follower ->
+                FollowUserInfoResponseDto.builder()
+                    .id(follower.getId())
+                    .userId(follower.getUserId())
+                    .profile(follower.getProfile())
+                    .build()
+        ).toList();
     }
 
     @Transactional(readOnly = true)
     public List<FollowUserInfoResponseDto> getFollowingInfo(String targetId) {
+        UserEntity target = userRepository.findByUserId(targetId).orElseThrow(() -> new UserNotFoundException(targetId));
 
+        List<UserEntity> followings = followRepository.findAllFollowingByFollower(target);
+
+        return followings.stream().map(following ->
+                FollowUserInfoResponseDto.builder()
+                        .id(following.getId())
+                        .userId(following.getUserId())
+                        .profile(following.getProfile())
+                        .build()
+        ).toList();
     }
 }
