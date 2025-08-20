@@ -12,8 +12,8 @@ import java.util.List;
 
 @Getter
 @Document(indexName = "boarding_room_search", createIndex = true)
-/*@Setting(settingPath = "elasticsearch/boarding_room-setting.json")
-@Mapping(mappingPath = "elasticsearch/boarding_room-mapping.json")*/
+@Setting(settingPath = "elasticsearch/boarding_room-setting.json")
+@Mapping(mappingPath = "elasticsearch/boarding_room-mapping.json")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardingRoomDocument {
     @Id
