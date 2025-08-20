@@ -14,7 +14,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   kafka:
     bootstrap-servers:
@@ -27,8 +27,8 @@ spring:
       retries: 3
       batch-size: 16384
       buffer-memory: 33554432
-      key-serializer: org.apache.kafka.common.serialization.Json
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       transaction-id-prefix: chat
     consumer:
       group-id: chat-group
@@ -36,7 +36,7 @@ spring:
       enable-auto-commit: false
       max-poll-records: 100
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
     listener:
       ack-mode: manual
     properties:
