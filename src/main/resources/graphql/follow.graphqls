@@ -1,0 +1,15 @@
+type FollowUserInfoResponseDto {
+    id: ID!
+    userId: String!
+    profile: String
+}
+
+type Query {
+    getFollowerInfo(userId: String!): [FollowUserInfoResponseDto!]!
+    getFollowingInfo(userId: String!): [FollowUserInfoResponseDto!]!
+}
+
+type Mutation {
+    follow(userId: String!): Boolean
+    unfollow(userId: String!): Boolean
+}
