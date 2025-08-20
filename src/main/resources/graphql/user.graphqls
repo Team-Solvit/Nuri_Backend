@@ -10,6 +10,22 @@ type User {
     role : Role
 }
 
+type UserProfileResponseDto {
+    postCount: Int!
+    followerCount: Int!
+    followingCount: Int!
+    profile: String!
+    userId: String!
+}
+
+type Query {
+    getUserProfile(userId: String!): UserProfileResponseDto!
+}
+
+type Mutation {
+    changeProfile(profile: String!): Boolean!
+}
+
 enum Role {
     ANONYMOUS
     USER
