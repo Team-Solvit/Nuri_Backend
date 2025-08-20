@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Configuration
-@EnableJpaAuditing
+@EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 @RequiredArgsConstructor
 public class JpaConfig {
     private final EntityManagerFactory entityManagerFactory;
