@@ -45,22 +45,26 @@ public class ChatController {
     }
 
     @MutationMapping
-    public void invite(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument RoomInviteRequestDto roomInviteRequestDto) {
+    public Boolean invite(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument RoomInviteRequestDto roomInviteRequestDto) {
         chatService.invite(nuriUserDetails, roomInviteRequestDto);
+        return true;
     }
 
     @MutationMapping
-    public void exit(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId) {
+    public Boolean exit(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId) {
         chatService.exit(nuriUserDetails, roomId);
+        return true;
     }
 
     @MutationMapping
-    public void kick(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId, @Argument @NotNull(message = "추방시킬 유저가 존재해야 합니다.") String userId) {
+    public Boolean kick(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId, @Argument @NotNull(message = "추방시킬 유저가 존재해야 합니다.") String userId) {
         chatService.kick(nuriUserDetails, roomId, userId);
+        return true;
     }
 
     @MutationMapping
-    public void exitRoom(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId) {
+    public Boolean exitRoom(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "방 아이디는 존재해야 합니다.") String roomId) {
         chatService.exitRoom(nuriUserDetails, roomId);
+        return true;
     }
 }

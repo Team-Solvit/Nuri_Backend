@@ -23,6 +23,23 @@ input ChatRecordRequestDto {
     replyChat: ReplyChatInput
 }
 
+input ReplyChatInput {
+    chatId: String!
+    contents: String!
+    name: String!
+}
+
+type Sender {
+    name: String!
+    profile: String!
+}
+
+type ReplyChat {
+    chatId: String!
+    contents: String!
+    name: String!
+}
+
 type ChatRecordResponseDto {
     id: UUID!
     roomId: String
@@ -57,17 +74,6 @@ type RoomReadResponseDto {
     latestCreatedAt: DateTime
 }
 
-type Query {
-    readMessages(roomId: String!): [ChatRecordResponseDto!]!
-    getRooms(page: Int!, size: Int!): RoomReadPage!
-    getRoomsGroupChat: [String!]!
-}
-
-type RoomReadPage {
-    content: [RoomReadResponseDto!]!
-    pageInfo: PageInfo!
-}
-
 type PageInfo {
     pageNumber: Int!
     pageSize: Int!
@@ -75,26 +81,21 @@ type PageInfo {
     totalPages: Int!
 }
 
-type Sender {
-    name: String!
-    profile: String!
+type RoomReadPage {
+    content: [RoomReadResponseDto!]!
+    pageInfo: PageInfo!
 }
 
-input ReplyChatInput {
-    chatId: String!
-    contents: String!
-    name: String!
-}
-
-type ReplyChat {
-    chatId: String!
-    contents: String!
-    name: String!
+type Query {
+    readMessages(roomId: String!): [ChatRecordResponseDto!]!
+    getRooms(page: Int!, size: Int!): RoomReadPage!
+    getRoomsGroupChat: [String!]!
 }
 
 type Mutation {
     createRoom(roomCreateRequestDto: RoomCreateRequestDto!): RoomCreateResponseDto!
     invite(roomInviteRequestDto: RoomInviteRequestDto!): Boolean
     exit(roomId: String!): Boolean
+    exitRoom(roomId: String!): Boolean
     kick(roomId: String!, userId: String!): Boolean
 }

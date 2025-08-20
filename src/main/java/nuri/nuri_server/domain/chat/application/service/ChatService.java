@@ -20,6 +20,7 @@ import nuri.nuri_server.domain.chat.presentation.dto.res.RoomReadResponseDto;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.exception.UserNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.UserRepository;
+import nuri.nuri_server.global.properties.ChatProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,6 +44,7 @@ public class ChatService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final UserRoomAdapterEntityRepository userRoomAdapterEntityRepository;
+    private final ChatProperties chatProperties;
     private final KafkaTemplate<String, UserJoinRequestDto> kafkaJoinTemplate;
     private final KafkaTemplate<String, UserExitRequestDto> kafkaExitTemplate;
 
@@ -147,7 +149,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<String> getRoomsGroupChat(NuriUserDetails nuriUserDetails) {
-        List<UUID> rooms = userRoomAdapterEntityRepository.findGroupRoomsByUserId(nuriUserDetails.getName());
+        List<UUID> rooms = userRoomAdapterEntityRepository.findGroupRoomsByUserId(nuriUserDetails.getName(), chatProperties.getBroadcastThreshold());
         return rooms.stream().map(UUID::toString).toList();
     }
 

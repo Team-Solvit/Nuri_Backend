@@ -19,8 +19,8 @@ public interface UserRoomAdapterEntityRepository extends JpaRepository<UserRoomA
     @Query("select a.room from UserRoomAdapterEntity a where a.user.id = :userId")
     List<RoomEntity> findRoomsByUserId(String userId);
 
-    @Query("select a.room.id from UserRoomAdapterEntity a where a.user.id = :userId group by a.room.id having count(a.id) >= 10")
-    List<UUID> findGroupRoomsByUserId(String userId);
+    @Query("select a.room.id from UserRoomAdapterEntity a where a.user.id = :userId group by a.room.id having count(a.id) >= :limit")
+    List<UUID> findGroupRoomsByUserId(String userId, int limit);
 
     @Query("select not a.invitePermission from UserRoomAdapterEntity a where a.user.userId = :userId and a.room.id = :roomId")
     boolean findInvitePermissionByRoomIdAndUserId(UUID roomId, String userId);
