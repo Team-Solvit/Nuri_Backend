@@ -28,6 +28,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,11 @@ public class ChatService {
                         .replyChat(chatRecord.getReplyChat())
                         .build()
         ).toList();
+    }
+
+    @Transactional
+    public void exitRoom(NuriUserDetails nuriUserDetails, String roomId) {
+        userRoomAdapterEntityRepository.updateLastReadAtByRoomIdAndUserId(UUID.fromString(roomId), nuriUserDetails.getName(), OffsetDateTime.now());
     }
 
     @Transactional
@@ -102,11 +108,23 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public Page<RoomReadResponseDto> getRooms(NuriUserDetails nuriUserDetails, Pageable pageable) {
-        Page<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getName(), pageable);
+        List<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getName());
         List<String> roomIds = rooms.stream()
                 .map(room -> room.getId().toString())
                 .toList();
-        List<ChatRecord> latestChatRecords = chatRecordRepository.findLatestMessagesByRoomIds(roomIds);
+        Page<ChatRecord> latestChatRecords = chatRecordRepository.findLatestMessagesByRoomIds(roomIds, pageable);
+
+        List<String> roomIdsInPage = latestChatRecords.stream()
+                .map(ChatRecord::getRoomId)
+                .collect(Collectors.toList());
+
+        List<UserRoomAdapterEntity> userRoomAdapterEntities = userRoomAdapterEntityRepository.findByUserIdAndRoomIds(nuriUserDetails.getName(), roomIdsInPage);
+
+        Map<String, OffsetDateTime> offsetDateTimeMap = userRoomAdapterEntities.stream()
+                .collect(Collectors.toMap(
+                        entity -> entity.getRoom().getId().toString(),
+                        UserRoomAdapterEntity::getLastReadAt
+                ));
 
         Map<String, ChatRecord> latestMessageMap = latestChatRecords.stream()
                 .collect(Collectors.toMap(ChatRecord::getRoomId, Function.identity()));
@@ -116,12 +134,15 @@ public class ChatService {
                         room -> latestMessageMap.get(room.getId().toString()) == null,
                         Comparator.reverseOrder()))
                 .map(room -> {
-                    ChatRecord latestMessage = latestMessageMap.get(room.getId().toString());
-                    return RoomReadResponseDto.from(latestMessage, room);
+                    String roomId = room.getId().toString();
+                    ChatRecord latestMessage = latestMessageMap.get(roomId);
+                    OffsetDateTime offsetDateTime = offsetDateTimeMap.get(roomId);
+                    long newMessageCount = chatRecordRepository.countByRoomIdAndCreatedAtAfter(roomId, offsetDateTime);
+                    return RoomReadResponseDto.from(latestMessage, newMessageCount, room);
                 })
                 .toList();
 
-        return new PageImpl<>(roomReadResponseDtoList, pageable, rooms.getTotalElements());
+        return new PageImpl<>(roomReadResponseDtoList, pageable, rooms.size());
     }
 
     @Transactional(readOnly = true)

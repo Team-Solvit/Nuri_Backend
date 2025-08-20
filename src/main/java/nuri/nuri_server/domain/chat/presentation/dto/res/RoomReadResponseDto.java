@@ -13,13 +13,16 @@ public record RoomReadResponseDto(
         @NotNull
         RoomDto roomDto,
         String latestMessage,
-        OffsetDateTime latestCreatedAt
+        OffsetDateTime latestCreatedAt,
+        @NotNull
+        Long newMessageCount
 ) {
-        public static RoomReadResponseDto from(ChatRecord latestMessage, RoomEntity roomEntity) {
+        public static RoomReadResponseDto from(ChatRecord latestMessage, long newMessageCount, RoomEntity roomEntity) {
                 return RoomReadResponseDto.builder()
                         .roomDto(RoomDto.from(roomEntity))
                         .latestMessage(latestMessage != null ? latestMessage.getContents() : "")
                         .latestCreatedAt(latestMessage != null ? latestMessage.getCreatedAt() : null)
+                        .newMessageCount(newMessageCount)
                         .build();
         }
 }

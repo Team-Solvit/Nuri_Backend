@@ -5,6 +5,8 @@ import lombok.*;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
+import java.time.OffsetDateTime;
+
 @Entity
 @Getter
 @Table(name = "tbl_user_room_adapter")
@@ -21,4 +23,6 @@ public class UserRoomAdapterEntity extends BaseEntity {
     private UserEntity user;
 
     private boolean invitePermission;
+
+    private OffsetDateTime lastReadAt;
 }
