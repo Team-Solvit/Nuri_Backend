@@ -1,7 +1,7 @@
 package nuri.nuri_server.domain.auth.oauth2.infra.builder.impl;
 
 import nuri.nuri_server.domain.auth.oauth2.infra.builder.OAuthLinkBuilder;
-import nuri.nuri_server.global.properties.OAuth2Properties;
+import nuri.nuri_server.global.properties.OAuth2ProviderListProperties;
 import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +10,8 @@ public class TiktokOAuthLinkBuilder implements OAuthLinkBuilder {
     private final String clientId;
     private final String redirectUri;
 
-    public TiktokOAuthLinkBuilder(OAuth2Properties oauth2Properties) {
-        OAuth2ProviderProperties tiktokProps = oauth2Properties.getTiktok();
+    public TiktokOAuthLinkBuilder(OAuth2ProviderListProperties oauth2ProviderListProperties) {
+        OAuth2ProviderProperties tiktokProps = oauth2ProviderListProperties.getTiktok();
         this.clientId = tiktokProps.getClientId();
         this.redirectUri = tiktokProps.getRedirectUrl();
     }

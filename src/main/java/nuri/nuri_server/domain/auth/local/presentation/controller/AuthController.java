@@ -5,9 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.auth.local.application.service.AuthService;
-import nuri.nuri_server.domain.auth.local.presentation.dto.req.LoginRequest;
-import nuri.nuri_server.domain.auth.local.presentation.dto.req.SignupRequest;
-import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponse;
+import nuri.nuri_server.domain.auth.local.presentation.dto.req.LoginRequestDto;
+import nuri.nuri_server.domain.auth.local.presentation.dto.req.SignupRequestDto;
+import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponseDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -24,17 +24,17 @@ public class AuthController {
     private final HttpServletResponse response;
 
     @MutationMapping
-    public String localSignUp(@Argument("localSignUpInput") @Valid SignupRequest signupRequest) {
-        authService.signup(signupRequest);
+    public String localSignUp(@Argument("localSignUpInput") @Valid SignupRequestDto signupRequestDto) {
+        authService.signup(signupRequestDto);
         return "회원가입에 성공하였습니다.";
     }
 
     @MutationMapping
-    public String localLogin(@Argument("localLoginInput") @Valid LoginRequest loginRequest) {
-        TokenResponse tokenResponse = authService.login(loginRequest);
+    public String localLogin(@Argument("localLoginInput") @Valid LoginRequestDto loginRequestDto) {
+        TokenResponseDto tokenResponseDto = authService.login(loginRequestDto);
 
-        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponse.accessToken());
-        response.setHeader(HttpHeaders.SET_COOKIE, tokenResponse.refreshTokenCookie());
+        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponseDto.accessToken());
+        response.setHeader(HttpHeaders.SET_COOKIE, tokenResponseDto.refreshTokenCookie());
 
         return "로그인에 성공하였습니다.";
     }

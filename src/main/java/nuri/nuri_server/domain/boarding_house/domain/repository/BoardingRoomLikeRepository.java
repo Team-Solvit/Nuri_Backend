@@ -9,4 +9,7 @@ import java.util.UUID;
 @Repository
 public interface BoardingRoomLikeRepository extends JpaRepository<BoardingRoomLikeEntity, UUID> {
     Long countByBoardingRoomId(UUID postId);
+    Boolean existsByBoardingRoomIdAndUserId(UUID roomId, UUID userId);
+
+    Integer deleteByBoardingRoomIdAndUserId(UUID roomId, UUID userId);
 }

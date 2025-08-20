@@ -9,8 +9,8 @@ import nuri.nuri_server.domain.post.domain.exception.PostNotFoundException;
 import nuri.nuri_server.domain.post.domain.repository.HashTagRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostFileRepository;
 import nuri.nuri_server.domain.post.domain.repository.PostRepository;
-import nuri.nuri_server.domain.post.presentation.dto.UpsertPostInfo;
-import nuri.nuri_server.domain.post.presentation.dto.request.UpdatePostRequest;
+import nuri.nuri_server.domain.post.presentation.dto.common.PostUpsertDto;
+import nuri.nuri_server.domain.post.presentation.dto.req.PostUpdateRequestDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,30 +26,30 @@ public class UpdatePostService {
     private final HashTagRepository hashTagRepository;
 
     @Transactional
-    public void updatePost(UpdatePostRequest updatePostRequest, NuriUserDetails nuriUserDetails) {
+    public void updatePost(PostUpdateRequestDto postUpdateRequestDto, NuriUserDetails nuriUserDetails) {
         log.info("게시물 수정 요청: userId={}, postId={}",
-                nuriUserDetails.getUser().getId(), updatePostRequest.postId());
+                nuriUserDetails.getUser().getId(), postUpdateRequestDto.postId());
 
-        PostEntity post = postRepository.findById(updatePostRequest.postId())
+        PostEntity post = postRepository.findById(postUpdateRequestDto.postId())
                 .orElseThrow(PostNotFoundException::new);
 
         post.validateAuthor(nuriUserDetails.getUser());
 
-        UpsertPostInfo postInfo = updatePostRequest.postInfo();
+        PostUpsertDto postInfo = postUpdateRequestDto.postInfo();
         post.updatePost(postInfo.title(),
                 postInfo.contents(),
                 postInfo.shareRange(),
                 postInfo.isGroup()
         );
 
-        updatePostFile(updatePostRequest.files(), post);
-        updatePostHashTag(updatePostRequest.hashTags(), post);
+        updatePostFile(postUpdateRequestDto.files(), post);
+        updatePostHashTag(postUpdateRequestDto.hashTags(), post);
 
         log.info("게시물 수정 완료: postId={}, userId={}",
                 post.getId(), nuriUserDetails.getUser().getId());
     }
 
-    public void updatePostFile(List<String> files, PostEntity post) {
+    private void updatePostFile(List<String> files, PostEntity post) {
         postFileRepository.deleteAllByPostId(post.getId());
 
         List<PostFileEntity> postFileEntities = files.stream()
@@ -62,7 +62,7 @@ public class UpdatePostService {
         postFileRepository.saveAll(postFileEntities);
     }
 
-    public void updatePostHashTag(List<String> hashTags, PostEntity post) {
+    private void updatePostHashTag(List<String> hashTags, PostEntity post) {
         hashTagRepository.deleteAllByPostId(post.getId());
 
         List<HashTagEntity> hashTagEntities = hashTags.stream()

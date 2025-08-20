@@ -1,0 +1,120 @@
+extend type Query {
+    getPostList(start : Int!) : [PostList]!
+    getUserPostList(userPostListReadInput : UserPostListReadInput!) : [PostThumbnail]!
+    getPost(postId : String!) : SnsPost
+    getPostCommentList(postCommentListReadInput : PostCommentListReadInput!) : [PostComment]!
+}
+
+extend type Mutation {
+    createPost(postCreateInput : PostCreateInput!) : String
+    updatePost(postUpdateInput : PostUpdateInput!) : String
+    deletePost(postId : String!) : String
+
+    likePost(postId : String!) : String
+    unlikePost(postId : String!) : String
+
+    createPostComment(postCommentCreateInput : PostCommentCreateInput!) : String
+    updatePostComment(postCommentUpdateInput : PostCommentUpdateInput!) : String
+    deletePostComment(commentId : String!) : String
+}
+
+input UserPostListReadInput {
+    userId : String!
+    start : Int
+}
+
+input PostCommentListReadInput {
+    start : Int!
+    postId : String!
+}
+
+input PostCommentUpdateInput {
+    commentId : String!
+    content : String!
+}
+
+input PostCommentCreateInput {
+    postId : String!
+    contents : String!
+}
+
+input PostUpdateInput {
+    postId : String
+    postInfo : UpsertPostInfo!
+    files : [String!]!
+    hashTags : [String]!
+}
+
+input PostCreateInput {
+    postInfo : UpsertPostInfo!
+    files : [String!]!
+    hashTags : [String]!
+}
+
+input UpsertPostInfo {
+    title : String
+    contents : String
+    shareRange : ShareRange!
+    isGroup : Boolean
+}
+
+enum ShareRange {
+    ALL, BOARDING_HOUSE, GROUP
+}
+
+union PostInfo = SnsPost | BoardingPost
+
+enum PostType {
+    SNS
+    Group
+    BOARDING
+}
+
+type PostList {
+    postType : PostType
+    postInfo : PostInfo
+}
+
+type BoardingPost {
+    room : BoardingRoom
+    likeCount : Int
+    commentCount : Int
+}
+
+type SnsPost {
+    postId : String
+    title : String
+    contents : String
+    shareRange : ShareRange
+    isGroup : Boolean
+    files : [SnsPostFile]
+    likeCount : Int
+    commentCount : Int
+    day : String
+    hashtags : [SnsHashtag]
+    author : User
+}
+
+type SnsPostFile {
+    fileId : String
+    postId : String
+    url : String
+}
+
+type SnsHashtag {
+    hashtagId : String
+    postId : String
+    name : String
+}
+
+type PostThumbnail {
+    postId : String
+    thumbnail : String
+}
+
+type PostComment {
+    commentId : String!
+    postId : String
+    commenter : User
+    content : String!
+}

@@ -75,3 +75,9 @@ redis:
 
 front-url:
   ${FRONTEND_URL}
+
+page-size:
+  comment : ${COMMENT_LIST_SIZE}
+  user-post : ${USER_POST_SIZE}
+  sns-post : ${SNS_POST_SIZE}
+  boarding-post : ${BOARDING_POST_SIZE}

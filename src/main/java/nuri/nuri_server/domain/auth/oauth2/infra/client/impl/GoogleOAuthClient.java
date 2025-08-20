@@ -7,7 +7,7 @@ import nuri.nuri_server.global.feign.oauth2.GoogleOAuth2UserInfoClient;
 import nuri.nuri_server.global.feign.oauth2.req.GoogleTokenRequest;
 import nuri.nuri_server.global.feign.oauth2.res.information.GoogleInformationResponse;
 import nuri.nuri_server.global.feign.oauth2.res.token.GoogleTokenResponse;
-import nuri.nuri_server.global.properties.OAuth2Properties;
+import nuri.nuri_server.global.properties.OAuth2ProviderListProperties;
 import nuri.nuri_server.global.properties.OAuth2ProviderProperties;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +21,10 @@ public class GoogleOAuthClient implements OAuthClient {
     private final GoogleOAuth2UserInfoClient googleOAuth2UserInfoClient;
     private final OAuth2ProviderProperties googleProps;
 
-    public GoogleOAuthClient(OAuth2Properties oauth2Properties, GoogleOAuth2TokenClient googleOAuth2TokenClient, GoogleOAuth2UserInfoClient googleOAuth2UserInfoClient) {
+    public GoogleOAuthClient(OAuth2ProviderListProperties oauth2ProviderListProperties, GoogleOAuth2TokenClient googleOAuth2TokenClient, GoogleOAuth2UserInfoClient googleOAuth2UserInfoClient) {
         this.googleOAuth2TokenClient = googleOAuth2TokenClient;
         this.googleOAuth2UserInfoClient = googleOAuth2UserInfoClient;
-        googleProps = oauth2Properties.getGoogle();
+        googleProps = oauth2ProviderListProperties.getGoogle();
     }
 
     @Override

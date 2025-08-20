@@ -6,13 +6,16 @@ import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomCommentRepository;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomLikeRepository;
 import nuri.nuri_server.domain.boarding_house.domain.repository.BoardingRoomRepository;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.BoardingRoomInfo;
+import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingRoomDto;
 import nuri.nuri_server.domain.post.application.service.SnsPostQueryService;
 import nuri.nuri_server.domain.post.application.service.recommend_post.RecommendPostList;
 import nuri.nuri_server.domain.post.domain.entity.PostEntity;
 import nuri.nuri_server.domain.post.domain.repository.*;
-import nuri.nuri_server.domain.post.presentation.dto.*;
-import nuri.nuri_server.domain.post.presentation.dto.response.*;
+import nuri.nuri_server.domain.post.presentation.dto.common.BoardingPost;
+import nuri.nuri_server.domain.post.presentation.dto.common.PostType;
+import nuri.nuri_server.domain.post.presentation.dto.common.SnsPost;
+import nuri.nuri_server.domain.post.presentation.dto.res.*;
+import nuri.nuri_server.global.properties.PageSizeProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -33,51 +36,52 @@ public class BasicRecommendPostList implements RecommendPostList {
     private final BoardingRoomCommentRepository boardingRoomCommentRepository;
     private final BoardingRoomQueryService boardingRoomQueryService;
     private final SnsPostQueryService snsPostQueryService;
-    private final Integer snsSize = 15;
-    private final Integer boardingSize = 5;
+    private final PageSizeProperties pageSizeProperties;
 
     @Override
-    public List<GetPostListResponse> getRecommendSnsPostList(Integer start, NuriUserDetails nuriUserDetails) {
-        Pageable pageable = PageRequest.of(start, snsSize, Sort.by("updatedAt").descending());
+    public List<PostListReadResponseDto> getRecommendSnsPostList(Integer start, NuriUserDetails nuriUserDetails) {
+        Integer size = pageSizeProperties.getSnsPost();
+        Pageable pageable = PageRequest.of(start, size, Sort.by("updatedAt").descending());
         Page<PostEntity> pagePostEntities = postRepository.findAll(pageable);
         return pagePostEntities.getContent().stream()
-                .map(this::setSnsPostResponse)
+                .map(this::buildSnsPostResponse)
                 .toList();
     }
 
-    private GetPostListResponse setSnsPostResponse(PostEntity post) {
-        SnsPostInfo snsPostInfo = snsPostQueryService.getSnsPost(post);
+    private PostListReadResponseDto buildSnsPostResponse(PostEntity post) {
+        SnsPost snsPostInfo = snsPostQueryService.getSnsPost(post);
 
-        return GetPostListResponse.builder()
+        return PostListReadResponseDto.builder()
                 .postType(PostType.SNS)
                 .postInfo(snsPostInfo)
                 .build();
     }
 
     @Override
-    public List<GetPostListResponse> getRecommendBoardingPostList(Integer start, NuriUserDetails nuriUserDetails) {
-        Pageable pageable = PageRequest.of(start, boardingSize, Sort.by("updatedAt").descending());
+    public List<PostListReadResponseDto> getRecommendBoardingPostList(Integer start, NuriUserDetails nuriUserDetails) {
+        Integer size = pageSizeProperties.getBoardingPost();
+        Pageable pageable = PageRequest.of(start, size, Sort.by("updatedAt").descending());
         Page<BoardingRoomEntity> pageBoardingPostEntities = boardingRoomRepository.findAll(pageable);
         return pageBoardingPostEntities.getContent().stream()
-                .map(this::setBoardingPostResponse)
+                .map(this::buildBoardingPostResponse)
                 .toList();
     }
 
-    private GetPostListResponse setBoardingPostResponse(BoardingRoomEntity boardingRoom) {
+    private PostListReadResponseDto buildBoardingPostResponse(BoardingRoomEntity boardingRoom) {
         Long likeCount = boardingRoomLikeRepository.countByBoardingRoomId(boardingRoom.getId());
         Long commentCount = boardingRoomCommentRepository.countByBoardingRoomId(boardingRoom.getId());
 
-        BoardingRoomInfo room = boardingRoomQueryService.getBoardingRoomInfo(boardingRoom);
+        BoardingRoomDto room = boardingRoomQueryService.getBoardingRoomInfo(boardingRoom);
 
-        BoardingPostInfo boardingPostInfo = BoardingPostInfo.builder()
+        BoardingPost boardingPost = BoardingPost.builder()
                 .room(room)
                 .likeCount(likeCount)
                 .commentCount(commentCount)
                 .build();
 
-        return GetPostListResponse.builder()
+        return PostListReadResponseDto.builder()
                 .postType(PostType.BOARDING)
-                .postInfo(boardingPostInfo)
+                .postInfo(boardingPost)
                 .build();
     }
 }
