@@ -3,6 +3,7 @@ package nuri.nuri_server.domain.user.domain.repository;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.domain.user.domain.role.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +20,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<Role> findRoleByUserId(String userId);
 
     Optional<UserEntity> findByOauthProviderAndOauthId(String provider, String oauthId);
+
+    @Query("update UserEntity u set u.profile = :profile where u.id = :id")
+    @Modifying
+    void updateProfileById(String profile, UUID id);
 }

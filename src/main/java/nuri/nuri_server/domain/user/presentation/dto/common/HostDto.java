@@ -1,4 +1,4 @@
-package nuri.nuri_server.domain.user.presentation.dto;
+package nuri.nuri_server.domain.user.presentation.dto.common;
 
 import lombok.Builder;
 import nuri.nuri_server.domain.user.domain.entity.HostEntity;

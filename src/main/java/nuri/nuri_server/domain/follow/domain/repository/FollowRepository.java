@@ -20,4 +20,8 @@ public interface FollowRepository extends JpaRepository<FollowEntity, UUID> {
 
     @Query("select f.following from FollowEntity f where f.follower = :follower")
     List<UserEntity> findAllFollowingByFollower(UserEntity follower);
+
+    long countByFollower(UserEntity follower);
+
+    long countByFollowing(UserEntity following);
 }

@@ -32,6 +32,10 @@ public class NuriUserDetails implements UserDetails {
         return user.getUserId();
     }
 
+    public String getProfile() {
+        return user.getProfile();
+    }
+
     public UUID getId() {
         return user.getId();
     }
