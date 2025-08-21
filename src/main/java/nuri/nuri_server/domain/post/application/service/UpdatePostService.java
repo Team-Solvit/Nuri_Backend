@@ -28,12 +28,12 @@ public class UpdatePostService {
     @Transactional
     public void updatePost(PostUpdateRequestDto postUpdateRequestDto, NuriUserDetails nuriUserDetails) {
         log.info("게시물 수정 요청: userId={}, postId={}",
-                nuriUserDetails.getUser().getId(), postUpdateRequestDto.postId());
+                nuriUserDetails.user().getId(), postUpdateRequestDto.postId());
 
         PostEntity post = postRepository.findById(postUpdateRequestDto.postId())
                 .orElseThrow(PostNotFoundException::new);
 
-        post.validateAuthor(nuriUserDetails.getUser());
+        post.validateAuthor(nuriUserDetails.user());
 
         PostUpsertDto postInfo = postUpdateRequestDto.postInfo();
         post.updatePost(postInfo.title(),
@@ -46,7 +46,7 @@ public class UpdatePostService {
         updatePostHashTag(postUpdateRequestDto.hashTags(), post);
 
         log.info("게시물 수정 완료: postId={}, userId={}",
-                post.getId(), nuriUserDetails.getUser().getId());
+                post.getId(), nuriUserDetails.user().getId());
     }
 
     private void updatePostFile(List<String> files, PostEntity post) {

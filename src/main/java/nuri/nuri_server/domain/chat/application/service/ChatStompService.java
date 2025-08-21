@@ -50,7 +50,7 @@ public class ChatStompService {
         UUID uuid = UUID.randomUUID();
 
         Sender sender = Sender.builder()
-                .name(principal.getName())
+                .name(principal.getUsername())
                 .profile(principal.getProfile())
                 .build();
 

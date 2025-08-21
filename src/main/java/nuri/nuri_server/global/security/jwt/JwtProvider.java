@@ -85,4 +85,10 @@ public class JwtProvider {
             throw new InvalidJsonWebTokenException();
         }
     }
+
+    public void checkAuthorization(String authorizationHeader) {
+        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new InvalidJsonWebTokenException();
+        }
+    }
 }

@@ -36,7 +36,7 @@ public class UpdateBoardingHouseService {
         BoardingRoomEntity room = boardingRoomRepository.findById(boardingRoomUpdateRequest.roomId())
                 .orElseThrow(BoardingRoomNotFoundException::new);
 
-        room.validateHost(nuriUserDetails.getUser());
+        room.validateHost(nuriUserDetails.user());
 
         BoardingRoomUpsertDto roomInfo = boardingRoomUpdateRequest.boardingRoomInfo();
         room.updateBoardingRoom(

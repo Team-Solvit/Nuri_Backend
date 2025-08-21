@@ -2,7 +2,7 @@ package nuri.nuri_server.global.security.user;
 
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
-import nuri.nuri_server.domain.user.domain.service.UserDomainService;
+import nuri.nuri_server.domain.user.domain.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NuriUserDetailsService implements UserDetailsService {
 
-    private final UserDomainService userDomainService;
+    private final UserRepository userRepository;
 
     @Override
     public NuriUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        UserEntity userEntity = userDomainService.getUser(userId);
+        UserEntity userEntity = userRepository.findByUserId(userId).orElseThrow(() -> new UsernameNotFoundException(userId));
         return new NuriUserDetails(userEntity);
     }
 }

@@ -23,12 +23,12 @@ public class PostLikeService {
 
     @Transactional
     public void like(UUID postId, NuriUserDetails nuriUserDetails) {
-        log.info("게시물 좋아요 요청: userId={}, postId={}", nuriUserDetails.getUser().getId(), postId);
+        log.info("게시물 좋아요 요청: userId={}, postId={}", nuriUserDetails.user().getId(), postId);
 
         PostEntity post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
 
         if(postLikeRepository.existsByPostIdAndUserId(postId, user.getId())) {
             log.debug("게시물 좋아요를 이미 생성한 유저입니다. : userId={}, postId={}", user.getId(), postId);

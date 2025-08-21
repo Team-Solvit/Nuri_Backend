@@ -70,7 +70,7 @@ public class ChatService {
 
     @Transactional
     public void exitRoom(NuriUserDetails nuriUserDetails, String roomId) {
-        userRoomAdapterEntityRepository.updateLastReadAtByRoomIdAndUserId(UUID.fromString(roomId), nuriUserDetails.getName(), OffsetDateTime.now());
+        userRoomAdapterEntityRepository.updateLastReadAtByRoomIdAndUserId(UUID.fromString(roomId), nuriUserDetails.getUsername(), OffsetDateTime.now());
     }
 
     @Transactional
@@ -84,7 +84,7 @@ public class ChatService {
         boolean globalInvitePermission = !roomCreateRequestDto.isTeam();
 
         for(String userId : roomCreateRequestDto.users()) {
-            boolean personalInvitePermission = nuriUserDetails.getName().equals(userId);
+            boolean personalInvitePermission = nuriUserDetails.getUsername().equals(userId);
             UserEntity user = userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(userId));
             userRoomAdapterEntityRepository.save(UserRoomAdapterEntity.builder()
                     .room(room)
@@ -110,7 +110,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public Page<RoomReadResponseDto> getRooms(NuriUserDetails nuriUserDetails, Pageable pageable) {
-        List<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getName());
+        List<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getUsername());
         List<String> roomIds = rooms.stream()
                 .map(room -> room.getId().toString())
                 .toList();
@@ -120,7 +120,7 @@ public class ChatService {
                 .map(ChatRecord::getRoomId)
                 .collect(Collectors.toList());
 
-        List<UserRoomAdapterEntity> userRoomAdapterEntities = userRoomAdapterEntityRepository.findByUserIdAndRoomIds(nuriUserDetails.getName(), roomIdsInPage);
+        List<UserRoomAdapterEntity> userRoomAdapterEntities = userRoomAdapterEntityRepository.findByUserIdAndRoomIds(nuriUserDetails.getUsername(), roomIdsInPage);
 
         Map<String, OffsetDateTime> offsetDateTimeMap = userRoomAdapterEntities.stream()
                 .collect(Collectors.toMap(
@@ -149,13 +149,13 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<String> getRoomsGroupChat(NuriUserDetails nuriUserDetails) {
-        List<UUID> rooms = userRoomAdapterEntityRepository.findGroupRoomsByUserId(nuriUserDetails.getName(), chatProperties.getBroadcastThreshold());
+        List<UUID> rooms = userRoomAdapterEntityRepository.findGroupRoomsByUserId(nuriUserDetails.getUsername(), chatProperties.getBroadcastThreshold());
         return rooms.stream().map(UUID::toString).toList();
     }
 
     @Transactional
     public void invite(NuriUserDetails nuriUserDetails, RoomInviteRequestDto roomInviteRequestDto) {
-        if(userRoomAdapterEntityRepository.findInvitePermissionByRoomIdAndUserId(UUID.fromString(roomInviteRequestDto.roomId()), nuriUserDetails.getName())) {
+        if(userRoomAdapterEntityRepository.findInvitePermissionByRoomIdAndUserId(UUID.fromString(roomInviteRequestDto.roomId()), nuriUserDetails.getUsername())) {
             throw new UnauthorizedInvitationException();
         }
 
@@ -187,10 +187,10 @@ public class ChatService {
     public void exit(NuriUserDetails nuriUserDetails, String roomId) {
         UUID roomUUID = UUID.fromString(roomId);
 
-        int deletedCount = userRoomAdapterEntityRepository.deleteByRoomIdAndUserId(roomUUID, nuriUserDetails.getName());
+        int deletedCount = userRoomAdapterEntityRepository.deleteByRoomIdAndUserId(roomUUID, nuriUserDetails.getUsername());
 
         if (deletedCount == 0) {
-            throw new UserRoomNotFoundException(roomId, nuriUserDetails.getName());
+            throw new UserRoomNotFoundException(roomId, nuriUserDetails.getUsername());
         }
 
         Integer participantNumber = userRoomAdapterEntityRepository.countByRoomId(roomUUID);
@@ -198,7 +198,7 @@ public class ChatService {
         UserExitRequestDto userExitRequestDto = UserExitRequestDto.builder()
                 .participantNumber(participantNumber)
                 .roomId(roomUUID)
-                .userId(nuriUserDetails.getName())
+                .userId(nuriUserDetails.getUsername())
                 .build();
 
         kafkaExitTemplate.send("user-exit", userExitRequestDto);
@@ -207,7 +207,7 @@ public class ChatService {
     @Transactional
     public void kick(NuriUserDetails nuriUserDetails, String roomId, String userId) {
         UUID roomUUID = UUID.fromString(roomId);
-        if(userRoomAdapterEntityRepository.findInvitePermissionByRoomIdAndUserId(roomUUID, nuriUserDetails.getName())) {
+        if(userRoomAdapterEntityRepository.findInvitePermissionByRoomIdAndUserId(roomUUID, nuriUserDetails.getUsername())) {
             throw new UnauthorizedInvitationException();
         }
 

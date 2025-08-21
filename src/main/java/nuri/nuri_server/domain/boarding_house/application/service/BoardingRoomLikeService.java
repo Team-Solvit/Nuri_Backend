@@ -29,7 +29,7 @@ public class BoardingRoomLikeService {
         BoardingRoomEntity room = boardingRoomRepository.findById(roomId)
                 .orElseThrow(BoardingRoomNotFoundException::new);
 
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
 
         if(boardingRoomLikeRepository.existsByBoardingRoomIdAndUserId(roomId, user.getId())) {
             log.debug("하숙방 좋아요를 이미 생성한 유저입니다. : userId={}, roomId={}", user.getId(), roomId);

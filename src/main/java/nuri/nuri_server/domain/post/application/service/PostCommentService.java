@@ -35,7 +35,7 @@ public class PostCommentService {
 
     @Transactional
     public void createComment(PostCommentCreateRequestDto postCommentCreateRequestDto, NuriUserDetails nuriUserDetails) {
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
         log.info("게시물 댓글 작성 요청 : userId={}, postId={}", user.getId() , postCommentCreateRequestDto.postId());
 
         PostEntity post = postRepository.findById(postCommentCreateRequestDto.postId())
@@ -69,7 +69,7 @@ public class PostCommentService {
 
     @Transactional
     public void updateComment(PostCommentUpdateRequestDto postCommentUpdateRequestDto, NuriUserDetails nuriUserDetails) {
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
         log.info("게시물 댓글 수정 요청 : userId={}, commentId={}", user.getId() , postCommentUpdateRequestDto.commentId());
 
         PostCommentEntity comment = postCommentRepository.findById(postCommentUpdateRequestDto.commentId())
@@ -83,7 +83,7 @@ public class PostCommentService {
 
     @Transactional
     public void deleteComment(UUID commentId, NuriUserDetails nuriUserDetails) {
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
         log.info("게시물 댓글 삭제 요청 : userId={}, commentId={}", user.getId() , commentId);
 
         PostCommentEntity comment = postCommentRepository.findById(commentId)

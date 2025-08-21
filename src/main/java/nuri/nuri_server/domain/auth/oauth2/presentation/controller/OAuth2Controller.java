@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.auth.local.presentation.dto.res.TokenResponseDto;
 import nuri.nuri_server.domain.auth.oauth2.presentation.dto.req.OAuthLoginRequestDto;
 import nuri.nuri_server.domain.auth.oauth2.presentation.dto.req.OAuthSignUpRequestDto;
-import nuri.nuri_server.domain.auth.oauth2.presentation.dto.res.OAuthLoginResponseDto;
+import nuri.nuri_server.domain.auth.oauth2.presentation.dto.res.OAuth2LoginResponseDto;
 import nuri.nuri_server.domain.auth.oauth2.application.service.OAuth2SignUpService;
-import nuri.nuri_server.domain.auth.oauth2.application.service.dto.OAuthLoginValue;
+import nuri.nuri_server.domain.auth.oauth2.presentation.dto.res.OAuth2LoginValue;
 import nuri.nuri_server.domain.auth.oauth2.application.service.OAuth2LinkService;
 import nuri.nuri_server.domain.auth.oauth2.application.service.OAuth2LoginService;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -32,17 +32,17 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public OAuthLoginResponseDto oauthLogin(@Argument("oauthLoginInput") @Valid OAuthLoginRequestDto loginRequest) {
+    public OAuth2LoginResponseDto oauthLogin(@Argument("oauthLoginInput") @Valid OAuthLoginRequestDto loginRequest) {
         String code = loginRequest.code();
         String provider = loginRequest.provider();
 
         String oauth2AccessToken = oauth2LoginService.getAccessToken(code, provider);
-        OAuthLoginValue oauthLoginValue = oauth2LoginService.createTokenByOAuth2Token(oauth2AccessToken, provider);
+        OAuth2LoginValue oauth2LoginValue = oauth2LoginService.createTokenByOAuth2Token(oauth2AccessToken, provider);
 
-        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + oauthLoginValue.getAccessToken());
-        response.setHeader(HttpHeaders.SET_COOKIE, oauthLoginValue.getRefreshToken());
+        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + oauth2LoginValue.getAccessToken());
+        response.setHeader(HttpHeaders.SET_COOKIE, oauth2LoginValue.getRefreshToken());
 
-        return OAuthLoginResponseDto.from(oauthLoginValue);
+        return OAuth2LoginResponseDto.from(oauth2LoginValue);
     }
 
     @MutationMapping

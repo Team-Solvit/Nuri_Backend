@@ -18,12 +18,12 @@ public class DeletePostService {
 
     public void deletePost(UUID postId, NuriUserDetails nuriUserDetails) {
         log.info("게시물 삭제 요청: userId={}, postId={}",
-                nuriUserDetails.getUser().getId(), postId);
+                nuriUserDetails.user().getId(), postId);
 
         PostEntity post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        post.validateAuthor(nuriUserDetails.getUser());
+        post.validateAuthor(nuriUserDetails.user());
 
         postRepository.deleteById(postId);
         log.info("게시물 삭제 완료: postId={}", postId);

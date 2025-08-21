@@ -35,7 +35,7 @@ public class BoardingRoomCommentService {
 
     @Transactional
     public void createComment(NuriUserDetails nuriUserDetails, BoardingRoomCommentCreateRequestDto boardingRoomCommentCreateRequestDto) {
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
         log.info("하숙방 댓글 작성 요청 : userId={}, roomId={}", user.getId() , boardingRoomCommentCreateRequestDto.roomId());
 
         BoardingRoomEntity room = boardingRoomRepository.findById(boardingRoomCommentCreateRequestDto.roomId())
@@ -69,7 +69,7 @@ public class BoardingRoomCommentService {
 
     @Transactional
     public void updateComment(NuriUserDetails nuriUserDetails, BoardingRoomCommentUpdateRequestDto boardingRoomCommentUpdateRequestDto) {
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
         log.info("하숙방 댓글 수정 요청 : userId={}, commentId={}", user.getId() , boardingRoomCommentUpdateRequestDto.commentId());
 
         BoardingRoomCommentEntity comment = boardingRoomCommentRepository.findById(boardingRoomCommentUpdateRequestDto.commentId())
@@ -83,7 +83,7 @@ public class BoardingRoomCommentService {
 
     @Transactional
     public void deleteComment(NuriUserDetails nuriUserDetails, UUID commentId) {
-        UserEntity user = nuriUserDetails.getUser();
+        UserEntity user = nuriUserDetails.user();
         log.info("하숙방 댓글 삭제 요청 : userId={}, commentId={}", user.getId() , commentId);
 
         BoardingRoomCommentEntity comment = boardingRoomCommentRepository.findById(commentId)

@@ -26,7 +26,7 @@ public class DeleteBoardingHouseService {
         BoardingRoomEntity room = boardingRoomRepository.findById(roomId)
                 .orElseThrow(BoardingRoomNotFoundException::new);
 
-        room.validateHost(nuriUserDetails.getUser());
+        room.validateHost(nuriUserDetails.user());
 
         boardingRoomRepository.delete(room);
         log.info("하숙방 삭제 완료: roomId={}", roomId);

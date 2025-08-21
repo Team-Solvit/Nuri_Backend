@@ -27,8 +27,8 @@ public class CreateBoardingHouseService {
 
     @Transactional
     public void createBoardingRoom(NuriUserDetails nuriUserDetails, BoardingRoomCreateRequestDto boardingRoomCreateRequestDto) {
-        log.info("하숙방 추가 요청: userId={}", nuriUserDetails.getUser().getId());
-        BoardingHouseEntity house = getBoardingHouseByHostId(nuriUserDetails.getUser().getId());
+        log.info("하숙방 추가 요청: userId={}", nuriUserDetails.user().getId());
+        BoardingHouseEntity house = getBoardingHouseByHostId(nuriUserDetails.user().getId());
         BoardingRoomEntity room = boardingRoomRepository.save(toBoardingRoomEntity(house, boardingRoomCreateRequestDto.boardingRoomInfo()));
         boardingRoomFileRepository.saveAll(toBoardingRoomFileList(room, boardingRoomCreateRequestDto.files()));
         contractPeriodRepository.saveAll(toContractPeriodList(room, boardingRoomCreateRequestDto.contractPeriod()));

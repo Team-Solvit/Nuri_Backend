@@ -30,9 +30,9 @@ public class CreatePostService {
     @Transactional
     public void createPost(PostCreateRequestDto postCreateRequestDto, NuriUserDetails nuriUserDetails) {
         log.info("게시물 생성 요청: userId={}, title={}",
-                nuriUserDetails.getUser().getId(),
+                nuriUserDetails.user().getId(),
                 postCreateRequestDto.postInfo().title());
-        PostEntity post = savePost(nuriUserDetails.getUser(), postCreateRequestDto.postInfo());
+        PostEntity post = savePost(nuriUserDetails.user(), postCreateRequestDto.postInfo());
         log.info("게시물 저장 완료: postId={}", post.getId());
         savePostFiles(post, postCreateRequestDto.files());
         saveHashTags(post, postCreateRequestDto.hashTags());
