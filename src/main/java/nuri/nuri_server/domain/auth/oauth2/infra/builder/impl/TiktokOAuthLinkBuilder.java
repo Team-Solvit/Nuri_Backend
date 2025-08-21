@@ -7,21 +7,18 @@ import org.springframework.stereotype.Component;
 
 @Component("tiktok_builder")
 public class TiktokOAuthLinkBuilder implements OAuthLinkBuilder {
-    private final String clientId;
-    private final String redirectUri;
+    private final OAuth2ProviderProperties oAuth2ProviderProperties;
 
     public TiktokOAuthLinkBuilder(OAuth2ProviderListProperties oauth2ProviderListProperties) {
-        OAuth2ProviderProperties tiktokProps = oauth2ProviderListProperties.getTiktok();
-        this.clientId = tiktokProps.getClientId();
-        this.redirectUri = tiktokProps.getRedirectUrl();
+        oAuth2ProviderProperties = oauth2ProviderListProperties.getTiktok();
     }
 
     @Override
     public String buildUrl() {
-        return "https://www.tiktok.com/v2/auth/authorize" +
-                "?client_key=" + clientId +
+        return oAuth2ProviderProperties.getBaseUrl() +
+                "?client_key=" + oAuth2ProviderProperties.getClientId() +
                 "&scope=user.info.basic" +
                 "&response_type=code" +
-                "&redirect_uri=" + redirectUri;
+                "&redirect_uri=" + oAuth2ProviderProperties.getRedirectUrl();
     }
 }

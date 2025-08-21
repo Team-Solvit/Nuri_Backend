@@ -7,20 +7,17 @@ import org.springframework.stereotype.Component;
 
 @Component("google_builder")
 public class GoogleOAuthLinkBuilder implements OAuthLinkBuilder {
-    private final String clientId;
-    private final String redirectUri;
+    private final OAuth2ProviderProperties oAuth2ProviderProperties;
 
     public GoogleOAuthLinkBuilder(OAuth2ProviderListProperties oauth2ProviderListProperties) {
-        OAuth2ProviderProperties googleProps = oauth2ProviderListProperties.getGoogle();
-        this.clientId = googleProps.getClientId();
-        this.redirectUri = googleProps.getRedirectUrl();
+        oAuth2ProviderProperties = oauth2ProviderListProperties.getGoogle();
     }
 
     @Override
     public String buildUrl() {
-        return "https://accounts.google.com/o/oauth2/v2/auth" +
-                "?client_id=" + clientId +
-                "&redirect_uri=" + redirectUri +
+        return oAuth2ProviderProperties.getBaseUrl() +
+                "?client_id=" + oAuth2ProviderProperties.getClientId() +
+                "&redirect_uri=" + oAuth2ProviderProperties.getRedirectUrl() +
                 "&response_type=code" +
                 "&scope=openid%20email%20profile";
     }

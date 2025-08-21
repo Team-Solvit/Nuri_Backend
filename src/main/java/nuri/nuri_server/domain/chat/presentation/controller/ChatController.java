@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class ChatController {
+public class   ChatController {
     private final ChatService chatService;
 
     @QueryMapping

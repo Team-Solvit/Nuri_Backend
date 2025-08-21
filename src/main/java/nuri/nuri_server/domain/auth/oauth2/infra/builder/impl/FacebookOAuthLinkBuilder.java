@@ -7,20 +7,17 @@ import org.springframework.stereotype.Component;
 
 @Component("facebook_builder")
 public class FacebookOAuthLinkBuilder implements OAuthLinkBuilder {
-    private final String clientId;
-    private final String redirectUri;
+    private final OAuth2ProviderProperties oAuth2ProviderProperties;
 
     public FacebookOAuthLinkBuilder(OAuth2ProviderListProperties oauth2ProviderListProperties) {
-        OAuth2ProviderProperties facebookProps = oauth2ProviderListProperties.getFacebook();
-        this.clientId = facebookProps.getClientId();
-        this.redirectUri = facebookProps.getRedirectUrl();
+        oAuth2ProviderProperties = oauth2ProviderListProperties.getFacebook();
     }
 
     @Override
     public String buildUrl() {
-        return "https://www.facebook.com/v23.0/dialog/oauth" +
-                "?client_id=" + clientId +
-                "&redirect_uri=" + redirectUri +
+        return oAuth2ProviderProperties.getBaseUrl() +
+                "?client_id=" + oAuth2ProviderProperties.getClientId() +
+                "&redirect_uri=" + oAuth2ProviderProperties.getRedirectUrl() +
                 "&response_type=code" +
                 "&scope=public_profile,email";
     }

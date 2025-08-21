@@ -7,21 +7,18 @@ import org.springframework.stereotype.Component;
 
 @Component("kakao_builder")
 public class KakaoOAuthLinkBuilder implements OAuthLinkBuilder {
-    private final String clientId;
-    private final String redirectUri;
+    private final OAuth2ProviderProperties oAuth2ProviderProperties;
 
     public KakaoOAuthLinkBuilder(OAuth2ProviderListProperties oauth2ProviderListProperties) {
-        OAuth2ProviderProperties kakaoProps = oauth2ProviderListProperties.getKakao();
-        this.clientId = kakaoProps.getClientId();
-        this.redirectUri = kakaoProps.getRedirectUrl();
+        oAuth2ProviderProperties = oauth2ProviderListProperties.getKakao();
     }
 
     @Override
     public String buildUrl() {
-        return "https://kauth.kakao.com/oauth/authorize" +
-                "?client_id=" + clientId +
+        return oAuth2ProviderProperties.getBaseUrl() +
+                "?client_id=" + oAuth2ProviderProperties.getClientId() +
                 "&scope=profile_nickname,profile_image" +
                 "&response_type=code" +
-                "&redirect_uri=" + redirectUri;
+                "&redirect_uri=" + oAuth2ProviderProperties.getRedirectUrl();
     }
 }
