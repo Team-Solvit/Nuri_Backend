@@ -51,9 +51,9 @@ public class FacebookOAuthClient implements OAuthClient {
     public OAuth2InformationResponse getUserInfo(String accessToken) {
         FacebookInformationResponse response = facebookOAuth2Client.getUserInformation(accessToken);
         return OAuth2InformationResponse.builder()
-                .id(response.getId())
-                .name(response.getName())
-                .profile(response.getPicture().getData().getUrl())
+                .id(response.id())
+                .name(response.name())
+                .profile(response.picture().data().url())
                 .build();
     }
 }
