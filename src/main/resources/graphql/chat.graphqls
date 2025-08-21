@@ -86,13 +86,13 @@ type RoomReadPage {
     pageInfo: PageInfo!
 }
 
-type Query {
+extend type Query {
     readMessages(roomId: String!): [ChatRecordResponseDto!]!
     getRooms(page: Int!, size: Int!): RoomReadPage!
     getRoomsGroupChat: [String!]!
 }
 
-type Mutation {
+extend type Mutation {
     createRoom(roomCreateRequestDto: RoomCreateRequestDto!): RoomCreateResponseDto!
     invite(roomInviteRequestDto: RoomInviteRequestDto!): Boolean
     exit(roomId: String!): Boolean
