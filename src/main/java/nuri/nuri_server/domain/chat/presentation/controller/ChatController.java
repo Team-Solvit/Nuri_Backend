@@ -10,7 +10,6 @@ import nuri.nuri_server.domain.chat.presentation.dto.res.ChatRecordResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomCreateResponseDto;
 import nuri.nuri_server.domain.chat.presentation.dto.res.RoomReadResponseDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -39,7 +38,7 @@ public class   ChatController {
     }
 
     @QueryMapping
-    public Page<RoomReadResponseDto> getRooms(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "페이지 값은 존재해야 합니다.") Integer page, @Argument @NotNull(message = "사이즈 값은 존재해야 합니다.") Integer size) {
+    public List<RoomReadResponseDto> getRooms(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @NotNull(message = "페이지 값은 존재해야 합니다.") Integer page, @Argument @NotNull(message = "사이즈 값은 존재해야 합니다.") Integer size) {
         log.info("getRooms 인자값 : {}, {}, {}", nuriUserDetails.getUsername(), page, size);
         return chatService.getRooms(nuriUserDetails, PageRequest.of(page, size));
     }

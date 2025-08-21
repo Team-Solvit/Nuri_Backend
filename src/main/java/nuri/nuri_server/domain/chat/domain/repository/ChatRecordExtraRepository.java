@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface ChatRecordExtraRepository {
-    Page<ChatRecord> findLatestMessagesByRoomIds(List<String> roomIds, Pageable pageable);
+    Page<ChatRecord> findLatestMessagesByRoomIds(List<String> roomIds, Pageable pageable, String username);
 
     long countByRoomIdAndCreatedAtAfter(String roomId, OffsetDateTime lastReadAt);
 }

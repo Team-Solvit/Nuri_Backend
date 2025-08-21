@@ -74,22 +74,10 @@ type RoomReadResponseDto {
     latestCreatedAt: DateTime
 }
 
-type PageInfo {
-    pageNumber: Int!
-    pageSize: Int!
-    totalElements: Int!
-    totalPages: Int!
-}
-
-type RoomReadPage {
-    content: [RoomReadResponseDto]
-    pageInfo: PageInfo
-}
-
 extend type Query {
-    readMessages(roomId: String!): [ChatRecordResponseDto!]
-    getRooms(page: Int!, size: Int!): RoomReadPage
-    getRoomsGroupChat: [String!]
+    readMessages(roomId: String!): [ChatRecordResponseDto]
+    getRooms(page: Int!, size: Int!): [RoomReadResponseDto]
+    getRoomsGroupChat: [String]
 }
 
 extend type Mutation {

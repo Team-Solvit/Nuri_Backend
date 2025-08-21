@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/graphql", "/graphiql").permitAll()
+                        .requestMatchers("/graphql", "/graphiql", "/websocket/**").permitAll()
                         .anyRequest().denyAll()
                 )
                 .sessionManagement((session) -> session

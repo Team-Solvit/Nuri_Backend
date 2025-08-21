@@ -23,7 +23,6 @@ import nuri.nuri_server.domain.user.domain.repository.UserRepository;
 import nuri.nuri_server.global.properties.ChatProperties;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -109,12 +108,12 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RoomReadResponseDto> getRooms(NuriUserDetails nuriUserDetails, Pageable pageable) {
+    public List<RoomReadResponseDto> getRooms(NuriUserDetails nuriUserDetails, Pageable pageable) {
         List<RoomEntity> rooms = userRoomAdapterEntityRepository.findRoomsByUserId(nuriUserDetails.getUsername());
         List<String> roomIds = rooms.stream()
                 .map(room -> room.getId().toString())
                 .toList();
-        Page<ChatRecord> latestChatRecords = chatRecordRepository.findLatestMessagesByRoomIds(roomIds, pageable);
+        Page<ChatRecord> latestChatRecords = chatRecordRepository.findLatestMessagesByRoomIds(roomIds, pageable, nuriUserDetails.getUsername());
 
         List<String> roomIdsInPage = latestChatRecords.stream()
                 .map(ChatRecord::getRoomId)
@@ -131,7 +130,7 @@ public class ChatService {
         Map<String, ChatRecord> latestMessageMap = latestChatRecords.stream()
                 .collect(Collectors.toMap(ChatRecord::getRoomId, Function.identity()));
 
-        List<RoomReadResponseDto> roomReadResponseDtoList = rooms.stream()
+        return rooms.stream()
                 .sorted(Comparator.comparing(
                         room -> latestMessageMap.get(room.getId().toString()) == null,
                         Comparator.reverseOrder()))
@@ -143,8 +142,6 @@ public class ChatService {
                     return RoomReadResponseDto.from(latestMessage, newMessageCount, room);
                 })
                 .toList();
-
-        return new PageImpl<>(roomReadResponseDtoList, pageable, rooms.size());
     }
 
     @Transactional(readOnly = true)

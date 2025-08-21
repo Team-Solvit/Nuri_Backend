@@ -24,13 +24,18 @@ public class ChatRecordExtraRepositoryImpl implements ChatRecordExtraRepository 
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<ChatRecord> findLatestMessagesByRoomIds(List<String> roomIds, Pageable pageable) {
+    public Page<ChatRecord> findLatestMessagesByRoomIds(List<String> roomIds, Pageable pageable, String username) {
         if (CollectionUtils.isEmpty(roomIds)) {
             return Page.empty(pageable);
         }
 
         Aggregation aggregation = newAggregation(
-                match(Criteria.where("roomId").in(roomIds)),
+                match(
+                        Criteria.where("").orOperator(
+                                Criteria.where("roomId").in(roomIds),
+                                Criteria.where("roomId").regex(username)
+                        )
+                ),
                 sort(Sort.by(Sort.Direction.DESC, "createdAt")),
                 group("roomId")
                         .first(Aggregation.ROOT).as("latestMessage"),
