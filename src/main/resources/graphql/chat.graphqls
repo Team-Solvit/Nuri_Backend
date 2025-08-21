@@ -82,8 +82,8 @@ type PageInfo {
 }
 
 type RoomReadPage {
-    content: [RoomReadResponseDto!]!
-    pageInfo: PageInfo!
+    content: [RoomReadResponseDto]
+    pageInfo: PageInfo
 }
 
 extend type Query {
