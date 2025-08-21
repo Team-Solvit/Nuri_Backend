@@ -3,8 +3,8 @@ type Query {
 }
 
 type Mutation {
-    oauthLogin(oauthLoginInput : OAuthLoginInput!) : OAuthLoginResponse!
-    oauthSignUp(oauthSignUpInput : OAuthSignUpInput!) : String
+    oauth2Login(oauthLoginInput : OAuth2LoginInput!) : OAuth2LoginResponse!
+    oauth2SignUp(oauthSignUpInput : OAuth2SignUpInput!) : String
 
     localSignUp(localSignUpInput: LocalSignUpInput!) : String
     localLogin(localLoginInput: LocalLoginInput!) : String
@@ -12,17 +12,17 @@ type Mutation {
     logout : String
 }
 
-input OAuthLoginInput {
+input OAuth2LoginInput {
     code : String!
     provider : String!
 }
 
-type OAuthLoginResponse {
+type OAuth2LoginResponse {
     oauthId : String
     isNewUser : Boolean!
 }
 
-input OAuthSignUpInput {
+input OAuth2SignUpInput {
     oauthId : String!
     id : String!
     email : String!

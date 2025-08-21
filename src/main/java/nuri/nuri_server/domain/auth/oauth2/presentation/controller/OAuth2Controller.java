@@ -32,7 +32,7 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public OAuth2LoginResponseDto oauthLogin(@Argument("oauthLoginInput") @Valid OAuthLoginRequestDto loginRequest) {
+    public OAuth2LoginResponseDto oauth2Login(@Argument("oauthLoginInput") @Valid OAuthLoginRequestDto loginRequest) {
         String code = loginRequest.code();
         String provider = loginRequest.provider();
 
@@ -46,7 +46,7 @@ public class OAuth2Controller {
     }
 
     @MutationMapping
-    public String oauthSignUp(@Argument("oauthSignUpInput") @Valid OAuthSignUpRequestDto oauthSignUpRequestDto) {
+    public String oauth2SignUp(@Argument("oauthSignUpInput") @Valid OAuthSignUpRequestDto oauthSignUpRequestDto) {
         TokenResponseDto tokenResponseDto = oauth2SignUpService.signUp(oauthSignUpRequestDto);
 
         response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponseDto.accessToken());
