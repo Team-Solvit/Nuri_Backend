@@ -87,15 +87,15 @@ type RoomReadPage {
 }
 
 extend type Query {
-    readMessages(roomId: String!): [ChatRecordResponseDto!]!
-    getRooms(page: Int!, size: Int!): RoomReadPage!
-    getRoomsGroupChat: [String!]!
+    readMessages(roomId: String!): [ChatRecordResponseDto!]
+    getRooms(page: Int!, size: Int!): RoomReadPage
+    getRoomsGroupChat: [String!]
 }
 
 extend type Mutation {
     createRoom(roomCreateRequestDto: RoomCreateRequestDto!): RoomCreateResponseDto!
-    invite(roomInviteRequestDto: RoomInviteRequestDto!): Boolean
-    exit(roomId: String!): Boolean
-    exitRoom(roomId: String!): Boolean
-    kick(roomId: String!, userId: String!): Boolean
+    invite(roomInviteRequestDto: RoomInviteRequestDto!): Boolean!
+    exit(roomId: String!): Boolean!
+    exitRoom(roomId: String!): Boolean!
+    kick(roomId: String!, userId: String!): Boolean!
 }
