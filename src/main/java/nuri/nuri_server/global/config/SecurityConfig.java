@@ -17,8 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -27,7 +25,6 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     private final NuriUserDetailsService nuriUserDetailsService;
-    private final List<String> excludedUrls = List.of("/static/**", "/resources/**", "/public/**", "/auth/signup", "/auth/login", "/auth/reissue", "/graphql", "/websocket/**");
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,12 +39,12 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(excludedUrls.toArray(new String[0])).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/graphql", "/graphiql").permitAll()
+                        .anyRequest().denyAll()
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider, excludedUrls), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new NuriAuthenticationFilter(nuriUserDetailsService, jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new NuriExceptionFilter(objectMapper), NuriAuthenticationFilter.class);
 
         return http.build();

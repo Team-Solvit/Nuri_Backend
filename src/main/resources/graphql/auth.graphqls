@@ -1,0 +1,57 @@
+type Query {
+    getOAuth2Link(provider: String!): String
+}
+
+type Mutation {
+    oauthLogin(oauthLoginInput : OAuthLoginInput!) : OAuthLoginResponse!
+    oauthSignUp(oauthSignUpInput : OAuthSignUpInput!) : String
+
+    localSignUp(localSignUpInput: LocalSignUpInput!) : String
+    localLogin(localLoginInput: LocalLoginInput!) : String
+    reissue : String
+    logout : String
+}
+
+input OAuthLoginInput {
+    code : String!
+    provider : String!
+}
+
+type OAuthLoginResponse {
+    oauthId : String
+    isNewUser : Boolean!
+}
+
+input OAuthSignUpInput {
+    oauthId : String!
+    id : String!
+    email : String!
+    country : String!
+    language : String!
+    userAgreement : UserAgreement!
+}
+
+input UserAgreement {
+    agreedTermsOfService : Boolean!
+    agreedPrivacyCollection : Boolean!
+    agreedPrivacyThirdParty : Boolean!
+    agreedIdentityAgencyTerms : Boolean!
+    agreedIdentityPrivacyDelegate : Boolean!
+    agreedIdentityUniqueInfo : Boolean!
+    agreedIdentityProviderTerms : Boolean!
+}
+
+input LocalLoginInput {
+    id : String!
+    password : String!
+}
+
+input LocalSignUpInput {
+    name : String!
+    id : String!
+    email : String!
+    password : String!
+    country : String!
+    language : String!
+    userAgreement : UserAgreement!
+}

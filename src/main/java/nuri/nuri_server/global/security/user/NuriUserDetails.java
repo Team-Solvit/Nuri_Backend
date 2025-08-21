@@ -1,22 +1,25 @@
 package nuri.nuri_server.global.security.user;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
+
+@Getter
 @RequiredArgsConstructor
-public class NuriUserDetails implements UserDetails, Principal {
+public class NuriUserDetails implements UserDetails {
     private final UserEntity user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().name()));
+        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().getValue()));
     }
 
     @Override
@@ -29,13 +32,12 @@ public class NuriUserDetails implements UserDetails, Principal {
         return user.getUserId();
     }
 
-    public String getProfile() {
-        return user.getProfile();
+    public UUID getId() {
+        return user.getId();
     }
 
-    @Override
-    public String getName() {
-        return user.getUserId();
+    public String getProfile() {
+        return user.getProfile();
     }
 
     public String getNickname() {
