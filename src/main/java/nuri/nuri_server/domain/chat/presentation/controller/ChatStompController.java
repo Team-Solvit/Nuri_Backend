@@ -8,11 +8,11 @@ import nuri.nuri_server.domain.chat.presentation.dto.req.ChatRecordRequestDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Slf4j
 public class ChatStompController {
