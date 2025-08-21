@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.application.service.BoardingRoomQueryService;
 import nuri.nuri_server.domain.boarding_house.domain.entity.BoardingRoomEntity;
 import nuri.nuri_server.domain.boarding_house.domain.entity.ContractEntity;
+import nuri.nuri_server.domain.boarding_house.domain.repository.ContractRepository;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingRoomDto;
 import nuri.nuri_server.domain.contract.presentation.dto.common.ContractInfoDto;
 import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -16,11 +19,11 @@ import java.util.List;
 public class ContractQueryService {
 
     private final BoardingRoomQueryService boardingRoomQueryService;
+    private final ContractRepository contractRepository;
 
     public RoomContractDto getRoomContract(BoardingRoomEntity boardingRoom) {
         BoardingRoomDto room = boardingRoomQueryService.getBoardingRoomDto(boardingRoom);
-        List<ContractInfoDto> contractInfos = boardingRoom.getContracts().stream()
-                .filter(ContractEntity::isActive)
+        List<ContractInfoDto> contractInfos = contractRepository.findAllByRoomIdAndActive(boardingRoom.getId(), LocalDate.now()).stream()
                 .map(ContractInfoDto::from)
                 .toList();
 
