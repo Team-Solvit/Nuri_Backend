@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nuri.nuri_server.domain.boarding_house.domain.boarding_status.BoardingStatus;
 import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingRoomHostMismatchException;
+import nuri.nuri_server.domain.boarding_manage.domain.entity.BoardingRelationshipEntity;
 import nuri.nuri_server.domain.user.domain.entity.UserEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
@@ -56,6 +57,9 @@ public class BoardingRoomEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "boardingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContractPeriodEntity> contractPeriods = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRelationshipEntity> boardingRelationships = new ArrayList<>();
 
     @Builder
     public BoardingRoomEntity(BoardingHouseEntity boardingHouse, String name, String description, Integer monthlyRent, Integer headCount, BoardingStatus status) {

@@ -26,6 +26,14 @@ type Host {
 
 type Boarder {
     callNumber : String
-    gender : String
+    gender : Gender
     user : User
+}
+
+type ThirdParty {
+    user : User
+}
+
+enum Gender {
+    MALE, FEMALE, ALL
 }

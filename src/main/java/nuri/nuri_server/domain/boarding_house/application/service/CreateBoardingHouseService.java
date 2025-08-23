@@ -7,6 +7,8 @@ import nuri.nuri_server.domain.boarding_house.domain.exception.BoardingHouseNotF
 import nuri.nuri_server.domain.boarding_house.domain.repository.*;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomUpsertDto;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomCreateRequestDto;
+import nuri.nuri_server.domain.search_boarding_room.application.service.BoardingRoomDocumentQueryService;
+import nuri.nuri_server.domain.search_boarding_room.domain.repository.BoardingRoomElasticSearchRepository;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +26,22 @@ public class CreateBoardingHouseService {
     private final BoardingRoomFileRepository boardingRoomFileRepository;
     private final ContractPeriodRepository contractPeriodRepository;
     private final BoardingRoomOptionRepository boardingRoomOptionRepository;
+    private final BoardingRoomElasticSearchRepository boardingRoomElasticSearchRepository;
+    private final BoardingRoomDocumentQueryService boardingRoomDocumentQueryService;
 
     @Transactional
     public void createBoardingRoom(NuriUserDetails nuriUserDetails, BoardingRoomCreateRequestDto boardingRoomCreateRequestDto) {
         log.info("하숙방 추가 요청: userId={}", nuriUserDetails.getUser().getId());
+
         BoardingHouseEntity house = getBoardingHouseByHostId(nuriUserDetails.getUser().getId());
         BoardingRoomEntity room = boardingRoomRepository.save(toBoardingRoomEntity(house, boardingRoomCreateRequestDto.boardingRoomInfo()));
+
         boardingRoomFileRepository.saveAll(toBoardingRoomFileList(room, boardingRoomCreateRequestDto.files()));
         contractPeriodRepository.saveAll(toContractPeriodList(room, boardingRoomCreateRequestDto.contractPeriod()));
         boardingRoomOptionRepository.saveAll(toOptionList(room, boardingRoomCreateRequestDto.options()));
+
+        boardingRoomElasticSearchRepository.save(boardingRoomDocumentQueryService.toBoardingRoomDocument(room, house, boardingRoomCreateRequestDto.contractPeriod()));
+
         log.info("하숙방 추가 완료: roomName={}", room.getName());
     }
 

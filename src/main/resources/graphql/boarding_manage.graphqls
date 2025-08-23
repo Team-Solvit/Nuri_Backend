@@ -1,0 +1,43 @@
+extend type Query {
+    getManageBoardingHouseList : [BoardingHouse]
+    getManageBoardingRoomList(houseId : String!) : [RoomContract]
+    getBoardingManageWork(boardingManageWorkReadInput : BoardingManageWorkReadInput) : [BoardingManageWork]
+}
+
+extend type Mutation {
+    completeBoardingManageWork(workId : String!) : String
+    inCompleteBoardingManageWork(workId : String!) : String
+    uploadBoardingManageWorkFile(boardingManageWorkFileUploadInput : BoardingManageWorkFileUploadInput!) : String
+}
+
+input BoardingManageWorkReadInput {
+    date : String!
+    houseId : String
+}
+
+input BoardingManageWorkFileUploadInput {
+    workId : String!
+    file : String!
+}
+
+type BoardingRelationship {
+    relationshipId: String
+    thirdParty : ThirdParty
+    boarder : Boarder
+    boarderHouse : BoardingHouse
+    boardingRoom : BoardingRoom
+}
+
+enum BoardingManageType {
+    VISIT, CALL
+}
+
+type BoardingManageWork {
+    manageWorkId : String
+    relationship : BoardingRelationship
+    name : String
+    date : String
+    file : String
+    type : BoardingManageType
+    status : Boolean
+}

@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nuri.nuri_server.domain.boarding_house.domain.gender.Gender;
+import nuri.nuri_server.domain.boarding_manage.domain.entity.BoardingRelationshipEntity;
+import nuri.nuri_server.domain.user.domain.gender.Gender;
 import nuri.nuri_server.domain.user.domain.entity.HostEntity;
 import nuri.nuri_server.global.entity.BaseEntity;
 
@@ -47,4 +48,7 @@ public class BoardingHouseEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "boardingHouse", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardingRoomEntity> boardingRooms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "boardingHouse", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRelationshipEntity> boardingRelationships = new ArrayList<>();
 }
