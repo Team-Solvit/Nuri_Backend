@@ -1,6 +1,7 @@
 package nuri.nuri_server.domain.chat.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.chat.domain.exception.UnauthorizedInvitationException;
 import nuri.nuri_server.domain.chat.domain.entity.ChatRecord;
 import nuri.nuri_server.domain.chat.domain.entity.RoomEntity;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatService {
     private final ChatRecordRepository chatRecordRepository;
     private final RoomRepository roomRepository;
@@ -114,10 +116,18 @@ public class ChatService {
                 .map(room -> room.getId().toString())
                 .toList();
         Page<ChatRecord> latestChatRecords = chatRecordRepository.findLatestMessagesByRoomIds(roomIds, pageable, nuriUserDetails.getUsername());
+        List<ChatRecord> chatRecords = chatRecordRepository.findAll();
+        for(ChatRecord chatRecord : chatRecords) {
+            log.info("allChatRecord : {}", chatRecord.getRoomId());
+        }
 
         List<String> roomIdsInPage = latestChatRecords.stream()
                 .map(ChatRecord::getRoomId)
                 .collect(Collectors.toList());
+
+        for(String roomId : roomIdsInPage) {
+            log.info("getRooms RoomId : {}", roomId);
+        }
 
         List<UserRoomAdapterEntity> userRoomAdapterEntities = userRoomAdapterEntityRepository.findByUserIdAndRoomIds(nuriUserDetails.getUsername(), roomIdsInPage);
 
