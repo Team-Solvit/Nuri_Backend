@@ -83,10 +83,12 @@ public class AuthService {
         return jwtProvider.createTokenResponse(userEntity);
     }
 
+    @Transactional
     public String logout(NuriUserDetails nuriUserDetails) {
         return cookieManager.deleteRefreshToken(nuriUserDetails.getUsername());
     }
 
+    @Transactional
     public String reissue(HttpServletRequest request) {
         String refreshToken = cookieManager.getRefreshToken(request);
         String userId = jwtProvider.getUserIdFromToken(refreshToken);
