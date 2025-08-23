@@ -47,7 +47,7 @@ jobs:
           script: |
             IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:dev
             mkdir -p ~/env
-            echo "${{ secrets.NURI_PROD_ENV }}" > ~/env/dev.env
+            echo "${{ secrets.NURI_DEV_ENV }}" > ~/env/dev.env
             docker-compose down
             docker pull $IMAGE
             docker-compose --env-file ~/env/dev.env up -d
