@@ -1,4 +1,4 @@
-name: Deploy Nuri-Dev Application
+name: Deploy Nuri Dev Application
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       - name: Build JAR with Gradle (bootJar)
         run: |
           chmod +x gradlew
-          ./gradlew bootJar
+          ./gradlew clean bootJar
 
       - name: Docker Login
         run: |
@@ -29,11 +29,11 @@ jobs:
 
       - name: Docker BuildX
         run: |
-          docker buildx build --platform=linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:dev --load .
+          docker buildx build --platform=linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }} --load .
 
       - name: Docker Push
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:dev
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}
 
       - name: Run SSH
         uses: appleboy/ssh-action@master
@@ -41,14 +41,13 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          port: 3333
+          port: 5555
           timeout: 60s
           debug: true
           script: |
             IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:dev
-            mkdir -p ~/env/docker
-            mkdir -p ~/env/nuri
-            echo "${{ secrets.NURI_DEV_ENV }}" > ~/env/dev.env
+            mkdir -p ~/env
+            echo "${{ secrets.NURI_PROD_ENV }}" > ~/env/dev.env
             docker-compose down
             docker pull $IMAGE
             docker-compose --env-file ~/env/dev.env up -d

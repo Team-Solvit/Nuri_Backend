@@ -1,10 +1,10 @@
-type Query {
-    getOAuth2Link(provider: String!): String
+extend type Query {
+    getOAuth2Link(provider: String!): String!
 }
 
-type Mutation {
-    oauth2Login(oauthLoginInput : OAuth2LoginInput!) : OAuth2LoginResponse!
-    oauth2SignUp(oauthSignUpInput : OAuth2SignUpInput!) : String
+extend type Mutation {
+    oauthLogin(oauthLoginInput : OAuth2LoginInput!) : OAuth2LoginResponse!
+    oauthSignUp(oauthSignUpInput : OAuth2SignUpInput!) : String
 
     localSignUp(localSignUpInput: LocalSignUpInput!) : String
     localLogin(localLoginInput: LocalLoginInput!) : String
