@@ -63,6 +63,7 @@ public class AuthService {
                 .build();
 
         userRepository.save(userEntity);
+        userRepository.flush();
 
         userAgree(userEntity, signupRequestDto.userAgreement());
     }
