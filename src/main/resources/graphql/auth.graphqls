@@ -1,8 +1,8 @@
-type Query {
-    getOAuth2Link(provider: String!): String
+extend type Query {
+    getOAuth2Link(provider: String!): String!
 }
 
-type Mutation {
+extend type Mutation {
     oauthLogin(oauthLoginInput : OAuthLoginInput!) : OAuthLoginResponse!
     oauthSignUp(oauthSignUpInput : OAuthSignUpInput!) : String
 

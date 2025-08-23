@@ -5,6 +5,20 @@ networks:
     driver: bridge
 
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend-net
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -44,7 +58,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:29093,2@kafka2:29093,3@kafka3:29093
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      CLUSTER_ID: dee43564-ced1-4eb7-913d-93a2b4d619c1
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID}
     networks:
       - kafka-net
 
@@ -54,7 +68,7 @@ services:
     ports:
       - "9093:9092"
     volumes:
-      - kafka1-data:/bitnami/kafka
+      - kafka2-data:/bitnami/kafka
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
@@ -64,7 +78,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:29093,2@kafka2:29093,3@kafka3:29093
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      CLUSTER_ID: dee43564-ced1-4eb7-913d-93a2b4d619c1
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID}
     networks:
       - kafka-net
 
@@ -74,7 +88,7 @@ services:
     ports:
       - "9094:9092"
     volumes:
-      - kafka1-data:/bitnami/kafka
+      - kafka3-data:/bitnami/kafka
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
@@ -84,7 +98,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:29093,2@kafka2:29093,3@kafka3:29093
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      CLUSTER_ID: dee43564-ced1-4eb7-913d-93a2b4d619c1
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID}
     networks:
       - kafka-net
 
@@ -93,9 +107,8 @@ services:
     container_name: kafka-ui
     ports:
       - "9999:8080"
-    restart: always
     environment:
-      KAFKA_CLUSTERS_0_NAME: local-cluster
+      KAFKA_CLUSTERS_0_NAME: ${KAFKA_CLUSTER_NAME}
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:29092,kafka2:29092,kafka3:29092
     depends_on:
       - kafka1
@@ -107,14 +120,15 @@ services:
   nuri:
     ports:
       - "8080:8080"
-    image: solvit25/nuri:latest
+    image: solvit25/nuri:${IMAGE_VERSION}
     container_name: nuri
     networks:
       - kafka-net
       - backend-net
     env_file:
-      /home/deploy/env/prod.env
+      ${ENV_FILE_PATH}
     depends_on:
+      - mongodb
       - postgres
       - redis
       - kafka1
@@ -122,6 +136,7 @@ services:
       - kafka3
 
 volumes:
+  mongo-data:
   kafka1-data:
   kafka2-data:
   kafka3-data:

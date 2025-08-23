@@ -21,7 +21,7 @@ jobs:
       - name: Build JAR with Gradle (bootJar)
         run: |
           chmod +x gradlew
-          ./gradlew bootJar
+          ./gradlew clean bootJar
 
       - name: Docker Login
         run: |
@@ -46,8 +46,7 @@ jobs:
           debug: true
           script: |
             IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
-            mkdir -p ~/env/docker
-            mkdir -p ~/env/nuri
+            mkdir -p ~/env
             echo "${{ secrets.NURI_PROD_ENV }}" > ~/env/prod.env
             docker-compose down
             docker pull $IMAGE
