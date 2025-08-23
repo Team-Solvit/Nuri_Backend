@@ -1,4 +1,4 @@
-name: Deploy Nuri Application
+name: Deploy Nuri Prod Application
 
 on:
   push:

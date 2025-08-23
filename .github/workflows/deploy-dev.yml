@@ -1,0 +1,53 @@
+name: Deploy Nuri Dev Application
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build JAR with Gradle (bootJar)
+        run: |
+          chmod +x gradlew
+          ./gradlew clean bootJar
+
+      - name: Docker Login
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Docker BuildX
+        run: |
+          docker buildx build --platform=linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }} --load .
+
+      - name: Docker Push
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}
+
+      - name: Run SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 5555
+          timeout: 60s
+          debug: true
+          script: |
+            IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:dev
+            mkdir -p ~/env
+            echo "${{ secrets.NURI_PROD_ENV }}" > ~/env/dev.env
+            docker-compose down
+            docker pull $IMAGE
+            docker-compose --env-file ~/env/dev.env up -d
