@@ -62,7 +62,7 @@ public class AuthService {
                 .role(Role.USER)
                 .build();
 
-        userRepository.save(userEntity);
+        userEntity = userRepository.save(userEntity);
 
         userAgree(userEntity, signupRequestDto.userAgreement());
     }
