@@ -1,5 +1,6 @@
 package nuri.nuri_server.domain.chat.presentation.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class   ChatController {
     }
 
     @MutationMapping
-    public RoomCreateResponseDto createRoom(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument RoomCreateRequestDto roomCreateRequestDto) {
+    public RoomCreateResponseDto createRoom(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @Valid RoomCreateRequestDto roomCreateRequestDto) {
         log.info("createRoom 인자값 : {}, {}", nuriUserDetails.getUsername(), roomCreateRequestDto.toString());
         return chatService.createRoom(nuriUserDetails, roomCreateRequestDto);
     }
@@ -50,7 +51,7 @@ public class   ChatController {
     }
 
     @MutationMapping
-    public Boolean invite(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument RoomInviteRequestDto roomInviteRequestDto) {
+    public Boolean invite(@AuthenticationPrincipal NuriUserDetails nuriUserDetails, @Argument @Valid RoomInviteRequestDto roomInviteRequestDto) {
         log.info("invite 인자값 : {}, {}", nuriUserDetails.getUsername(), roomInviteRequestDto.toString());
         chatService.invite(nuriUserDetails, roomInviteRequestDto);
         return true;

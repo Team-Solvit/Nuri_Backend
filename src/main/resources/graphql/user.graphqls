@@ -1,3 +1,7 @@
+extend type Query {
+    queryUsers(userId: String!): [UserProfile]
+}
+
 type User {
     id : String
     userId : String
@@ -34,8 +38,4 @@ type UserProfile {
     profile: String
     name: String
     userId: String
-}
-
-extend type Query {
-    queryUsers(userId: String!): [UserProfile]
 }
