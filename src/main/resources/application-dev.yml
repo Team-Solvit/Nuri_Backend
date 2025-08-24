@@ -103,3 +103,7 @@ web:
 
 chat:
   broadcast-threshold: ${BROADCAST_THRESHOLD}
+
+logging:
+  level:
+    org.hibernate.sql: debug
