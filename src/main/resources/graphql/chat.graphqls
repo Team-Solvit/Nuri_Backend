@@ -58,6 +58,7 @@ type NotificationResponseDto {
 }
 
 type RoomDto {
+    id: String!
     name: String!
     profile: String
 }
