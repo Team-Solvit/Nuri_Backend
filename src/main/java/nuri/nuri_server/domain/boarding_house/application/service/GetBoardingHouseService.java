@@ -12,7 +12,7 @@ import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingRo
 import nuri.nuri_server.domain.boarding_house.presentation.dto.res.BoardingRoomAndBoardersDto;
 import nuri.nuri_server.domain.user.domain.exception.HostNotFoundException;
 import nuri.nuri_server.domain.user.domain.repository.HostRepository;
-import nuri.nuri_server.domain.user.presentation.dto.BoarderDto;
+import nuri.nuri_server.domain.user.presentation.dto.common.BoarderDto;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

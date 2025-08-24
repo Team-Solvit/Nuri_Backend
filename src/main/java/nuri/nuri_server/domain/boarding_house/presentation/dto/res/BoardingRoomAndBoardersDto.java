@@ -2,7 +2,7 @@ package nuri.nuri_server.domain.boarding_house.presentation.dto.res;
 
 import lombok.Builder;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingRoomDto;
-import nuri.nuri_server.domain.user.presentation.dto.BoarderDto;
+import nuri.nuri_server.domain.user.presentation.dto.common.BoarderDto;
 
 import java.util.List;
 

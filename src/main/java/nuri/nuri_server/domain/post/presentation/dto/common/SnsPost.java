@@ -3,7 +3,7 @@ package nuri.nuri_server.domain.post.presentation.dto.common;
 import lombok.Builder;
 import nuri.nuri_server.domain.post.domain.entity.PostEntity;
 import nuri.nuri_server.domain.post.domain.share_range.ShareRange;
-import nuri.nuri_server.domain.user.presentation.dto.UserDto;
+import nuri.nuri_server.domain.user.presentation.dto.common.UserDto;
 
 import java.time.LocalDate;
 import java.util.List;

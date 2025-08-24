@@ -29,3 +29,13 @@ type Boarder {
     gender : String
     user : User
 }
+
+type UserProfile {
+    profile: String
+    name: String
+    userId: String
+}
+
+extend type Query {
+    queryUsers(userId: String!): [UserProfile!]!
+}
