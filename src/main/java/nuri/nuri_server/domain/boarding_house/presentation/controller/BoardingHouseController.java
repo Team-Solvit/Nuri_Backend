@@ -11,7 +11,7 @@ import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingHo
 import nuri.nuri_server.domain.boarding_house.presentation.dto.common.BoardingRoomDto;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomCreateRequestDto;
 import nuri.nuri_server.domain.boarding_house.presentation.dto.req.BoardingRoomUpdateRequest;
-import nuri.nuri_server.domain.boarding_house.presentation.dto.res.BoardingRoomAndBoardersDto;
+import nuri.nuri_server.domain.contract.presentation.dto.common.RoomContractDto;
 import nuri.nuri_server.global.security.annotation.Host;
 import nuri.nuri_server.global.security.user.NuriUserDetails;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -72,7 +72,7 @@ public class BoardingHouseController {
 
     @Host
     @QueryMapping
-    public List<BoardingRoomAndBoardersDto> getBoardingRoomAndBoardersInfoList(
+    public List<RoomContractDto> getBoardingRoomAndBoardersInfoList(
             @Argument("userId") UUID userId,
             @AuthenticationPrincipal NuriUserDetails nuriUserDetails
     ) {

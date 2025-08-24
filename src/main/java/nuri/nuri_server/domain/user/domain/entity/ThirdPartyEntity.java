@@ -1,0 +1,47 @@
+package nuri.nuri_server.domain.user.domain.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nuri.nuri_server.domain.boarding_manage.domain.entity.BoardingRelationshipEntity;
+import nuri.nuri_server.domain.boarding_manage.domain.exception.ThirdPartyMismatchException;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "tbl_third_party")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ThirdPartyEntity {
+    @Id
+    @Column(name = "user_id")
+    private UUID id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "thirdParty", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardingRelationshipEntity> boardingRelationships = new ArrayList<>();
+
+    public void validate(UserEntity user) {
+        if(!this.user.getId().equals(user.getId())) {
+            throw new ThirdPartyMismatchException();
+        }
+    }
+}

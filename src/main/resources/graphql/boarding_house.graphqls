@@ -1,6 +1,6 @@
 extend type Query {
     getMyBoardingHouse : BoardingHouse
-    getBoardingRoomAndBoardersInfoList(userId : String) : [BoardingRoomAndBoarders]
+    getBoardingRoomAndBoardersInfoList(userId : String) : [RoomContract]
     getBoardingRoom(roomId : String!) : BoardingRoom
     getBoardingRoomCommentList(boardingRoomCommentListReadInput : BoardingRoomCommentListReadInput!) : [BoardingRoomComment]!
 }
@@ -13,7 +13,7 @@ extend type Mutation {
     likeRoom(roomId : String!) : String
     unlikeRoom(roomId : String!) : String
 
-    createBoardingRoomComment(boardingRoomCommentCreateInput : BoardingRoomCommentCreateInput) : String
+    createBoardingRoomComment(boardingRoomCommentCreateInput : BoardingRoomCommentCreateInput!) : String
     updateBoardingRoomComment(boardingRoomCommentUpdateInput : BoardingRoomCommentUpdateInput!) : String
     deleteBoardingRoomComment(commentId : String!) : String
 }
@@ -62,11 +62,6 @@ type BoardingRoomComment {
     content : String!
 }
 
-type BoardingRoomAndBoarders {
-    room : BoardingRoom
-    boarders : [Boarder]
-}
-
 type BoardingRoom {
     roomId : String
     boardingHouse : BoardingHouse
@@ -92,10 +87,6 @@ type BoardingHouse {
     nearestSchool : String
     gender : Gender
     isMealProvided : Boolean
-}
-
-enum Gender {
-    MALE, FEMALE, ALL
 }
 
 type BoardingRoomOption {
