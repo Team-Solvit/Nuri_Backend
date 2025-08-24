@@ -12,6 +12,7 @@ import nuri.nuri_server.global.entity.BaseEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserAgreementEntity extends BaseEntity {
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
