@@ -52,6 +52,13 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<ChatRecordResponseDto> readMessages(String roomId) {
 
+        // 문제점 1: roomId가 유효한 UUID 형식이 아닐 경우 UUID.fromString(roomId)에서 예외가 발생할 수 있음
+        // 문제점 2: roomId에 공백이 포함되어 있으면 방이 존재하지 않아도 RoomNotFoundException이 발생하지 않음
+        // 문제점 3: chatRecord.getId()가 UUID 문자열이 아닐 경우 UUID.fromString(chatRecord.getId())에서 예외가 발생할 수 있음
+        // 문제점 4: chatRecords가 비어있고 roomId에 공백이 포함되어 있으면 방이 존재하지 않아도 예외가 발생하지 않음
+        // 문제점 5: 방에 대한 접근 권한(유저가 해당 방에 속해있는지 등) 체크가 없음
+        // 문제점 6: chatRecords가 많을 경우 페이징 처리가 없어 성능 이슈가 발생할 수 있음
+
         List<ChatRecord> chatRecords = chatRecordRepository.findAllByRoomId(roomId);
         if (chatRecords.isEmpty() && !roomId.contains(" ") && !roomRepository.existsById(UUID.fromString(roomId))) {
             throw new RoomNotFoundException(roomId);
