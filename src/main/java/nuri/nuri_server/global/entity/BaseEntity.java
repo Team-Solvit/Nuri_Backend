@@ -1,9 +1,6 @@
 package nuri.nuri_server.global.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,6 +15,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
     @Id
+    @GeneratedValue
     @UuidGenerator
     private UUID id;
 
