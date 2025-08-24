@@ -13,4 +13,5 @@ public class PageSizeProperties {
     private final Integer snsPost;
     private final Integer boardingPost;
     private final Integer boardingRoomSearch;
+    private final Integer notification;
 }

@@ -1,0 +1,16 @@
+extend type Query {
+    getNotificationCount : Int!
+    getNotificationList(start : Int!) : [Notification]
+}
+
+extend type Mutation {
+    checkNotification(notificationId : String!) : String
+}
+
+type Notification {
+    notificationId : String
+    content : String
+    checked : Boolean
+    link : String
+    createAt : String
+}

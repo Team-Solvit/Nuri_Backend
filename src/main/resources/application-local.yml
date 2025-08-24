@@ -91,3 +91,4 @@ page-size:
   sns-post : ${SNS_POST_SIZE}
   boarding-post : ${BOARDING_POST_SIZE}
   boarding-room-search : ${BOARDING_ROOM_SEARCH_SIZE}
+  notification : ${NOTIFICATION_SIZE}
