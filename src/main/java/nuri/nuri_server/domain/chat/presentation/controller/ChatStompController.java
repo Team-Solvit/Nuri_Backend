@@ -28,7 +28,9 @@ public class ChatStompController {
 
     @MessageMapping("/group")
     public void sendGroupMessage(Principal principal, @Valid ChatRecordRequestDto chatRecordRequestDto) {
+        log.info("sendGroupMessage 진입");
         NuriUserDetails nuriUserDetails = (NuriUserDetails) principal;
+        log.info(nuriUserDetails.getUsername());
         chatStompService.sendGroupMessage(nuriUserDetails,  chatRecordRequestDto);
     }
 }
