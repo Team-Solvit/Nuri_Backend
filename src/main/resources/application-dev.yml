@@ -38,7 +38,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "nuri.nuri_server.domain.chat.presentation.dto.req"
+        spring.json.trusted.packages: "*"
     listener:
       ack-mode: manual
     properties:
