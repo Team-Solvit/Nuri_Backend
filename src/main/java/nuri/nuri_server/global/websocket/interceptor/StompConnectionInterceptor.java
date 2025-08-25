@@ -38,8 +38,6 @@ public class StompConnectionInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = MessageHeaderAccessor
                 .getAccessor(message, StompHeaderAccessor.class);
 
-        log.info("WebSocket UserId : {}", accessor.getUser().getName());
-
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
             String accessToken = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION);
             jwtProvider.checkAuthorization(accessToken);
@@ -50,6 +48,8 @@ public class StompConnectionInterceptor implements ChannelInterceptor {
             handleDuplicateLogin(userId, newSessionId);
             return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
         }
+
+        log.info("WebSocket UserId : {}", accessor.getUser().getName());
 
         return message;
     }
