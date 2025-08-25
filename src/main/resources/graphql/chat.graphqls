@@ -31,7 +31,7 @@ input ReplyChatInput {
 
 type Sender {
     name: String!
-    profile: String!
+    profile: String
 }
 
 type ReplyChat {
