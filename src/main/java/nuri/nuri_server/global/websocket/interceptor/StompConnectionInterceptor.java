@@ -2,6 +2,7 @@ package nuri.nuri_server.global.websocket.interceptor;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nuri.nuri_server.domain.session.domain.entity.SessionEntity;
 import nuri.nuri_server.domain.session.infra.event.DuplicateLoginEvent;
 import nuri.nuri_server.domain.session.domain.repository.SessionEntityRepository;
@@ -24,6 +25,7 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class StompConnectionInterceptor implements ChannelInterceptor {
     private final JwtProvider jwtProvider;
     private final SessionEntityRepository sessionEntityRepository;
@@ -35,6 +37,8 @@ public class StompConnectionInterceptor implements ChannelInterceptor {
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor
                 .getAccessor(message, StompHeaderAccessor.class);
+
+        log.info("WebSocket UserId : {}", accessor.getUser().getName());
 
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
             String accessToken = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION);

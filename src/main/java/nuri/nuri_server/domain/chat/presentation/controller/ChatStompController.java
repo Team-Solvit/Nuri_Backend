@@ -20,7 +20,9 @@ public class ChatStompController {
 
     @MessageMapping("/{userId}")
     public void sendDirectMessage(@DestinationVariable String userId, Principal principal, @Valid ChatRecordRequestDto chatRecordRequestDto) {
+        log.info("sendDirectMessage 진입");
         NuriUserDetails nuriUserDetails = (NuriUserDetails) principal;
+        log.info(nuriUserDetails.getUsername());
         chatStompService.sendDirectMessage(userId, nuriUserDetails, chatRecordRequestDto);
     }
 
